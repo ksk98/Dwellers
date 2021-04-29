@@ -1,0 +1,27 @@
+RESPONSES:
+
+ABOUT:                      Responses serve as direct replies to request messages.
+                            Data we want to respond with should be included in the
+                            body (not header) as the body itself is directly
+                            returned in the code responsible for communication.
+
+OBJECT RESPONSES:
+BEGIN:                      RESPONSE_OBJECT
+1.  :LOBBY -                If host agrees for a participant to join the hosted
+                            lobby, the game will send a response with STATUS:OK
+                            followed by a json object of lobby.
+
+                            RESPONSE_OBJECT:LOBBY\r\n
+                            STATUS:OK\r\n
+                            CONTENT_LENGTH:*X*\r\n
+                            \r\n
+                            *JSON*
+                            \r\n\r\n
+
+                            If host disagrees, he\she responds with
+                            STATUS:REJECTED and provides a reason as a value of REASON.
+
+                            RESPONSE_OBJECT:LOBBY\r\n
+                            STATUS:REJECTED\r\n
+                            REASON:*REASON*\r\n
+                            \r\n

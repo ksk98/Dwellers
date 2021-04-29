@@ -1,0 +1,5 @@
+MENU = None
+LOBBY = None
+JOINING = None
+CHARACTER = None
+SETTINGS = None
