@@ -1,0 +1,27 @@
+PROCEDURE:      GETTING THE LOBBY
+DESCRIPTION:    After succesfully connecting to a host and passing our character
+                we can now request the hosts lobby object to display on the screen.
+
+A. Client asks for the lobby object.
+
+CLIENT:         REQUEST_LOBBY\r\n
+                \r\n
+
+B. Host responds with a pickled lobby object.
+
+HOST:           200\r\n
+                CONTENT_LENGTH:x\r\n
+                \r\n
+                content
+                \r\n\r\n
+
+C. Player is not connected to the lobby.
+
+HOST:           401\r\n
+                \r\n
+
+
+D. Player has not uploaded a character.
+
+HOST:           404\r\n
+                \r\n

@@ -1,6 +1,8 @@
-class Participant:
-    def __init__(self, name: str = "Player"):
-        self.character = None
-        self.id = -1
-        self.name = name
+from settings import settings
 
+
+class Participant:
+    def __init__(self, player_id: int):
+        self.character = None
+        self.player_id = player_id
+        self.name = settings["PLAYER_NAME"]

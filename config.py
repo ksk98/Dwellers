@@ -1,6 +1,8 @@
 config = {
     "VERSION": "v0.01",
-    "MAX_WIDTH": 100,
     "MAX_PLAYERS": 4,
-    "TICK_WAIT_TIME": 0.05
+    "TICK_WAIT_TIME": 0.05,
+    "POPUP_COMMUNICATE_TIME": 2,
+    "CONNECTION_TIMEOUT_TIME": 5,
+    "HIGH_PORTS_BASE": 46789
 }

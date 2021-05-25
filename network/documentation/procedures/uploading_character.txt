@@ -1,0 +1,27 @@
+PROCEDURE:      UPLOADING A CHARACTER TO LOBBY
+DESCRIPTION:    After establishing connection with the host, the player has to
+                give the host a character used by the player so that the lobby
+                may be updated.
+
+A. Client sends the character.
+
+CLIENT:         UPLOAD_CHARACTER\r\n
+                CONTENT-LENGTH:x\r\n
+                \r\n
+                character json
+                \r\n\r\n
+
+B. Host accepts the character.
+
+HOST:           200\r\n
+                \r\n
+
+C. Player is not connected to the lobby. (procedure 'connection' required)
+
+HOST:           404\r\n
+                \r\n
+
+D. Host recognizes character as invalid. (ex. illegal values)
+
+HOST:           409\r\n
+                \r\n

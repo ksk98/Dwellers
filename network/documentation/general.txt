@@ -1,0 +1,20 @@
+GENERAL INFORMATION ABOUT THE PROTOCOL:
+
+1.
+Whenever a received requset is not recognized, the response will look like this:
+
+    400\r\n
+    \r\n
+
+This will be experienced, when the responder will read the first line of the request
+and no instructions for such request type will be specified in the frame_handler.py.
+
+2.
+Whenever the answering side experiences a problem, and thus aborts the procedure
+bound to the request, it will communicate this like that:
+
+    500\r\n
+    \r\n
+
+This will be experienced, when the responder will experience a socket.error in
+frame_handler.py.

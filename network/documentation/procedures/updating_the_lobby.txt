@@ -1,0 +1,25 @@
+PROCEDURE:      UPDATING THE LOBBY
+DESCRIPTION:    If the host has accepted a new player into the lobby, then
+                the rest of the players in this lobby need to get notified.
+
+A. Host tells a player that a new player has joined.
+
+HOST:           LOBBY_UPDATE\r\n
+                ACTION:PLAYER_JOINED\r\n
+                CONTENT-LENGTH:x\r\n
+                \r\n
+                player object
+                \r\n\r\n
+
+B. Host tells a player of id x has left.
+
+HOST:           LOBBY_UPDATE\r\n
+                ACTION:PLAYER_LEFT\r\n
+                ID:x\r\n
+                \r\n
+
+C. Host tells a player that the lobby was closed.
+
+HOST:           LOBBY_UPDATE\r\n
+                ACTION:LOBBY_CLOSE\r\n
+                \r\n

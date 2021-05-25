@@ -1,0 +1,41 @@
+PROCEDURE:      CONNECTION
+DESCRIPTION:    Before player takes part in a game hosted by another player they
+                must establish connection between each other. When succesful, the
+                procedure yields a new high port to connect to and a unique ID for
+                the player.
+
+A. Client asks for connection.
+
+CLIENT:         REQUEST_CONNECTION\r\n
+                \r\n
+
+B. Host responds positively.
+
+HOST:           200\r\n
+                PORT:x\r\n
+                ID:x\r\n
+                \r\n
+
+C. Host responds that his/her lobby is full.
+
+HOST:           409\r\n
+                \r\n
+
+D. Host states that a password is needed to enter.
+
+HOST:           PASSWORD?\r\n
+                \r\n
+
+    E. Client provides a password.
+
+    CLIENT:         password\r\n
+                    \r\n
+
+    F. Password is ok.
+
+    - see B
+
+    G. Password is wrong.
+
+    HOST:           401\r\n
+                    \r\n

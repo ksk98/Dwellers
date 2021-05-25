@@ -2,7 +2,7 @@ from network import utility
 import socket
 
 
-def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list, body_content: str) -> str:
+def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
     out_message = ""
     try:
         # Compose header
@@ -14,11 +14,18 @@ def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list
         if body_content != "":
             out_message += body_content + "\r\n\r\n"
 
-        # TODO: Encrypt content
-
         # Send header + content
         concrete_socket.sendall(out_message.encode("utf-8"))
 
+        return get_answer(concrete_socket)
+
+    except socket.error as e:
+        print(e)
+        return "error"
+
+
+def get_answer(concrete_socket: socket.socket) -> str:
+    try:
         # Get response header
         in_message = utility.get_data(concrete_socket)
 
@@ -27,11 +34,8 @@ def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list
         if resp_content_length != 0:
             in_message = in_message + utility.get_specific_amount_of_data(concrete_socket, resp_content_length)
 
-        # TODO: Decrypt content
-
         # Give back the answer to the caller
         return in_message
-
     except socket.error as e:
         print(e)
         return "error"

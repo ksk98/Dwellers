@@ -1,4 +1,7 @@
 import socket
+from config import config
+import context
+from settings import settings
 
 
 def get_data(source_socket: socket.socket, delimiter: str = "\r\n\r\n") -> str:
@@ -6,7 +9,7 @@ def get_data(source_socket: socket.socket, delimiter: str = "\r\n\r\n") -> str:
     Read bytes from a socket until a delimiter is met.
     """
     output = b''
-    while bytes(delimiter) not in output:
+    while delimiter.encode("utf-8") not in output:
         incoming = source_socket.recv(1)
         if not incoming:
             break
@@ -64,3 +67,28 @@ def get_content_from_frame(frame: str) -> str:
     split = frame.split("\r\n\r\n")
     return split[1]
 
+
+def is_port_in_use(port):
+    """
+    https://stackoverflow.com/a/52872579
+    """
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('localhost', port)) == 0
+
+
+def get_free_port():
+    port = config["HIGH_PORTS_BASE"]
+    occupied_ports = context.GAME.get_occupied_ports_list().sort()
+    for oport in occupied_ports:
+        if port == oport:
+            port += 1
+        else:
+            break
+
+    return port
+
+
+def get_host_ip():
+    if settings["HOST_LOBBY_IS_LAN"]:
+        return "127.0.0.1"
+    return socket.gethostbyname(socket.gethostname())
