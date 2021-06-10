@@ -22,6 +22,6 @@ def carry_out(sckt: socket.socket) -> str:
     new_id = context.GAME.get_new_id()
     communicate(sckt, ["200", "PORT:" + str(new_port), "ID:" + str(new_id)])
     connection, addr = new_socket.accept()
-    context.GAME.add_socket(connection, new_id)
+    context.GAME.add_player(connection, new_id)
 
 

@@ -43,6 +43,6 @@ class ViewJoin(ViewBase):
             context.GAME.view_manager.set_new_view_for_enum(Views.JOIN, ViewJoin(self.text_inputs.get("IP"),
                                                                                  self.text_inputs.get("PORT"),
                                                                                  ""))
-            context.GAME.view_manager.set_new_view_for_enum(Views.ERROR, ViewError(Views.JOIN, err))
+            context.GAME.view_manager.set_new_view_for_enum(Views.ERROR, ViewError(err, Views.JOIN))
         else:
             context.GAME.view_manager.set_new_view_for_enum(Views.LOBBY, ViewLobby())

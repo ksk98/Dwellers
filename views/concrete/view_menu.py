@@ -15,7 +15,6 @@ class ViewMenu(ViewBase):
             ["CREATE LOBBY", Views.LOBBY, lambda: context.GAME.host_lobby(), Input.SELECT],
             ["JOIN LOBBY", Views.JOIN,
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.JOIN, ViewJoin()), Input.SELECT],
-            ["CHARACTERS", None, lambda: None, Input.SELECT],
             ["SETTINGS", None, lambda: None, Input.SELECT],
             ["EXIT", None, lambda: context.GAME.close(), Input.SELECT]
         ]

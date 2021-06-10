@@ -17,7 +17,7 @@ def get_data(source_socket: socket.socket, delimiter: str = "\r\n\r\n") -> str:
         output = output + incoming
 
     output = output.replace(delimiter.encode("utf-8"), b'')
-    return output.decode('utf-8')
+    return output.decode("utf-8")
 
 
 def get_specific_amount_of_data(source_socket: socket.socket, byte_count: int) -> str:
@@ -33,7 +33,7 @@ def get_specific_amount_of_data(source_socket: socket.socket, byte_count: int) -
         data_received += 1
         local_output = local_output + incoming
 
-    return local_output
+    return local_output.decode("utf-8")
 
 
 def get_value_of_argument(header: str, arg_name: str) -> str:
@@ -77,7 +77,7 @@ def is_port_in_use(port):
 
 
 def get_free_port():
-    port = config["HIGH_PORTS_BASE"]
+    port = config["HIGH_PORTS_BASE"]+1
     occupied_ports = context.GAME.get_occupied_ports_list().sort()
     if occupied_ports is not None:
         for oport in occupied_ports:

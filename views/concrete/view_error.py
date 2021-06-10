@@ -1,6 +1,7 @@
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.view_enum import Views
+import context
 
 
 class ViewError(ViewBase):
@@ -16,3 +17,7 @@ class ViewError(ViewBase):
         self.print_text(self.text)
         print()
         self._print_options()
+
+    @staticmethod
+    def _action(return_to):
+        context.GAME.view_manager.view_overriden_by_error = True

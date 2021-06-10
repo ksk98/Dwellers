@@ -2,8 +2,10 @@ from network.procedures import procedure_connection as connection_procedure
 from network.procedures import procedure_get_lobby as get_lobby_procedure
 from network.procedures import procedure_lobby_update as update_lobby_procedure
 from network.procedures import procedure_upload_character as upload_character_procedure
-from network.communication import communicate_and_get_answer
+from network.communication import communicate
 import socket
+import context
+from views.concrete.view_error import ViewError
 
 
 def handle(sckt: socket.socket, frame: str):
@@ -20,7 +22,7 @@ def handle(sckt: socket.socket, frame: str):
             update_lobby_procedure.carry_out(sckt, frame)
 
         else:
-            communicate_and_get_answer(sckt, ["400"])
+            communicate(sckt, ["400"])
     except socket.error as e:
-        communicate_and_get_answer(sckt, ["500"])
-        return "SOCKET ERROR: " + str(e)
+        communicate(sckt, ["500"])
+        context.GAME.view_manager.display_error_and_return("Socket error: " + str(e))

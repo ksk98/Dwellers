@@ -9,7 +9,6 @@ if __name__ == '__main__':
     context.GAME = Game()
 
     try:
-        context.GAME.view_manager.get_current().refresh_view()
         while context.GAME.running:
             context.GAME.tick()
     except socket.error as e:

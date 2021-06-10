@@ -21,7 +21,7 @@ class ViewBase(ABC):
         }
 
     @staticmethod
-    def _clear():
+    def clear():
         """
         Clear the terminals window.
         """
@@ -96,7 +96,7 @@ class ViewBase(ABC):
             self.text_inputs[input_name] = input_text + str(text)
 
     def refresh_view(self):
-        self._clear()
+        self.clear()
         self.print_screen()
 
     def get_index_of_option(self, option: str) -> int:

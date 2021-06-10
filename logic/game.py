@@ -31,12 +31,13 @@ class Game:
         # For host: this is a socket you listen on for communication attempts
         self.host_socket: socket.socket = None
         # For host: those are sockets of other players you broadcast info to
-        self.__sockets: dict[int, socket.socket] = {}
+        self.sockets: dict[int, socket.socket] = {}
         self.__free_id = 0
 
         self.connecter_thread = None
 
         self.view_manager: ViewManager = ViewManager()
+        self.view_manager.get_current().clear()
         self.view_manager.get_current().print_screen()
 
     def view(self):
@@ -73,8 +74,8 @@ class Game:
                 if ready[0]:
                     frame_handler.handle(self.host_socket, utility.get_data(self.host_socket))
 
-                # Copy the dict in case it becomes bigger during iteration causing an exception
-                sockets = self.__sockets.copy()
+                # Copy the dict in case it changes size during iteration, causing an exception
+                sockets = self.sockets.copy()
                 for sckt in sockets.values():
                     ready = select.select([sckt], [], [], 0.05)
                     if ready[0]:
@@ -88,7 +89,7 @@ class Game:
             # https://stackoverflow.com/questions/6179537/python-wait-x-secs-for-a-key-and-continue-execution-if-not-pressed
 
     def connecter(self):
-        while True:
+        while self.lobby is not None:
             try:
                 sckt, addr = self.host_socket.accept()
                 frame_handler.handle(sckt, utility.get_data(sckt))
@@ -117,7 +118,9 @@ class Game:
             self.connecter_thread = threading.Thread(target=self.connecter, args=())
             self.connecter_thread.start()
         except socket.error as e:
-            self.view_manager.display_error(ViewError("Error on creating lobby: " + str(e)))
+            self.view_manager.display_error_and_go_to(ViewError("Error on creating lobby: " + str(e)))
+            self.player_id = -1
+            self.abandon_lobby()
 
     def join_external_lobby(self, ip: str, port: int, password: str = "") -> str:
         """
@@ -177,16 +180,12 @@ class Game:
             if answer.startswith("500"):
                 return "SERVER ERROR"
             elif not answer.startswith("200"):
-                return "UNKNOWN ERROR"
+                return "UNKNOWN ERROR: " + answer
 
-            content_length = utility.get_content_length_from_header(answer)
-            if content_length == "":
-                return "NO CONTENT LENGTH PROVIDED FOR LOBBY OBJECT"
-
-            lobby_object = utility.get_specific_amount_of_data(self.host_socket, content_length)
+            lobby_object = utility.get_content_from_frame(answer)
             self.lobby = jsonpickle.decode(lobby_object)
 
-            self.__sockets[int(new_id)] = self.host_socket
+            self.sockets[int(new_id)] = self.host_socket
             return ""
         except socket.error as e:
             return str(e)
@@ -204,7 +203,7 @@ class Game:
 
         participant_json = jsonpickle.encode(participant)
 
-        for sckt in self.__sockets.values():
+        for sckt in self.sockets.values():
             communication.communicate_and_get_answer(sckt,
                                                      ["LOBBY_UPDATE",
                                                       "ACTION:PLAYER_JOINED",
@@ -223,7 +222,7 @@ class Game:
 
         self.lobby.remove_participant(participant)
 
-        for sckt in self.__sockets.values():
+        for sckt in self.sockets.values():
             communication.communicate_and_get_answer(sckt,
                                                      ["LOBBY_UPDATE",
                                                       "ACTION:PLAYER_LEFT",
@@ -243,10 +242,16 @@ class Game:
         self.__free_id = 0
 
         if self.player_id == 0:
-            for sckt in self.__sockets.values():
+            for sckt in self.sockets.values():
                 communication.communicate_and_get_answer(sckt, ["LOBBY_UPDATE", "ACTION:LOBBY_CLOSE"])
                 sckt.close()
-            self.__sockets.clear()
+            self.sockets.clear()
+
+            # To stop the thread that listens for connection attempts we have to connect to it once
+            temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            temp_socket.connect((utility.get_host_ip(), settings["HOSTING_PORT"]))
+            temp_socket.sendall("dummy text\r\n\r\n".encode("utf-8"))
+            temp_socket.close()
             self.connecter_thread.join()
         else:
             self.host_socket.close()
@@ -259,17 +264,18 @@ class Game:
 
     def get_occupied_ports_list(self) -> list[int]:
         ports = []
-        for sckt in self.__sockets.values():
+        for sckt in self.sockets.values():
             ports.append(sckt.getsockname()[1])
 
         return ports
 
-    def add_socket(self, sckt: socket.socket, new_id: int):
-        self.__sockets[new_id] = sckt
+    def add_player(self, sckt: socket.socket, new_id: int, new_player: Participant):
+        self.sockets[new_id] = sckt
+        self.lobby.add_participant(new_player)
 
     def get_id_of_socket(self, sckt: socket.socket) -> int:
-        if sckt in self.__sockets.values():
-            return list(self.__sockets.keys())[list(self.__sockets.values()).index(sckt)]
+        if sckt in self.sockets.values():
+            return list(self.sockets.keys())[list(self.sockets.values()).index(sckt)]
         return -1
 
     def close(self):
