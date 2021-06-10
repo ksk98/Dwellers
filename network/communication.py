@@ -3,6 +3,11 @@ import socket
 
 
 def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
+    communicate(concrete_socket, header_args, body_content)
+    return get_answer(concrete_socket)
+
+
+def communicate(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
     out_message = ""
     try:
         # Compose header
@@ -16,8 +21,6 @@ def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list
 
         # Send header + content
         concrete_socket.sendall(out_message.encode("utf-8"))
-
-        return get_answer(concrete_socket)
 
     except socket.error as e:
         print(e)

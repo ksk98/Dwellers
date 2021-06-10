@@ -4,12 +4,13 @@ from views.view_enum import Views
 
 
 class ViewJoining(ViewBase):
-    def __init__(self):
+    def __init__(self, current_state: str):
         super().__init__()
+        self.current_state = current_state
         self.options = [
-            ("CANCEL", None, lambda: None, Input.SELECT)    # TODO
+            ["CANCEL", Views.JOIN, lambda: None, Input.SELECT]    # TODO
         ]
 
     def print_screen(self):
-        self.print_text("CONNECTING...")
+        self.print_text(self.current_state)
         self._print_options()

@@ -13,8 +13,8 @@ class ViewBase(ABC):
         self.typing_mode = False
         self.selected = 0
         self.options = [
-            ("SAMPLE SELECT OPTION", Views.MENU, lambda: None, Input.SELECT),
-            ("SAMPLE TEXT_FIELD OPTION", Views.MENU, lambda: None, Input.TEXT_FIELD)
+            ["SAMPLE SELECT OPTION", Views.MENU, lambda: None, Input.SELECT],
+            ["SAMPLE TEXT_FIELD OPTION", Views.MENU, lambda: None, Input.TEXT_FIELD]
         ]
         self.text_inputs = {
             "SAMPLE TEXT_FIELD OPTION": "SAMPLE TEXT"
@@ -83,17 +83,17 @@ class ViewBase(ABC):
             self.typing_mode = not self.typing_mode
         return self.options[self.selected][1]
 
-    def remove_character_from_current_text_input(self):
+    def delete_letter(self):
         input_name = self.options[self.selected][0]
         input_text = self.text_inputs.get(input_name)
         if input_text != "" or input_text is not None:
-            self.text_inputs[input_name] = input_text[0:len(input_text)-2]
+            self.text_inputs[input_name] = input_text[0:len(input_text)-1]
 
-    def add_to_current_text_input(self, text: str):
+    def write_letter(self, text):
         input_name = self.options[self.selected][0]
         input_text = self.text_inputs.get(input_name)
         if input_text is not None:
-            self.text_inputs[input_name] = input_text + text
+            self.text_inputs[input_name] = input_text + str(text)
 
     def refresh_view(self):
         self._clear()
@@ -106,8 +106,11 @@ class ViewBase(ABC):
 
         return -1
 
+    def get_view_for_selected(self):
+        return self.options[self.selected][1]
+
     @staticmethod
-    def print_text(self, text: str):
+    def print_text(text: str):
         # https://stackoverflow.com/a/18854817
         chunks = list((text[0+i:(settings["MAX_WIDTH"]-4)+i] for i in range(0, len(text), (settings["MAX_WIDTH"]-4))))
         for chunk in chunks:

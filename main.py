@@ -13,6 +13,6 @@ if __name__ == '__main__':
         while context.GAME.running:
             context.GAME.tick()
     except socket.error as e:
-        pass
+        print(e)
 
     exit(0)

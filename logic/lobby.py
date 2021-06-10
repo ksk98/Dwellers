@@ -7,6 +7,8 @@ class Lobby:
         self.external_lobby = False
         self.participants: list[Participant] = []
         self.__password = password
+        self.address = ""
+        self.port = 0
 
     def add_participant(self, participant) -> bool:
         if self.is_full():

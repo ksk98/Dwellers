@@ -16,7 +16,7 @@ def get_data(source_socket: socket.socket, delimiter: str = "\r\n\r\n") -> str:
 
         output = output + incoming
 
-    output = output.replace(bytes(delimiter), b'')
+    output = output.replace(delimiter.encode("utf-8"), b'')
     return output.decode('utf-8')
 
 
@@ -79,16 +79,18 @@ def is_port_in_use(port):
 def get_free_port():
     port = config["HIGH_PORTS_BASE"]
     occupied_ports = context.GAME.get_occupied_ports_list().sort()
-    for oport in occupied_ports:
-        if port == oport:
-            port += 1
-        else:
-            break
+    if occupied_ports is not None:
+        for oport in occupied_ports:
+            if port == oport:
+                port += 1
+            else:
+                break
 
     return port
 
 
 def get_host_ip():
     if settings["HOST_LOBBY_IS_LAN"]:
-        return "127.0.0.1"
-    return socket.gethostbyname(socket.gethostname())
+        return "localhost"
+    return "0.0.0.0"
+    # return socket.gethostbyname(socket.gethostname())

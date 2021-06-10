@@ -1,6 +1,6 @@
 import context
 import socket
-from network.communication import communicate_and_get_answer
+from network.communication import communicate_and_get_answer, communicate
 from network import utility
 
 
@@ -18,7 +18,10 @@ def carry_out(sckt: socket.socket) -> str:
     new_port = utility.get_free_port()
     new_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     new_socket.bind((utility.get_host_ip(), new_port))
-    new_id = context.GAME.add_socket(new_socket)
+    new_socket.listen(1)
+    new_id = context.GAME.get_new_id()
+    communicate(sckt, ["200", "PORT:" + str(new_port), "ID:" + str(new_id)])
+    connection, addr = new_socket.accept()
+    context.GAME.add_socket(connection, new_id)
 
-    communicate_and_get_answer(sckt, ["200", "PORT:" + new_port, "ID:" + new_id])
 
