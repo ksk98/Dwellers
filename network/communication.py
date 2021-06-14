@@ -17,7 +17,7 @@ def communicate(concrete_socket: socket.socket, header_args: list[str], body_con
 
         # Add content if not empty
         if body_content != "":
-            out_message += body_content + "\r\n\r\n"
+            out_message += body_content
 
         # Send header + content
         concrete_socket.sendall(out_message.encode("utf-8"))
@@ -34,7 +34,6 @@ def get_answer(concrete_socket: socket.socket) -> str:
 
         # If response contains content then read it
         resp_content_length = utility.get_content_length_from_header(in_message)
-        in_message += "\r\n\r\n"
         if resp_content_length != 0:
             in_message = in_message + str(utility.get_specific_amount_of_data(concrete_socket, resp_content_length))
 

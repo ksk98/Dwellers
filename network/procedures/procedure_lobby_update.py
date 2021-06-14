@@ -2,7 +2,8 @@ import socket
 import context
 import jsonpickle
 from network import utility
-from network.communication import communicate_and_get_answer
+from network.communication import communicate
+from views.view_enum import Views
 
 
 def carry_out(sckt: socket.socket, frame: str):
@@ -31,7 +32,7 @@ def carry_out(sckt: socket.socket, frame: str):
         context.GAME.view_manager.refresh()
     elif action == "LOBBY_CLOSE":
         context.GAME.abandon_lobby()
-        context.GAME.view_manager.display_error_and_go_to("Lobby was closed.")
+        context.GAME.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
     else:
-        communicate_and_get_answer(sckt, ["400"])
+        communicate(sckt, ["400"])
         return

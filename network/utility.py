@@ -16,7 +16,6 @@ def get_data(source_socket: socket.socket, delimiter: str = "\r\n\r\n") -> str:
 
         output = output + incoming
 
-    output = output.replace(delimiter.encode("utf-8"), b'')
     return output.decode("utf-8")
 
 
@@ -94,3 +93,15 @@ def get_host_ip():
         return "localhost"
     return "0.0.0.0"
     # return socket.gethostbyname(socket.gethostname())
+
+
+# https://stackoverflow.com/a/62277798
+def is_socket_closed(sock: socket.socket) -> bool:
+    try:
+        # this will try to read bytes without blocking and also without removing them from buffer (peek only)
+        data = sock.recv(16, socket.MSG_PEEK)
+        if len(data) == 0:
+            return True
+    except ConnectionResetError:
+        return True  # socket was closed for some other reason
+    return False

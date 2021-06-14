@@ -17,11 +17,12 @@ class Lobby:
         self.participants.append(participant)
         return True
 
-    def remove_participant(self, participant) -> bool:
+    def remove_participant(self, id) -> bool:
         if len(self.participants) == 0:
             return False
 
-        if not self.has_participant_of_id(participant.player_id):
+        participant = self.get_participant_of_id(id)
+        if participant is None:
             return False
 
         self.participants.remove(participant)
@@ -40,6 +41,13 @@ class Lobby:
                 return True
 
         return False
+
+    def get_participant_of_id(self, pid: int) -> Participant:
+        for part in self.participants:
+            if part.player_id == pid:
+                return part
+
+        return None
 
     def is_empty(self) -> bool:
         return len(self.participants) == 0

@@ -13,7 +13,6 @@ HOST:           200\r\n
                 CONTENT_LENGTH:x\r\n
                 \r\n
                 content
-                \r\n\r\n
 
 C. Player is not connected to the lobby.
 

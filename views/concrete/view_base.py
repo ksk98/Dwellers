@@ -16,8 +16,11 @@ class ViewBase(ABC):
             ["SAMPLE SELECT OPTION", Views.MENU, lambda: None, Input.SELECT],
             ["SAMPLE TEXT_FIELD OPTION", Views.MENU, lambda: None, Input.TEXT_FIELD]
         ]
-        self.text_inputs = {
-            "SAMPLE TEXT_FIELD OPTION": "SAMPLE TEXT"
+        self.inputs = {
+            "SAMPLE TEXT OPTION": "SAMPLE TEXT",
+            "SAMPLE INT OPTION": 100,
+            "SAMPLE FLOAT OPTION": 5.5,
+            "SAMPLE BOOLEAN OPTION": True
         }
 
     @staticmethod
@@ -81,19 +84,33 @@ class ViewBase(ABC):
         self.options[self.selected][2].__call__()
         if self.options[self.selected][3] == Input.TEXT_FIELD:
             self.typing_mode = not self.typing_mode
+        elif self.options[self.selected][3] == Input.TOGGLE:
+            self.inputs[self.get_option_for_index(self.selected)] = \
+                not self.inputs[self.get_option_for_index(self.selected)]
+            self.refresh_view()
         return self.options[self.selected][1]
 
     def delete_letter(self):
         input_name = self.options[self.selected][0]
-        input_text = self.text_inputs.get(input_name)
-        if input_text != "" or input_text is not None:
-            self.text_inputs[input_name] = input_text[0:len(input_text)-1]
+        input_val = self.inputs.get(input_name)
+        if input_val is not None and str(input_val) != "":
+            if isinstance(input_val, int):
+                self.inputs[input_name] = int(str(input_val)[0:len(str(input_val)) - 1])
+            elif isinstance(input_val, float):
+                self.inputs[input_name] = float(str(input_val)[0:len(str(input_val)) - 1])
+            else:
+                self.inputs[input_name] = input_val[0:len(input_val) - 1]
 
     def write_letter(self, text):
         input_name = self.options[self.selected][0]
-        input_text = self.text_inputs.get(input_name)
-        if input_text is not None:
-            self.text_inputs[input_name] = input_text + str(text)
+        input_val = self.inputs.get(input_name)
+        if input_val is not None:
+            if isinstance(input_val, int):
+                self.inputs[input_name] = int(str(input_val) + str(text))
+            elif isinstance(input_val, float):
+                self.inputs[input_name] = float(str(input_val) + str(text))
+            else:
+                self.inputs[input_name] = str(input_val) + str(text)
 
     def refresh_view(self):
         self.clear()
@@ -105,6 +122,9 @@ class ViewBase(ABC):
                 return ind
 
         return -1
+
+    def get_option_for_index(self, index: int) -> str:
+        return self.options[index][0]
 
     def get_view_for_selected(self):
         return self.options[self.selected][1]

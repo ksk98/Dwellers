@@ -7,3 +7,4 @@ class Views(Enum):
     JOIN = 2
     JOINING = 3
     ERROR = 4
+    SETTINGS = 5

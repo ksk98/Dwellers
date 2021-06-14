@@ -1,0 +1,13 @@
+PROCEDURE:      LEAVING THE LOBBY
+DESCRIPTION:    A player disappears from a lobby if he/she states his/her exit
+                explicitly.
+
+A. Client announces abandoning of lobby.
+
+CLIENT:         GOODBYE\r\n
+                \r\n
+
+Host is now expected to update the lobby accordingly (see updating_the_lobby.txt, section B).
+
+In case of player disconnecting by closing the appliaction's window, no goodbye is sent. This situation is handled
+by catching an exception and removing the player accordingly.

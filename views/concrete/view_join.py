@@ -17,31 +17,31 @@ class ViewJoin(ViewBase):
             ["JOIN", Views.LOBBY, lambda: self._join_action(), Input.SELECT],
             ["CANCEL", Views.MENU, lambda: None, Input.SELECT]
         ]
-        self.text_inputs = {
-            "IP": str(ip),
-            "PORT": str(port),
-            "PASSWORD": str(password)
+        self.inputs = {
+            "IP": ip,
+            "PORT": port,
+            "PASSWORD": password
         }
 
     def print_screen(self):
         for option in self.options:
             to_print = option[0]
-            value = self.text_inputs.get(option[0])
+            value = self.inputs.get(option[0])
             if value is not None:
-                to_print = to_print + ": " + value
+                to_print = to_print + ": " + str(value)
             if self.options.index(option) == self.selected:
                 print((">" + to_print).center(settings["MAX_WIDTH"]))
             else:
                 print(to_print.center(settings["MAX_WIDTH"]))
 
     def _join_action(self):
-        err = context.GAME.join_external_lobby(self.text_inputs.get("IP"),
-                                               int(self.text_inputs.get("PORT")),
-                                               self.text_inputs.get("PASSWORD"))
+        err = context.GAME.join_external_lobby(self.inputs.get("IP"),
+                                               int(self.inputs.get("PORT")),
+                                               self.inputs.get("PASSWORD"))
         if err != "":
             self.options[self.get_index_of_option("JOIN")][1] = Views.ERROR
-            context.GAME.view_manager.set_new_view_for_enum(Views.JOIN, ViewJoin(self.text_inputs.get("IP"),
-                                                                                 self.text_inputs.get("PORT"),
+            context.GAME.view_manager.set_new_view_for_enum(Views.JOIN, ViewJoin(self.inputs.get("IP"),
+                                                                                 self.inputs.get("PORT"),
                                                                                  ""))
             context.GAME.view_manager.set_new_view_for_enum(Views.ERROR, ViewError(err, Views.JOIN))
         else:

@@ -9,7 +9,6 @@ HOST:           LOBBY_UPDATE\r\n
                 CONTENT-LENGTH:x\r\n
                 \r\n
                 player object
-                \r\n\r\n
 
 B. Host tells a player of id x has left.
 

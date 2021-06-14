@@ -9,7 +9,6 @@ CLIENT:         UPLOAD_CHARACTER\r\n
                 CONTENT-LENGTH:x\r\n
                 \r\n
                 character json
-                \r\n\r\n
 
 B. Host accepts the character.
 

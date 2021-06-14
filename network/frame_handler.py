@@ -2,6 +2,7 @@ from network.procedures import procedure_connection as connection_procedure
 from network.procedures import procedure_get_lobby as get_lobby_procedure
 from network.procedures import procedure_lobby_update as update_lobby_procedure
 from network.procedures import procedure_upload_character as upload_character_procedure
+from network.procedures import procedure_goodbye as goodbye
 from network.communication import communicate
 import socket
 import context
@@ -20,7 +21,11 @@ def handle(sckt: socket.socket, frame: str):
             upload_character_procedure.carry_out(sckt, frame)
         elif frame_action == "LOBBY_UPDATE":
             update_lobby_procedure.carry_out(sckt, frame)
+        elif frame_action == "GOODBYE":
+            goodbye.carry_out(sckt)
 
+        elif frame_action == "IGNORE":
+            return
         else:
             communicate(sckt, ["400"])
     except socket.error as e:
