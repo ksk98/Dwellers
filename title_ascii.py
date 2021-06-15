@@ -1,3 +1,4 @@
+# ASCII logo divided into lines, printed in the main menu.
 # https://patorjk.com/software/taag/#p=display&f=Graffiti&t=Dwellers
 title = [
     "    ________                .__  .__                       ",

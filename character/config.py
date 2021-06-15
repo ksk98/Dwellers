@@ -1,3 +1,4 @@
+# Config related to the character. This includes base stats, upgrade costs etc.
 config = {
     "base": {
         "hp": 50,

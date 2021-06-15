@@ -1,10 +1,7 @@
+# Config is non-editable by the user.
 config = {
-    "VERSION": "v0.1",
-    "MAX_PLAYERS": 4,
-    "TICK_WAIT_TIME": 0.05,
-    "POPUP_COMMUNICATE_TIME": 2,
-    "CONNECTION_TIMEOUT_TIME": 5,
-    "HIGH_PORTS_BASE": 45402,
-    "CONNECTION_UPKEEP_TIME_PERIOD": 1,
-    "CONNECTION_UPKEEP_MISSED_CALLS_ALLOWED": 3
+    "VERSION": "v0.1",                              # Used in menu to display version with logo
+    "MAX_PLAYERS": 4,                               # Max players allowed in hosted lobby
+    "CONNECTION_TIMEOUT_TIME": 5,                   # Used in logic.game.join_external_lobby
+    "HIGH_PORTS_BASE": 46887,                       # Used in generating ports for player sockets as host
 }

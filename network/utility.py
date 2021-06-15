@@ -67,15 +67,19 @@ def get_content_from_frame(frame: str) -> str:
     return split[1]
 
 
-def is_port_in_use(port):
+# https://stackoverflow.com/a/52872579
+def is_port_in_use(port) -> bool:
     """
-    https://stackoverflow.com/a/52872579
+    Check if a local port is already occupied.
     """
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         return s.connect_ex(('localhost', port)) == 0
 
 
-def get_free_port():
+def get_free_port() -> int:
+    """
+    Find and return a free local port.
+    """
     port = config["HIGH_PORTS_BASE"]+1
     occupied_ports = context.GAME.get_occupied_ports_list().sort()
     if occupied_ports is not None:
@@ -88,15 +92,20 @@ def get_free_port():
     return port
 
 
-def get_host_ip():
+def get_hostname():
+    """
+    Return a valid hostname to use in hosting a lobby.
+    """
     if settings["HOST_LOBBY_IS_LAN"]:
         return "localhost"
     return "0.0.0.0"
-    # return socket.gethostbyname(socket.gethostname())
 
 
 # https://stackoverflow.com/a/62277798
 def is_socket_closed(sock: socket.socket) -> bool:
+    """
+    Check if a given socket has been closed.
+    """
     try:
         # this will try to read bytes without blocking and also without removing them from buffer (peek only)
         data = sock.recv(16, socket.MSG_PEEK)
@@ -105,3 +114,11 @@ def is_socket_closed(sock: socket.socket) -> bool:
     except ConnectionResetError:
         return True  # socket was closed for some other reason
     return False
+
+
+def get_ip_and_address_of_client_socket(sckt: socket.socket) -> str:
+    """
+    Get a formatted string of address and port of a socket.
+    Ex. 192.168.0.1:5050
+    """
+    return sckt.getsockname()[0] + ":" + sckt.getsockname()[1]

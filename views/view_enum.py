@@ -1,6 +1,7 @@
 from enum import Enum
 
 
+# Enum of existing views
 class Views(Enum):
     MENU = 0
     LOBBY = 1

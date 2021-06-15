@@ -18,9 +18,3 @@ C. Player is not connected to the lobby.
 
 HOST:           401\r\n
                 \r\n
-
-
-D. Player has not uploaded a character.
-
-HOST:           404\r\n
-                \r\n

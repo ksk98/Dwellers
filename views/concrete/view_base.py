@@ -26,7 +26,7 @@ class ViewBase(ABC):
     @staticmethod
     def clear():
         """
-        Clear the terminals window.
+        Clear the terminal's window.
         """
         if name == 'nt':
             system('cls')
@@ -60,6 +60,9 @@ class ViewBase(ABC):
             self.selected += 1
 
     def print_screen(self):
+        """
+        Print the view.
+        """
         pass
 
     def _print_options(self):
@@ -91,6 +94,9 @@ class ViewBase(ABC):
         return self.options[self.selected][1]
 
     def delete_letter(self):
+        """
+        Perform a backspace in the edited text field.
+        """
         input_name = self.options[self.selected][0]
         input_val = self.inputs.get(input_name)
         if input_val is not None and str(input_val) != "":
@@ -101,7 +107,10 @@ class ViewBase(ABC):
             else:
                 self.inputs[input_name] = input_val[0:len(input_val) - 1]
 
-    def write_letter(self, text):
+    def write_letter(self, text: str):
+        """
+        Write a character to the edited text field.
+        """
         input_name = self.options[self.selected][0]
         input_val = self.inputs.get(input_name)
         if input_val is not None:
@@ -113,10 +122,16 @@ class ViewBase(ABC):
                 self.inputs[input_name] = str(input_val) + str(text)
 
     def refresh_view(self):
+        """
+        Reprint the view.
+        """
         self.clear()
         self.print_screen()
 
     def get_index_of_option(self, option: str) -> int:
+        """
+        Get index number of a given option.
+        """
         for ind in range(len(self.options)):
             if self.options[ind][0] == option:
                 return ind
@@ -124,15 +139,24 @@ class ViewBase(ABC):
         return -1
 
     def get_option_for_index(self, index: int) -> str:
+        """
+        Get the option assigned to a given index.
+        """
         return self.options[index][0]
 
     def get_view_for_selected(self):
+        """
+        Get the Views enum assigned to the current option.
+        :return:
+        """
         return self.options[self.selected][1]
 
     @staticmethod
     def print_text(text: str):
+        """
+        Print a given text as centered. If it's too big, break it into several lines.
+        """
         # https://stackoverflow.com/a/18854817
         chunks = list((text[0+i:(settings["MAX_WIDTH"]-4)+i] for i in range(0, len(text), (settings["MAX_WIDTH"]-4))))
         for chunk in chunks:
             print(chunk.center(settings["MAX_WIDTH"]))
-

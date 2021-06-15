@@ -3,11 +3,17 @@ import socket
 
 
 def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
+    """
+    Prepare and send a frame of data trough a given socket and fetch back the answer.
+    """
     communicate(concrete_socket, header_args, body_content)
     return get_answer(concrete_socket)
 
 
 def communicate(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
+    """
+    Prepare and send a frame of data trough a given socket.
+    """
     out_message = ""
     try:
         # Compose header
@@ -28,6 +34,9 @@ def communicate(concrete_socket: socket.socket, header_args: list[str], body_con
 
 
 def get_answer(concrete_socket: socket.socket) -> str:
+    """
+    Wait for data from a given socket and fetch it back.
+    """
     try:
         # Get response header
         in_message = utility.get_data(concrete_socket)
