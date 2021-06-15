@@ -108,11 +108,15 @@ def is_socket_closed(sock: socket.socket) -> bool:
     """
     try:
         # this will try to read bytes without blocking and also without removing them from buffer (peek only)
+        sock.settimeout(0.05)
         data = sock.recv(16, socket.MSG_PEEK)
+        sock.settimeout(0)
         if len(data) == 0:
             return True
     except ConnectionResetError:
         return True  # socket was closed for some other reason
+    except socket.error:
+        return False
     return False
 
 
@@ -121,4 +125,4 @@ def get_ip_and_address_of_client_socket(sckt: socket.socket) -> str:
     Get a formatted string of address and port of a socket.
     Ex. 192.168.0.1:5050
     """
-    return sckt.getsockname()[0] + ":" + sckt.getsockname()[1]
+    return str(sckt.getsockname()[0]) + ":" + str(sckt.getsockname()[1])
