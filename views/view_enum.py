@@ -9,3 +9,4 @@ class Views(Enum):
     JOINING = 3
     ERROR = 4
     SETTINGS = 5
+    HOST_PASSWORD = 6

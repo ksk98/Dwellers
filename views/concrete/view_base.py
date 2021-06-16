@@ -19,7 +19,6 @@ class ViewBase(ABC):
         self.inputs = {
             "SAMPLE TEXT OPTION": "SAMPLE TEXT",
             "SAMPLE INT OPTION": 100,
-            "SAMPLE FLOAT OPTION": 5.5,
             "SAMPLE BOOLEAN OPTION": True
         }
 
@@ -101,9 +100,10 @@ class ViewBase(ABC):
         input_val = self.inputs.get(input_name)
         if input_val is not None and str(input_val) != "":
             if isinstance(input_val, int):
-                self.inputs[input_name] = int(str(input_val)[0:len(str(input_val)) - 1])
-            elif isinstance(input_val, float):
-                self.inputs[input_name] = float(str(input_val)[0:len(str(input_val)) - 1])
+                new_val_str = str(input_val)[0:len(str(input_val)) - 1]
+                if new_val_str == "":
+                    new_val_str = 0
+                self.inputs[input_name] = int(new_val_str)
             else:
                 self.inputs[input_name] = input_val[0:len(input_val) - 1]
 
@@ -115,9 +115,10 @@ class ViewBase(ABC):
         input_val = self.inputs.get(input_name)
         if input_val is not None:
             if isinstance(input_val, int):
-                self.inputs[input_name] = int(str(input_val) + str(text))
-            elif isinstance(input_val, float):
-                self.inputs[input_name] = float(str(input_val) + str(text))
+                old_val_str = str(input_val)
+                if old_val_str == "0":
+                    old_val_str = ""
+                self.inputs[input_name] = int(old_val_str + str(text))
             else:
                 self.inputs[input_name] = str(input_val) + str(text)
 

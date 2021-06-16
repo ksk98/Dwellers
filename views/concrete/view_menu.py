@@ -1,5 +1,6 @@
 import title_ascii
 from views.concrete.view_base import ViewBase
+from views.concrete.view_host_password import ViewHostPassword
 from views.concrete.view_join import ViewJoin
 from views.input_enum import Input
 from views.view_enum import Views
@@ -12,7 +13,9 @@ class ViewMenu(ViewBase):
     def __init__(self):
         super().__init__()
         self.options = [
-            ["CREATE LOBBY", Views.LOBBY, lambda: context.GAME.host_lobby(), Input.SELECT],
+            ["CREATE LOBBY", Views.HOST_PASSWORD,
+             lambda: context.GAME.view_manager.set_new_view_for_enum(Views.HOST_PASSWORD, ViewHostPassword()),
+             Input.SELECT],
             ["JOIN LOBBY", Views.JOIN,
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.JOIN, ViewJoin()), Input.SELECT],
             ["SETTINGS", Views.SETTINGS, lambda: None, Input.SELECT],
