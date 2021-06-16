@@ -9,6 +9,7 @@ class Lobby:
     def __init__(self, password: str = ""):
         self.external_lobby = False
         self.participants: list[Participant] = []
+        self.local_player_id = -1
         self.__password = password
 
     def add_participant(self, participant) -> bool:
@@ -66,6 +67,9 @@ class Lobby:
                 return part
 
         return None
+
+    def get_local_participant(self):
+        return self.get_participant_of_id(self.local_player_id)
 
     def is_empty(self) -> bool:
         """

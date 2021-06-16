@@ -28,7 +28,7 @@ class Game:
         # Lobby object alongside with id of local player
         # If id is 0, the player is a host of a lobby
         self.lobby = None
-        self.player_id: int = -1
+        #self.player_id: int = -1
 
         # For client: this is your communication with the host
         # For host: this is a socket you listen on for communication attempts
@@ -141,7 +141,7 @@ class Game:
 
             # Create player for host
             host_participant = Participant(self.get_new_id())
-            self.player_id = host_participant.player_id
+            self.lobby.local_player_id = host_participant.player_id
             self.lobby.add_participant(host_participant)
 
             # Create host socket that listens for joining players
@@ -200,7 +200,7 @@ class Game:
             if new_id == "":
                 return "CONNECTION RESPONSE INVALID: EMPTY ID"
 
-            self.player_id = int(new_id)
+            #self.player_id = int(new_id)
 
             self.host_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.host_socket.connect((ip, int(new_port)))
@@ -283,11 +283,12 @@ class Game:
         if self.lobby is None:
             return
 
+        player_id = self.lobby.local_player_id
         self.lobby = None
         self.view_manager.remove_view_for_enum(Views.LOBBY)
         self.__next_free_id = 0
 
-        if self.player_id == 0:
+        if player_id == 0:
             for sckt in self.sockets.values():
                 communication.communicate(sckt, ["LOBBY_UPDATE", "ACTION:LOBBY_CLOSE"])
                 sckt.close()
@@ -304,7 +305,6 @@ class Game:
             communication.communicate(self.host_socket, ["GOODBYE"])
             self.host_socket.close()
 
-        self.player_id = -1
         self.host_socket = None
 
     def get_new_id(self) -> int:
