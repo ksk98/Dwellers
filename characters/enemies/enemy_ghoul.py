@@ -24,7 +24,7 @@ class Skeleton(EnemyBase):
         # They tend to weaken the party by dealing with players with most HP at hand
         target_ind = self.get_index_of_strongest_target(targets)
 
-        attack = random.randint(len(self.attacks))
+        attack = random.randint(0, len(self.attacks))
         outcome = self.use_skill_on(self.attacks[attack], targets[target_ind])
         if outcome == "":
             return self.refresh()
