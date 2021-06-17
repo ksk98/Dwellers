@@ -9,8 +9,8 @@ class ViewHostPassword(ViewBase):
     def __init__(self):
         super().__init__()
         self.options = [
-            ["PASSWORD", None, lambda: None, Input.TEXT_FIELD],
             ["HOST", Views.LOBBY, lambda: context.GAME.host_lobby(self.inputs.get("PASSWORD")), Input.SELECT],
+            ["PASSWORD", None, lambda: None, Input.TEXT_FIELD],
             ["CANCEL", Views.MENU, lambda: None, Input.SELECT]
         ]
         self.inputs = {

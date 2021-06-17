@@ -11,6 +11,3 @@ class Participant:
         self.player_id = player_id
         self.name = settings["PLAYER_NAME"]
         self.ready = False
-
-    def toggle_ready(self):
-        self.ready = not self.ready
