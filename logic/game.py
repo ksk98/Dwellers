@@ -218,6 +218,7 @@ class Game:
 
             lobby_object = utility.get_content_from_frame(answer)
             self.lobby = jsonpickle.decode(lobby_object)
+            self.lobby.local_lobby = False
             self.lobby.local_player_id = int(new_id)
 
             # Send instance of player to the host

@@ -8,6 +8,7 @@ class Lobby:
     """
     def __init__(self, password: str = ""):
         self.external_lobby = False
+        self.local_lobby = True
         self.participants: list[Participant] = []
         self.local_player_id = -1
         self.__password = password
@@ -47,6 +48,9 @@ class Lobby:
                 return participant
 
         return None
+
+    def is_local(self):
+        return self.local_lobby
 
     def has_participant_of_id(self, pid: int) -> bool:
         """

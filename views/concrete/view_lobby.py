@@ -9,13 +9,13 @@ from views.view_enum import Views
 class ViewLobby(ViewBase):
     def __init__(self):
         super().__init__()
-        participant = context.GAME.lobby.get_local_participant()
+        lobby_is_local = context.GAME.lobby.local_lobby
         self.options = [
             ["READY", Views.LOBBY, lambda: None, Input.SELECT],
             ["EXIT", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
         # Host has a button to start a game
-        if participant.player_id == 0:
+        if not lobby_is_local:
             self.options.insert(0, ["START GAME", None, lambda: None, Input.SELECT],)
 
     def print_screen(self):
