@@ -8,7 +8,7 @@ from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
 
 
-class Dweller(EnemyBase):
+class Worshipper(EnemyBase):
     def __init__(self):
         super().__init__()
         self.name = "Worshipper"

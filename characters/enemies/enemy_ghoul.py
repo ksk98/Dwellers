@@ -7,7 +7,7 @@ from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
 
 
-class Skeleton(EnemyBase):
+class Ghoul(EnemyBase):
     def __init__(self):
         super().__init__()
         self.name = "Ghoul"
