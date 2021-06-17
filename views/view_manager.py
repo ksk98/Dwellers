@@ -1,6 +1,6 @@
 from views.concrete.view_base import ViewBase
-from views.concrete.view_menu import ViewMenu
 from views.concrete.view_error import ViewError
+from views.concrete.view_menu import ViewMenu
 from views.concrete.view_settings import ViewSettings
 from views.view_enum import Views
 
@@ -35,6 +35,16 @@ class ViewManager:
         Get the object of current view.
         """
         return self.__views[self.current_view]
+
+    def has_view_for_enum(self, view: Views) -> bool:
+        """
+        Check if concrete view was created for specified enum
+        :param view:
+        :return:
+        """
+        if self.__views.get(view):
+            return True
+        return False
 
     def set_new_view_for_enum(self, view: Views, concrete_view: ViewBase):
         """

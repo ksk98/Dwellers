@@ -1,20 +1,23 @@
+import msvcrt
 import select
 import socket
-import msvcrt
 import threading
-import jsonpickle
 from os import name
+
+import jsonpickle
+
+from config import config
 from logic.lobby import Lobby
 from logic.participant import Participant
-from config import config
-from settings import settings
-from network import utility
-from network import frame_handler
 from network import communication
+from network import frame_handler
+from network import utility
+from settings import settings
+from views.concrete.view_character_points import ViewCharacterPoints
+from views.concrete.view_joining import ViewJoining
+from views.concrete.view_lobby import ViewLobby
 from views.view_enum import Views
 from views.view_manager import ViewManager
-from views.concrete.view_lobby import ViewLobby
-from views.concrete.view_joining import ViewJoining
 
 
 class Game:
@@ -28,7 +31,7 @@ class Game:
         # Lobby object alongside with id of local player
         # If id is 0, the player is a host of a lobby
         self.lobby = None
-        #self.player_id: int = -1
+        # self.player_id: int = -1
 
         # For client: this is your communication with the host
         # For host: this is a socket you listen on for communication attempts
@@ -362,3 +365,23 @@ class Game:
         """
         self.abandon_lobby()
         self.running = False
+
+    def toggle_ready_bc(self):
+        """
+        Toggle ready in lobby. Host checks if all players are ready and starts a game
+        :return:
+        """
+        # TODO Reimplement this
+        participant = self.lobby.get_local_participant()
+        participant.toggle_ready()
+        self.view_manager.refresh()
+        # TODO send ready
+        if participant.player_id == 0:
+            all_players_ready = True
+            for player in self.lobby.participants:
+                if not player.ready:
+                    all_players_ready = False
+                    break
+            if all_players_ready:
+                self.view_manager.set_new_view_for_enum(Views.CHARACTER_POINTS, ViewCharacterPoints())
+                self.view_manager.set_current(Views.CHARACTER_POINTS)

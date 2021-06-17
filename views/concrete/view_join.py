@@ -1,10 +1,10 @@
+import context
+from settings import settings
 from views.concrete.view_base import ViewBase
 from views.concrete.view_error import ViewError
 from views.concrete.view_lobby import ViewLobby
 from views.input_enum import Input
 from views.view_enum import Views
-from settings import settings
-import context
 
 
 class ViewJoin(ViewBase):

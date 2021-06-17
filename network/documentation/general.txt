@@ -1,7 +1,7 @@
 GENERAL INFORMATION ABOUT THE PROTOCOL:
 
 1.
-Whenever a received requset is not recognized, the response will look like this:
+Whenever a received request is not recognized, the response will look like this:
 
     400\r\n
     \r\n

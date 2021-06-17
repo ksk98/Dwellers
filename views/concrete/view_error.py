@@ -1,7 +1,7 @@
+import context
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.view_enum import Views
-import context
 
 
 class ViewError(ViewBase):

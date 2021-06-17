@@ -1,6 +1,5 @@
-from logic.game import Game
 import context
-
+from logic.game import Game
 
 if __name__ == '__main__':
     context.GAME = Game()

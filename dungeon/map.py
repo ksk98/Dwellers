@@ -1,4 +1,5 @@
 from random import randint
+
 from dungeon.map_size_enum import MapSize
 from dungeon.room import Room
 from dungeon.room_type_enum import RoomType

@@ -1,5 +1,3 @@
-# ABC - abstract base class - abstract classes in python
-from abc import abstractmethod
 from random import randint
 
 from dungeon.room_config import config
@@ -11,9 +9,6 @@ class Enemy(object):
 
 
 class Room:
-    """
-    Base class for all room types
-    """
     def __init__(self, room_type: RoomType):
         self._gold = 0
         self._enemies: list[Enemy] = []

@@ -10,3 +10,6 @@ class Views(Enum):
     ERROR = 4
     SETTINGS = 5
     HOST_PASSWORD = 6
+    PLAY = 7
+    CHARACTERS = 20
+    CHARACTER_POINTS = 21
