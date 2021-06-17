@@ -14,4 +14,5 @@ class Views(Enum):
     CHARACTERS = 20
     CHARACTER_POINTS = 21
     CHARACTER_OVERWRITE = 22
+    ROOM = 23
 
