@@ -203,8 +203,6 @@ class Game:
             if new_id == "":
                 return "CONNECTION RESPONSE INVALID: EMPTY ID"
 
-            self.lobby.local_player_id = int(new_id)
-
             self.host_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.host_socket.connect((ip, int(new_port)))
 
@@ -220,6 +218,7 @@ class Game:
 
             lobby_object = utility.get_content_from_frame(answer)
             self.lobby = jsonpickle.decode(lobby_object)
+            self.lobby.local_player_id = int(new_id)
 
             # Send instance of player to the host
             self.view_manager.display_progress(Views.JOINING, ViewJoining("Synchronizing character..."))
