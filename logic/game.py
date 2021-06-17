@@ -203,7 +203,7 @@ class Game:
             if new_id == "":
                 return "CONNECTION RESPONSE INVALID: EMPTY ID"
 
-            #self.player_id = int(new_id)
+            self.lobby.local_player_id = int(new_id)
 
             self.host_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.host_socket.connect((ip, int(new_port)))
