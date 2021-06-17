@@ -11,13 +11,15 @@ class ViewLobby(ViewBase):
         super().__init__()
         participant = context.GAME.lobby.get_local_participant()
         self.options = [
-            ["READY", Views.LOBBY, lambda: context.GAME.toggle_ready_bc(), Input.SELECT],
+            ["READY", Views.LOBBY, lambda: None, Input.SELECT],
             ["EXIT", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
+        # Host has a button to start a game
+        if participant.player_id == 0:
+            self.options.insert(0, ["START GAME", None, lambda: None, Input.SELECT],)
 
     def print_screen(self):
         self.print_text(context.GAME.lobby.address + ":" + str(context.GAME.lobby.port))
-
         players = context.GAME.lobby.participants
         for player in players:
             player_string = player.name + "[" + str(player.player_id) + "]"
