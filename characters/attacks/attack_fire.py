@@ -10,6 +10,6 @@ class AttackFire(AttackBase):
         self.cost = 10
         self.type = Type.FIRE
 
-    def use_on(self, user: Character, target: Character):
+    def use_on(self, user: Character, target: Character) -> str:
         damage_out = int(user.energy / 2)
-        target.get_hit(damage_out, self.type, user.name)
+        return target.get_hit(damage_out, self.type, user.name, self.name)

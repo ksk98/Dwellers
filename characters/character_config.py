@@ -9,7 +9,7 @@ config = {
         Stat.STRENGTH: 5,
         "points": 10,
         "attack_cost": 5,
-        "rest_efficiency": 10
+        #"rest_efficiency": 10
     },
     "upgrades": {
         Stat.HEALTH: 10,

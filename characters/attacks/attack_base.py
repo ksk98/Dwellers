@@ -10,5 +10,5 @@ class AttackBase(ABC):
         self.name = "???"
         self.cost = 0
 
-    def use_on(self, user: Character, target: Character):
-        pass
+    def use_on(self, user: Character, target: Character) -> str:
+        return ""
