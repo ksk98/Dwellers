@@ -15,7 +15,7 @@ class ViewLobby(ViewBase):
             ["EXIT", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
         # Host has a button to start a game
-        if not lobby_is_local:
+        if lobby_is_local:
             self.options.insert(0, ["START GAME", None, lambda: None, Input.SELECT],)
 
     def print_screen(self):

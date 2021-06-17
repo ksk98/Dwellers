@@ -42,4 +42,4 @@ class ViewPlay(ViewBase):
         self.options.insert(0, ["CREATE LOBBY", Views.HOST_PASSWORD,
                                 lambda: context.GAME.view_manager.set_new_view_for_enum(Views.HOST_PASSWORD,
                                                                                         ViewHostPassword()),
-                                Input.SELECT], )
+                                Input.SELECT])

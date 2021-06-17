@@ -15,12 +15,5 @@ config = {
         Stat.HEALTH: 10,
         Stat.STRENGTH: 1,
         Stat.ENERGY: 2
-    },
-    # ENEMIES
-    "thug": {
-        Stat.HEALTH: 20,
-        Stat.ENERGY: 15,
-        Stat.STRENGTH: 3,
-        "points": 0
     }
 }
