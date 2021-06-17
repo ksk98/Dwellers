@@ -13,3 +13,5 @@ class Views(Enum):
     PLAY = 7
     CHARACTERS = 20
     CHARACTER_POINTS = 21
+    CHARACTER_OVERWRITE = 22
+

@@ -31,6 +31,17 @@ class Player(Character):
         self.strength = saved_characters[name][Stat.STRENGTH]
         self.points = saved_characters[name]["points"]
 
+    def overwrite_stats(self, old_name: str) -> bool:
+        if saved_characters.get(old_name):
+            saved_characters.pop(old_name)
+        saved_characters[self.name] = {
+            Stat.HEALTH: self.hp,
+            Stat.ENERGY: self.energy,
+            Stat.STRENGTH: self.strength,
+            "points": self.points,
+        }
+        return True
+
     def save_stats(self):
         saved_characters[self.name] = {
             Stat.HEALTH: self.hp,

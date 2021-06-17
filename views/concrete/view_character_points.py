@@ -1,3 +1,4 @@
+import context
 from characters.character_config import config
 from characters.enums.stats_enum import Stat
 from characters.player import Player
@@ -10,7 +11,8 @@ from views.view_enum import Views
 class ViewCharacterPoints(ViewBase):
     def __init__(self):
         super().__init__()
-        if settings["SELECTED_CHARACTER"] == "":
+        self.saved_character_name = settings["SELECTED_CHARACTER"]
+        if self.saved_character_name == "":
             self._name = "Default"
         else:
             self._name = settings["SELECTED_CHARACTER"]
@@ -24,7 +26,8 @@ class ViewCharacterPoints(ViewBase):
             ["NAME", None, lambda: None, Input.TEXT_FIELD],
             [hp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.HEALTH), Input.SELECT],
             [ep_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.ENERGY), Input.SELECT],
-            [sp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.STRENGTH), Input.SELECT],
+            [sp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.STRENGTH),
+             Input.SELECT],
             ["SAVE", Views.CHARACTERS, lambda: self.save(), Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
@@ -32,13 +35,13 @@ class ViewCharacterPoints(ViewBase):
             "NAME": self._name
         }
 
-    def get_upgrade_amount_for(self, stat: Stat) -> str:
-        return str(config["upgrades"][stat])
-
     def save(self):
         # TODO confirmation on overwriting another character
         self._character.name = self.inputs["NAME"]
-        self._character.save_stats()
+        if self._character.name != self.saved_character_name:
+            self._character.overwrite_stats(self.saved_character_name)
+        else:
+            self._character.save_stats()
 
     def print_screen(self):
         print("Current statistics:".center(settings["MAX_WIDTH"]))
@@ -56,3 +59,7 @@ class ViewCharacterPoints(ViewBase):
                 print((">" + to_print).center(settings["MAX_WIDTH"]))
             else:
                 print(to_print.center(settings["MAX_WIDTH"]))
+
+    @staticmethod
+    def get_upgrade_amount_for(stat: Stat) -> str:
+        return str(config["upgrades"][stat])
