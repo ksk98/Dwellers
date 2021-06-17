@@ -10,8 +10,11 @@ class ViewSettings(ViewBase):
 
         self.options = []
         self.inputs = {}
+        self.selected_character = settings["SELECTED_CHARACTER"]
 
         for setting in settings:
+            if setting == "SELECTED_CHARACTER":
+                continue
             if isinstance(settings[setting], bool):
                 self.options.append([setting, None, lambda: None, Input.TOGGLE])
             else:
