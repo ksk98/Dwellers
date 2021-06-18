@@ -16,10 +16,14 @@ class Character:
     def __init__(self):
         # If I don't do this, pycharm yells at me
         # for not setting the variables in the constructor >:C
+        self.id = -1
         self.base_hp = self.base_energy = self.strength = 0
         self.hp = self.energy = 0
         self.name = "KAROLEK, PRZELADUJ TO NA NICK GRACZA JAK BEDZIESZ WCHODZIC DO GRY"
         self.type: CharType = CharType.HUMAN
+
+    def act(self, targets: list[Character]) -> str:
+        return "Nothing happened..."
 
     def refresh(self):
         self.hp = self.base_hp

@@ -6,6 +6,7 @@ from os import name
 
 import jsonpickle
 
+from characters.player import Player
 from config import config
 from dungeon.map import Map
 from dungeon.map_size_enum import MapSize
@@ -59,6 +60,9 @@ class Game:
 
         # Instance of current room
         self.current_room: Room = None
+
+        # Instance of current combat
+        self.combat = None
 
     def view(self):
         """
@@ -410,6 +414,7 @@ class Game:
         self.current_room = self.map.get_first_room()
         for participant in self.lobby.participants:
             participant.character.name = participant.name
+            participant.character.id = participant.player_id
         self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
         self.view_manager.set_current(Views.ROOM)
 
@@ -427,3 +432,9 @@ class Game:
         self.current_room = self.current_room.get_next()
         self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
         self.view_manager.set_current(Views.ROOM)
+
+    def get_players(self) -> list[Player]:
+        players = list[Player]()
+        for participant in self.lobby.participants:
+            players.append(participant.character)
+        return players

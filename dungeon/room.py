@@ -1,18 +1,15 @@
 from random import randint
 
+from characters.enemies.enemy_base import EnemyBase
+from characters.enemies.enemy_repo import roll_an_enemy
 from dungeon.room_config import config
 from dungeon.room_type_enum import RoomType
-
-
-class Enemy(object):
-    def __init__(self):
-        self.name = "Enemy"
 
 
 class Room:
     def __init__(self, room_type: RoomType):
         self._gold = 0
-        self._enemies: list[Enemy] = []
+        self._enemies: list[EnemyBase] = []
         self._next = None
         self._room_type = room_type
         self.generate_content()
@@ -28,7 +25,9 @@ class Room:
         # Generate enemies
         enemy_count = randint(rand_range_dict["enemies_min"], rand_range_dict["enemies_max"])
         for x in range(0, enemy_count):
-            self.add_enemy(Enemy())
+            self.add_enemy(roll_an_enemy())
+            # Give an enemy id
+            self._enemies[len(self._enemies) - 1].id = x + 100
 
         # Generate gold
         self._gold = randint(rand_range_dict["gold_min"], rand_range_dict["gold_max"])
@@ -45,7 +44,10 @@ class Room:
     def set_next(self, next_room):
         self._next = next_room
 
-    def get_enemies(self) -> list[Enemy]:
+    def get_gold(self) -> int:
+        return self._gold
+
+    def get_enemies(self) -> list[EnemyBase]:
         return self._enemies
 
     def get_type(self) -> RoomType:
@@ -54,7 +56,7 @@ class Room:
     def get_next(self):
         return self._next
 
-    def add_enemy(self, enemy: Enemy):
+    def add_enemy(self, enemy: EnemyBase):
         self._enemies.append(enemy)
 
     def has_next(self) -> bool:

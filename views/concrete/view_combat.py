@@ -1,6 +1,5 @@
 import context
 from dungeon.room import Room
-from logic.combat import Combat
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
@@ -8,12 +7,9 @@ from views.print_utility import print_whole_line_of_char, print_in_two_columns
 from views.view_enum import Views
 
 
-class ViewRoom(ViewBase):
-    def __init__(self, room: Room):
+class ViewCombat(ViewBase):
+    def __init__(self):
         super().__init__()
-        if len(room.get_enemies()) > 0:
-            context.GAME.combat = Combat(context.GAME.get_players(), room.get_enemies())
-            context.GAME.combat.start()
         self._notify_cant_go = False
         self._no_rooms_left = False
         self.options = [
@@ -31,14 +27,16 @@ class ViewRoom(ViewBase):
             player_list.append(participant.character.name)
 
         enemies = context.GAME.current_room.get_enemies()
-        enemy_list = [""]
+        enemy_list = ["HOSTILES:"]
+        for enemy in enemies:
+            enemy_list.append(enemy.name)
 
         print_in_two_columns([player_list, enemy_list], settings["MAX_WIDTH"])
         print_whole_line_of_char('=', settings["MAX_WIDTH"])
 
         line = "You are in a " + context.GAME.current_room.get_type().name + " room."
         print(line.center(settings["MAX_WIDTH"]))
-        line = "There is " + str(context.GAME.current_room.get_gold()) + " gold in this room!"
+        line = "There is " + context.GAME.current_room.get_gold() + " gold!"
         print(line.center(settings["MAX_WIDTH"]))
         print()
 
@@ -66,3 +64,4 @@ class ViewRoom(ViewBase):
             context.GAME.send_next_room_action()
         else:
             self._notify_cant_go = True
+

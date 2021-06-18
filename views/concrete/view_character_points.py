@@ -46,8 +46,8 @@ class ViewCharacterPoints(ViewBase):
     # TODO refactor views with (self._print_options()...)
     def print_screen(self):
         print("Current statistics:".center(settings["MAX_WIDTH"]))
-        print(("Health Points: " + str(self._character.hp)).center(settings["MAX_WIDTH"]))
-        print(("Energy Points: " + str(self._character.energy)).center(settings["MAX_WIDTH"]))
+        print(("Health Points: " + str(self._character.base_hp)).center(settings["MAX_WIDTH"]))
+        print(("Energy Points: " + str(self._character.base_energy)).center(settings["MAX_WIDTH"]))
         print(("Strength Points: " + str(self._character.strength)).center(settings["MAX_WIDTH"]))
         print(("You have " + str(self._character.points) + " points to spend!").center(settings["MAX_WIDTH"]))
         print()

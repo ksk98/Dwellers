@@ -16,9 +16,6 @@ class EnemyBase(Character):
 
         self.refresh()
 
-    def act(self, targets: list[Character]) -> str:
-        return "Nothing happened..."
-
     @staticmethod
     def get_index_of_weakest_target(targets: list[Character]) -> int:
         target_ind = 0

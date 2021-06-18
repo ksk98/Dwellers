@@ -12,22 +12,22 @@ class Player(Character):
             self._load_stats(name)
         else:
             self.name = name
-            self.hp = self.energy = self.strength = self.points = 0
+            self.base_hp = self.base_energy = self.strength = self.points = 0
             self.reset_stats()
-        # pass ?? co to tu robi
 
     def reset_stats(self):
         """
         Set stats to default.
         """
-        self.hp = config["base"][Stat.HEALTH]
-        self.energy = config["base"][Stat.ENERGY]
+        self.base_hp = config["base"][Stat.HEALTH]
+        self.base_energy = config["base"][Stat.ENERGY]
         self.strength = config["base"][Stat.STRENGTH]
         self.points = config["base"]["points"]
+        self.refresh()
 
     def _load_stats(self, name: str):
-        self.hp = saved_characters[name][Stat.HEALTH]
-        self.energy = saved_characters[name][Stat.ENERGY]
+        self.base_hp = saved_characters[name][Stat.HEALTH]
+        self.base_energy = saved_characters[name][Stat.ENERGY]
         self.strength = saved_characters[name][Stat.STRENGTH]
         self.points = saved_characters[name]["points"]
 
@@ -35,8 +35,8 @@ class Player(Character):
         if saved_characters.get(old_name):
             saved_characters.pop(old_name)
         saved_characters[self.name] = {
-            Stat.HEALTH: self.hp,
-            Stat.ENERGY: self.energy,
+            Stat.HEALTH: self.base_hp,
+            Stat.ENERGY: self.base_energy,
             Stat.STRENGTH: self.strength,
             "points": self.points,
         }
@@ -44,8 +44,8 @@ class Player(Character):
 
     def save_stats(self):
         saved_characters[self.name] = {
-            Stat.HEALTH: self.hp,
-            Stat.ENERGY: self.energy,
+            Stat.HEALTH: self.base_hp,
+            Stat.ENERGY: self.base_energy,
             Stat.STRENGTH: self.strength,
             "points": self.points,
         }
@@ -60,9 +60,9 @@ class Player(Character):
         self.points -= 1
 
         if stat == Stat.HEALTH:
-            self.hp += config["upgrades"][stat]
+            self.base_hp += config["upgrades"][stat]
         elif stat == Stat.ENERGY:
-            self.energy += config["upgrades"][stat]
+            self.base_energy += config["upgrades"][stat]
         elif stat == Stat.STRENGTH:
             self.strength += config["upgrades"][stat]
         else:
