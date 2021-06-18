@@ -406,5 +406,24 @@ class Game:
             self.start_game()
 
     def start_game(self):
+        # self.close_connecter_thread()
+        self.current_room = self.map.get_first_room()
+        for participant in self.lobby.participants:
+            participant.character.name = participant.name
+        self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
+        self.view_manager.set_current(Views.ROOM)
+
+    def send_next_room_action(self):
+        action = "ACTION:"
+        if self.current_room.has_next():
+            action += "NEXT_ROOM"
+            self.go_to_the_next_room()
+        else:
+            action += "DUNGEON_END"
+        for client in self.sockets.values():
+            communication.communicate(client, ["GAMEPLAY", action])
+
+    def go_to_the_next_room(self):
+        self.current_room = self.current_room.get_next()
         self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
         self.view_manager.set_current(Views.ROOM)

@@ -5,7 +5,8 @@ from dungeon.room_type_enum import RoomType
 
 
 class Enemy(object):
-    pass
+    def __init__(self):
+        self.name = "Enemy"
 
 
 class Room:
@@ -55,3 +56,8 @@ class Room:
 
     def add_enemy(self, enemy: Enemy):
         self._enemies.append(enemy)
+
+    def has_next(self) -> bool:
+        if self._next is None:
+            return False
+        return True

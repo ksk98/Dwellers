@@ -20,4 +20,5 @@ HOW TO CREATE EXECUTABLE
 HOW TO PLAY:
     - Create a character and distribute skillpoints
     - Create or join a lobby
+    - Start a game
     - ...

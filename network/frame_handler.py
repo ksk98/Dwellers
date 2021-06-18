@@ -2,6 +2,7 @@ import socket
 import context
 from network.communication import communicate
 from network.procedures import procedure_goodbye as goodbye
+from network.procedures import procedure_gameplay as gameplay_procedure
 from network.procedures import procedure_get_lobby as get_lobby_procedure
 from network.procedures import procedure_connection as connection_procedure
 from network.procedures import procedure_game_start as game_start_procedure
@@ -29,6 +30,8 @@ def handle(sckt: socket.socket, frame: str) -> bool:
             update_lobby_procedure.carry_out(sckt, frame)
         elif frame_action == "GAME_START":
             game_start_procedure.carry_out(sckt, frame)
+        elif frame_action == "GAMEPLAY":
+            gameplay_procedure.carry_out(sckt, frame)
         elif frame_action == "GOODBYE":
             goodbye.carry_out(sckt)
         elif frame_action == "IGNORE":

@@ -1,0 +1,15 @@
+PROCEDURE:      HANDLING GAMEPLAY
+DESCRIPTION:    After succesfully starting a game, we can now
+                finally play the game (yay)!
+
+A. Host tells clients that party is going to the next room.
+
+HOST:           GAMEPLAY\r\n
+                ACTION:NEXT_ROOM\r\n
+                \r\n
+
+B. Host tells clients that there is no next room, therefore dungeon is over.
+
+HOST:           GAMEPLAY\r\n
+                ACTION:DUNGEON_END\r\n
+                \r\n
