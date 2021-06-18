@@ -28,7 +28,6 @@ def roll_an_enemy() -> EnemyBase:
         pool = [BlindBloodbeast()]
 
     ind = random.randint(0, len(pool)-1)
-    print("ROLL: " + str(chance_roll))
     return pool[ind]
 
 
