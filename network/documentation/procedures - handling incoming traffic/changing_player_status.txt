@@ -1,0 +1,9 @@
+PROCEDURE:      PLAYER IS CHANGING STATUS
+DESCRIPTION:    When in a lobby, all players must say that they are
+                ready to start a game.
+
+A. Player tells the host that his/her status is changing.
+
+Client:         LOBBY_PLAYER_STATUS\r\n
+                READY:True/False\r\n
+                \r\n
