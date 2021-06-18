@@ -20,5 +20,25 @@ HOW TO CREATE EXECUTABLE
 HOW TO PLAY:
     - Create a character and distribute skillpoints
     - Create or join a lobby
-    - Start a game
-    - ...
+    - Press ready and start the game
+    - Host leads the party trough the rooms
+    - When hostiles will be met in a room, a fight will break
+    - Each participant of the fight gets one chance to do something during the round
+        * Unless the fight ends before his/her turn
+    - Fight continues until one side is defeated
+    - Dungeon ends after the last room and the score is displayed
+    - The lobby is disbanded
+
+NETWORK DOCUMENTATION:
+    SEE network.documentation
+
+GAME MECHANICS:
+    - Certain enemies are more vulnerable/resistant to certain types of attack
+    - Attacks can deal regular damage and/or energy(stamina) damage
+    - Every attack costs a given amount of energy
+    - A character can rest for a turn to replenish part of energy
+    - Players can heal each other thus regenerating health and energy of the target
+    - Enemies display certain behaviour, encouraging prioritization of targets
+    - The more strength a character has, the more energy it restores during rest
+    - Strength increases amount of damage dealt by most attacks
+    - Energy increases amount of damage dealt by some attacks

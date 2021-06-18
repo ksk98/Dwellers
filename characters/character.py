@@ -61,14 +61,14 @@ class Character:
         return self.name + " was attacked by " + \
                    "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
 
-    def _deal_damage(self, value: int):
+    def deal_damage(self, value: int):
         self.hp -= value
         if self.hp < 0:
             self.hp = 0
         elif self.hp > self.base_hp:
             self.hp = self.base_hp
 
-    def _deal_energy_damage(self, value: int):
+    def deal_energy_damage(self, value: int):
         self.energy -= value
         if self.energy < 0:
             self.energy = 0

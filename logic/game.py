@@ -105,7 +105,7 @@ class Game:
                 # Don't handle socket input in the menu
                 if self.host_socket is not None:
                     # If data is incoming pass it to the handler
-                    ready = select.select([self.host_socket], [], [], 0.05)
+                    ready = select.select([self.host_socket], [], [], 0.01)
                     if ready[0]:
                         frame_handler.handle(self.host_socket, utility.get_data(self.host_socket))
 

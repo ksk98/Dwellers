@@ -7,13 +7,12 @@ config = {
         Stat.HEALTH: 50,
         Stat.ENERGY: 20,
         Stat.STRENGTH: 5,
-        "points": 10,
-        "attack_cost": 5,
-        #"rest_efficiency": 10
+        "points": 5,
+        #"attack_cost": 5,
     },
     "upgrades": {
-        Stat.HEALTH: 10,
+        Stat.HEALTH: 8,
         Stat.STRENGTH: 1,
-        Stat.ENERGY: 2
+        Stat.ENERGY: 5
     }
 }
