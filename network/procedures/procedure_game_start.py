@@ -14,7 +14,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
     status = utility.get_value_of_argument(frame, "STATUS")
     sckt_id = context.GAME.get_id_of_socket(sckt)
 
-    if sckt_id == -1:
+    if sckt_id == -1 and context.GAME.lobby.local_lobby:
         communicate(sckt, ["GAME_START", "STATUS:ERR"])
         return utility.get_ip_and_address_of_client_socket(sckt) + "GAME START REFUSED: NO CONNECTION " \
                                                                    "ESTABLISHED "
@@ -34,16 +34,17 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         map_json = jsonpickle.decode(body)
 
         context.GAME.map = map_json
+        communicate(sckt, ["GAME_START", "STATUS:OK"])
 
     elif status == "OK":
         all_players_ready = True
-        context.GAME.lobby.get_participant_of_id(sckt).ready = True
+        context.GAME.lobby.get_participant_of_id(sckt_id).ready = True
         for participant in context.GAME.lobby.participants:
             if participant.ready is False:
                 all_players_ready = False
                 break
         if all_players_ready:
-            for client in context.GAME.sockets.values:
+            for client in context.GAME.sockets.values():
                 communicate(client, ["GAME_START", "STATUS:READY"])
             context.GAME.start_game()
 

@@ -8,7 +8,7 @@ from views.view_enum import Views
 
 
 class ViewJoin(ViewBase):
-    def __init__(self, ip="", port=settings["HOSTING_PORT"], password=""):
+    def __init__(self, ip="localhost", port=settings["HOSTING_PORT"], password=""):
         super().__init__()
         self.options = [
             ["IP", Views.JOIN, lambda: None, Input.TEXT_FIELD],

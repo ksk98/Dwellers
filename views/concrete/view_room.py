@@ -11,7 +11,8 @@ class ViewRoom(ViewBase):
         super().__init__()
         self.options = [
             ["GO TO THE NEXT ROOM", None, lambda: None, Input.TEXT_FIELD],
-            ["FLEE", None, lambda: None, Input.SELECT]
+            ["FLEE", None, lambda: None, Input.SELECT],
+            ["LEAVE GAME", None, lambda: None, Input.SELECT]
         ]
 
     def print_screen(self):
@@ -23,11 +24,10 @@ class ViewRoom(ViewBase):
                             + " Energy: " + str(player.energy) \
                             + " Strength: " + str(player.strength)
             print(player_string.center(settings["MAX_WIDTH"]))
-            print(player_string.center(settings["MAX_WIDTH"]))
-            print(player_string.center(settings["MAX_WIDTH"]))
-            print()
 
+        print()
         print("You are in an empty room".center(settings["MAX_WIDTH"]))
+        print()
 
         for option in self.options:
             to_print = option[0]

@@ -398,6 +398,7 @@ class Game:
             participant.ready = False
         # Host is ready
         self.lobby.get_local_participant().ready = True
+
         if len(self.lobby.participants) == 1:
             self.start_game()
 
