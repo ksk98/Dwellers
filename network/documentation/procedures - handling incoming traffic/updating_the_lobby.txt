@@ -22,3 +22,11 @@ C. Host tells a player that the lobby was closed.
 HOST:           LOBBY_UPDATE\r\n
                 ACTION:LOBBY_CLOSE\r\n
                 \r\n
+
+C. Host tells a player that the player status changed.
+
+HOST:           LOBBY_UPDATE\r\n
+                ACTION:PLAYER_READY\r\n
+                STATUS:bool\r\n         ('True' / 'False')
+                PLAYER_ID:x\r\n
+                \r\n

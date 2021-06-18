@@ -42,9 +42,10 @@ class ViewLobby(ViewBase):
         if lobby_is_local:
             local_participant.ready = not local_participant.ready
 
+            # TODO It shouldn't be here...
             for client in context.GAME.sockets.values():
-                communication.communicate(client, ["LOBBY_UPDATE", "PLAYER_READY", "STATUS:" + str(local_participant.ready),
-                                     "PLAYER_ID:" + str(local_participant.player_id)])
+                communication.communicate(client, ["LOBBY_UPDATE", "ACTION:PLAYER_READY", "STATUS:" + str(local_participant.ready),
+                                                   "PLAYER_ID:" + str(local_participant.player_id)])
         else:
             value = not local_participant.ready
             communication.communicate(context.GAME.host_socket, ["LOBBY_PLAYER_STATUS", "READY:" + str(value)])
