@@ -169,6 +169,14 @@ class Game:
             self.view_manager.display_error_and_go_to("Error on creating lobby: " + str(e))
             self.abandon_lobby()
 
+    def close_connecter_thread(self):
+        if self.connecter_thread is not None:
+            temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            temp_socket.connect((utility.get_hostname(), settings["HOSTING_PORT"]))
+            temp_socket.sendall("IGNORE\r\n\r\n".encode("utf-8"))
+            temp_socket.close()
+            self.connecter_thread.join()
+
     def join_external_lobby(self, ip: str, port: int, password: str = "") -> str:
         """
         Create a new lobby by joining an external lobby.
@@ -307,12 +315,7 @@ class Game:
             self.sockets.clear()
 
             # To stop the thread that listens for connection attempts we have to connect to it once
-            if self.connecter_thread is not None:
-                temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                temp_socket.connect((utility.get_hostname(), settings["HOSTING_PORT"]))
-                temp_socket.sendall("IGNORE\r\n\r\n".encode("utf-8"))
-                temp_socket.close()
-                self.connecter_thread.join()
+            self.close_connecter_thread()
         else:
             communication.communicate(self.host_socket, ["GOODBYE"])
             self.host_socket.close()
