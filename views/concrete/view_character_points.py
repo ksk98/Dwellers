@@ -43,6 +43,7 @@ class ViewCharacterPoints(ViewBase):
         else:
             self._character.save_stats()
 
+    # TODO refactor views with (self._print_options()...)
     def print_screen(self):
         print("Current statistics:".center(settings["MAX_WIDTH"]))
         print(("Health Points: " + str(self._character.hp)).center(settings["MAX_WIDTH"]))

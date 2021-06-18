@@ -13,13 +13,6 @@ class Map:
         self._room_count = 0
         self._first_room = None
 
-    def print(self):
-        print("Dungeon contains", self._room_count, "rooms:")
-        room = self._first_room
-        while room is not None:
-            room.to_string()
-            room = room.get_next()
-
     def generate(self, map_size: MapSize):
         """
         Used to randomize room count and initiate a rooms creation
@@ -33,20 +26,9 @@ class Map:
         elif map_size == MapSize.LARGE:
             self._room_count = randint(10, 15)
 
-        self._first_room = self.create_rooms(self._room_count)
+        self._first_room = self._create_rooms(self._room_count)
 
-    def create_single_room(self) -> Room:
-        """
-        Creates single room of random type
-        :return Created room
-        """
-        room_type = randint(1, 3)   # randomize room type
-
-        # create room instance
-        new_room = Room(RoomType(room_type))
-        return new_room
-
-    def create_rooms(self, count: int) -> Room:
+    def _create_rooms(self, count: int) -> Room:
         """
         Creates a specified number of rooms. Rooms are connected to each other in linear graph.
         :param count: Number of rooms to generate.
@@ -55,7 +37,7 @@ class Map:
 
         room = None
         for x in range(0, count):
-            new_room = self.create_single_room()
+            new_room = self._create_single_room()
 
             # creating graph
             if room is not None:
@@ -66,8 +48,30 @@ class Map:
 
         return room
 
+    def _print(self):
+        print("Dungeon contains", self._room_count, "rooms:")
+        room = self._first_room
+        while room is not None:
+            room.to_string()
+            room = room.get_next()
+
+    def get_first_room(self) -> Room:
+        return self._first_room
+
+    @staticmethod
+    def _create_single_room() -> Room:
+        """
+        Creates single room of random type
+        :return Created room
+        """
+        room_type = randint(1, 3)   # randomize room type
+
+        # create room instance
+        new_room = Room(RoomType(room_type))
+        return new_room
+
 
 if __name__ == '__main__':
     map = Map()
     map.generate(MapSize.LARGE)
-    map.print()
+    map._print()

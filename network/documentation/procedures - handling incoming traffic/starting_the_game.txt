@@ -1,0 +1,25 @@
+PROCEDURE:      GAME IS STARTING
+DESCRIPTION:    When all players are ready, gameplay can start.
+
+A. Host tells players that the game is starting, sends a pickled map object
+
+Host:           GAME_START\r\n
+                STATUS:INFO\r\n
+                CONTENT-LENGHT:x\r\n
+                \r\n
+                map object
+
+B. Client responds that received map
+
+Client:         GAME_START\r\n
+                STATUS:OK\r\n
+
+C. Client responds that something went wrong
+
+Client:         GAME_START\r\n
+                STATUS:ERR\r\n
+
+D. If all clients reported that received all informations about a game
+
+Host:           GAME_START\r\n
+                STATUS:READY\r\n
