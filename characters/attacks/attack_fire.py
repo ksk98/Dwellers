@@ -7,7 +7,7 @@ class AttackFire(AttackBase):
     def __init__(self):
         super().__init__()
         self.name = "Fireball"
-        self.cost = 10
+        self.cost = 20
         self.type = Type.FIRE
 
     def use_on(self, user: Character, target: Character) -> str:
