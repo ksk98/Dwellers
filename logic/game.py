@@ -134,7 +134,7 @@ class Game:
         Handle connection requests. Used in an external thread.
         :return:
         """
-        while self.lobby is not None:
+        while self.lobby is not None and self.map is None:
             try:
                 sckt, addr = self.host_socket.accept()
                 frame_handler.handle(sckt, utility.get_data(sckt))
@@ -406,7 +406,7 @@ class Game:
             self.start_game()
 
     def start_game(self):
-        # self.close_connecter_thread()
+        self.close_connecter_thread()
         self.current_room = self.map.get_first_room()
         for participant in self.lobby.participants:
             participant.character.name = participant.name

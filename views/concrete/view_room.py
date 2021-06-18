@@ -5,6 +5,7 @@ from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.view_enum import Views
 
+
 class ViewRoom(ViewBase):
     def __init__(self, room: Room):
         super().__init__()
