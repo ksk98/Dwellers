@@ -116,7 +116,7 @@ def is_socket_closed(sock: socket.socket) -> bool:
     except ConnectionResetError:
         return True  # socket was closed for some other reason
     except socket.error:
-        return False
+        return True
     return False
 
 
