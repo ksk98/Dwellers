@@ -19,7 +19,7 @@ class Skeleton(EnemyBase):
         self.refresh()
 
     def act(self, targets: list[Character]) -> str:
-        # Regular skeleton sometimes just likes to rest whenever he can
+        # Regular skeleton, likes to causaly rest sometimes
         # Picks targets at random
         target_ind = self.get_index_of_random_target(targets)
         roll = random.randint(0, 1)
