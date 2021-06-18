@@ -14,7 +14,6 @@ class Player(Character):
             self.name = name
             self.hp = self.energy = self.strength = self.points = 0
             self.reset_stats()
-        # pass ?? co to tu robi
 
     def reset_stats(self):
         """

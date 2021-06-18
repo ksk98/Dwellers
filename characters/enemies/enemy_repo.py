@@ -2,6 +2,7 @@ import random
 
 from characters.enemies.enemy_base import EnemyBase
 from characters.enemies.enemy_blind_bloodbeast import BlindBloodbeast
+from characters.enemies.enemy_bloodsucker import Bloodsucker
 from characters.enemies.enemy_bugling import Bugling
 from characters.enemies.enemy_bugling_spitter import BuglingSpitter
 from characters.enemies.enemy_dweller import Dweller
@@ -23,7 +24,7 @@ def roll_an_enemy() -> EnemyBase:
     if chance_roll in range(0, 20):
         pool = [SkeletonLazy(), Dweller()]
     elif chance_roll in range(20, 65):
-        pool = [Skeleton(), RogueMage(), Bugling()]
+        pool = [Skeleton(), RogueMage(), Bugling(), Bloodsucker()]
     elif chance_roll in range(65, 95):
         pool = [SkeletonHunter(), Worshipper(), Ghoul(), BuglingSpitter()]
     else:
