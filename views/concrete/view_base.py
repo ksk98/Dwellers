@@ -19,7 +19,8 @@ class ViewBase(ABC):
         self.inputs = {
             "SAMPLE TEXT OPTION": "SAMPLE TEXT",
             "SAMPLE INT OPTION": 100,
-            "SAMPLE BOOLEAN OPTION": True
+            "SAMPLE BOOLEAN OPTION": True,
+            "SAMPLE MULTITOGGLE OPTION": [0, ["OPTION FIRST", "OPTION SECOND", "OPTION THIRD"]]
         }
 
     @staticmethod
@@ -90,7 +91,28 @@ class ViewBase(ABC):
             self.inputs[self.get_option_for_index(self.selected)] = \
                 not self.inputs[self.get_option_for_index(self.selected)]
             self.refresh_view()
+        elif self.options[self.selected][3] == Input.MULTI_TOGGLE:
+            cur_ind = self.inputs[self.get_option_for_index(self.selected)][0]
+            options = self.inputs[self.get_option_for_index(self.selected)][1]
+            next_ind = cur_ind + 1
+            if next_ind >= len(options):
+                next_ind = 0
+            self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
         return self.options[self.selected][1]
+
+    def get_input_of_option(self, input_name: str):
+        if input_name not in self.inputs:
+            return None
+
+        inp = self.inputs[input_name]
+        option_index = self.get_index_of_option(input_name)
+        if self.options[option_index][3] == Input.MULTI_TOGGLE:
+            return inp[1][inp[0]]
+
+        return inp
+
+    def get_input_of_option_index(self, option_index: int):
+        return self.get_input_of_option(self.get_option_for_index(option_index))
 
     def delete_letter(self):
         """
