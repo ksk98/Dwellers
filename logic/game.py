@@ -16,9 +16,9 @@ from network import communication
 from network import frame_handler
 from network import utility
 from settings import settings
-from views.concrete.view_character_points import ViewCharacterPoints
 from views.concrete.view_joining import ViewJoining
 from views.concrete.view_lobby import ViewLobby
+from views.concrete.view_room import ViewRoom
 from views.view_enum import Views
 from views.view_manager import ViewManager
 
@@ -385,8 +385,22 @@ class Game:
         self.map.generate(size)
         self.current_room = self.map.get_first_room()
 
-    def start_game(self):
-        self.generate_map(MapSize.MEDIUM)
+    def begin_game_start_procedure(self):
+        # Send map to clients
         map_json = jsonpickle.encode(self.map)
         for client in self.sockets.values():
-            communication.communicate(client, ["GAME_START", "CONTENT-LENGTH:" + str(len(map_json))], map_json)
+            communication.communicate(client,
+                                      ["GAME_START", "STATUS:INFO", "CONTENT-LENGTH:" + str(len(map_json))],
+                                      map_json)
+        # Reset ready status
+        # Ready will now hold information that client received a valid informations about starting game
+        for participant in self.lobby.participants:
+            participant.ready = False
+        # Host is ready
+        self.lobby.get_local_participant().ready = True
+        if len(self.lobby.participants) == 1:
+            self.start_game()
+
+    def start_game(self):
+        self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
+        self.view_manager.set_current(Views.ROOM)

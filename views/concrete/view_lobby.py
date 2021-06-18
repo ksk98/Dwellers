@@ -1,5 +1,6 @@
 import context
 from config import config
+from dungeon.map_size_enum import MapSize
 from network import communication
 from settings import settings
 from views.concrete.view_base import ViewBase
@@ -11,7 +12,7 @@ from views.view_enum import Views
 class ViewLobby(ViewBase):
     def __init__(self):
         super().__init__()
-        self._notify_all_players_ready = False
+        self._notify_all_players_must_be_ready = False
         lobby_is_local = context.GAME.lobby.local_lobby
         self.options = [
             ["READY", Views.LOBBY, lambda: self.send_ready(), Input.SELECT],
@@ -19,7 +20,11 @@ class ViewLobby(ViewBase):
         ]
         # Host has a button to start a game
         if lobby_is_local:
-            self.options.insert(0, ["START GAME", Views.ROOM, lambda: context.GAME.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom()), Input.SELECT],)
+            self.inputs = {
+                "MAP SIZE": [1, ["SMALL", "MEDIUM", "LARGE"]]
+            }
+            self.options.insert(0, ["MAP SIZE", Views.LOBBY, lambda: None, Input.MULTI_TOGGLE])
+            self.options.insert(0, ["START GAME", None, lambda: self.start_a_game(), Input.SELECT])
 
     def print_screen(self):
         self.print_text(context.GAME.lobby.address + ":" + str(context.GAME.lobby.port))
@@ -37,11 +42,19 @@ class ViewLobby(ViewBase):
             print("free".center(settings["MAX_WIDTH"]))
         print("")
 
-        if self._notify_all_players_ready:
+        if self._notify_all_players_must_be_ready:
             print("ALL PLAYERS MUST BE READY TO START A GAME!".center(settings["MAX_WIDTH"]))
-            self._notify_all_players_ready = False
+            self._notify_all_players_must_be_ready = False
 
-        self._print_options()
+        for option in self.options:
+            to_print = option[0]
+            value = self.get_input_of_option(option[0])
+            if value is not None:
+                to_print = to_print + ": " + str(value)
+            if self.options.index(option) == self.selected:
+                print((">" + to_print).center(settings["MAX_WIDTH"]))
+            else:
+                print(to_print.center(settings["MAX_WIDTH"]))
 
     def send_ready(self):
         lobby_is_local = context.GAME.lobby.local_lobby
@@ -60,8 +73,21 @@ class ViewLobby(ViewBase):
     def start_a_game(self):
         for participant in context.GAME.lobby.participants:
             if not participant.ready:
-                self._notify_all_players_ready = True
-                context.GAME.view_manager.refresh()
-                pass
+                self._notify_all_players_must_be_ready = True
+        if not self._notify_all_players_must_be_ready:
+            # Generate map
+            if self.inputs:
+                if self.inputs["MAP SIZE"] == "SMALL":
+                    context.GAME.generate_map(MapSize.SMALL)
+                elif self.inputs["MAP SIZE"] == "MEDIUM":
+                    context.GAME.generate_map(MapSize.MEDIUM)
+                elif self.inputs["MAP SIZE"] == "LARGE":
+                    context.GAME.generate_map(MapSize.LARGE)
+                else:
+                    context.GAME.generate_map(MapSize.MEDIUM)
+            else:
+                context.GAME.generate_map(MapSize.MEDIUM)
 
-        communication.communicate(context.GAME.host_socket, ["GAME_START", "READY:" + str(value)])
+            context.GAME.begin_game_start_procedure()
+
+        context.GAME.view_manager.refresh()

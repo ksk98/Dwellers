@@ -11,7 +11,6 @@ class Views(Enum):
     SETTINGS = 5
     HOST_PASSWORD = 6
     PLAY = 7
-    TEST = 8
     CHARACTERS = 20
     CHARACTER_POINTS = 21
     CHARACTER_OVERWRITE = 22
