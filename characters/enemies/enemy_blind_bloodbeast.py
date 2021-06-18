@@ -1,6 +1,5 @@
 import random
 
-from characters.attacks.attack_crush import AttackCrush
 from characters.attacks.attack_maul import AttackMaul
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase

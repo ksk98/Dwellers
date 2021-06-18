@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from random import randint
-
 from characters.attacks.attack_base import AttackBase
-from characters.character_config import config
 from characters.enums.character_type_enum import Type as CharType
 from characters.enums.attack_type_enum import Type as AttType
 
@@ -48,8 +45,8 @@ class Character:
             elif self.type == CharType.INSECT:
                 damage *= 2
 
-        self._deal_damage(damage)
-        self._deal_energy_damage(energy_damage)
+        self.deal_damage(damage)
+        self.deal_energy_damage(energy_damage)
         if self.hp == 0:
             return self.name + " was killed by " + attacker + \
                    "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"

@@ -1,5 +1,3 @@
-import random
-
 from characters.attacks.attack_fire import AttackFire
 from characters.attacks.attack_fist import AttackFist
 from characters.character import Character

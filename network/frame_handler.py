@@ -36,6 +36,9 @@ def handle(sckt: socket.socket, frame: str) -> bool:
             goodbye.carry_out(sckt)
         elif frame_action == "IGNORE":
             pass
+        elif frame_action == "400":
+            # why
+            return False
         else:
             communicate(sckt, ["400"])
             return False

@@ -27,6 +27,7 @@ class ViewManager:
         """
         Initialize the main views used before playing the game.
         """
+        self.__views.clear()
         self.__views[Views.MENU] = ViewMenu()
         self.__views[Views.SETTINGS] = ViewSettings()
 
