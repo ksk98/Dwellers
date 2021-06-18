@@ -13,7 +13,7 @@ class ViewCombat(ViewBase):
         self._notify_cant_go = False
         self._no_rooms_left = False
         self.options = [
-            ["GO TO THE NEXT ROOM", Views.ROOM, lambda: self.go_to_next_room(), Input.SELECT],
+            ["ATTACK", None, lambda: None, Input.SELECT],
             ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
 
@@ -33,11 +33,6 @@ class ViewCombat(ViewBase):
 
         print_in_two_columns([player_list, enemy_list], settings["MAX_WIDTH"])
         print_whole_line_of_char('=', settings["MAX_WIDTH"])
-
-        line = "You are in a " + context.GAME.current_room.get_type().name + " room."
-        print(line.center(settings["MAX_WIDTH"]))
-        line = "There is " + context.GAME.current_room.get_gold() + " gold!"
-        print(line.center(settings["MAX_WIDTH"]))
         print()
 
         if self._notify_cant_go:

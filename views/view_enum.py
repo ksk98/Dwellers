@@ -16,4 +16,5 @@ class Views(Enum):
     CHARACTER_OVERWRITE = 22
     ROOM = 23
     COMBAT = 24
+    SUMMARY = 25
 

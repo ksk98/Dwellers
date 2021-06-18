@@ -3,6 +3,7 @@ from dungeon.room import Room
 from logic.combat import Combat
 from settings import settings
 from views.concrete.view_base import ViewBase
+from views.concrete.view_game_summary import ViewGameSummary
 from views.input_enum import Input
 from views.print_utility import print_whole_line_of_char, print_in_two_columns
 from views.view_enum import Views
@@ -38,7 +39,9 @@ class ViewRoom(ViewBase):
 
         line = "You are in a " + context.GAME.current_room.get_type().name + " room."
         print(line.center(settings["MAX_WIDTH"]))
-        line = "There is " + str(context.GAME.current_room.get_gold()) + " gold in this room!"
+        gold = context.GAME.current_room.get_gold()
+        line = "There is " + str(gold) + " gold in this room!"
+        context.GAME.gold += gold
         print(line.center(settings["MAX_WIDTH"]))
         print()
 
@@ -46,6 +49,8 @@ class ViewRoom(ViewBase):
             print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
             self._notify_cant_go = False
         if self._no_rooms_left:
+            context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
+            context.GAME.view_manager.set_current(Views.SUMMARY)
             print("We have reached the end!".center(settings["MAX_WIDTH"]))
             self._no_rooms_left = False
 

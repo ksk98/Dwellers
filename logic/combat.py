@@ -21,7 +21,7 @@ class Combat:
 
     def start(self):
         context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT, self._combat_view)
-        context.GAME.set_current(Views.COMBAT)
+        context.GAME.view_manager.set_current(Views.COMBAT)
         self._new_turn()
         self._character_with_turn = self._queue.pop(0)
         self._make_turn()

@@ -64,6 +64,9 @@ class Game:
         # Instance of current combat
         self.combat = None
 
+        # Gold amount
+        self.gold = 0
+
     def view(self):
         """
         A shorter way to reach self.view_manager.get_current().
