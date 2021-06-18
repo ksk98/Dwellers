@@ -12,6 +12,7 @@ class Character:
     """
     Class representing characters of player.
     """
+
     def __init__(self):
         # If I don't do this, pycharm yells at me
         # for not setting the variables in the constructor >:C
@@ -20,49 +21,55 @@ class Character:
         self.name = "KAROLEK, PRZELADUJ TO NA NICK GRACZA JAK BEDZIESZ WCHODZIC DO GRY"
         self.type: CharType = CharType.HUMAN
 
-    # def attack(self, target: Character) -> bool:
-    #     attack_cost = config["base"]["attack_cost"]
-    #
-    #     if self.energy >= attack_cost:
-    #         self.energy -= attack_cost
-    #         # TODO more advanced calculating of attack_value
-    #         attack_value = randint(0, self.strength)
-    #         if target.hp > attack_value:
-    #             target.hp -= attack_value
-    #         else:
-    #             # TODO dead
-    #             target.hp = 0
-    #             pass
-    #         return True
-    #
-    #     return False
-
     def refresh(self):
         self.hp = self.base_hp
         self.energy = self.base_energy
 
-    def get_hit(self, damage: int, damage_type: AttType, attacker: str, attack: str) -> str:
+    def get_hit(self, damage: int, damage_type: AttType, attacker: str, attack: str, energy_damage: int = 0) -> str:
         if damage_type == AttType.SLASH:
             if self.type == CharType.UNDEAD:
-                damage = int(damage/3)
+                damage = int(damage / 3)
+            if self.type == CharType.INSECT:
+                damage = 0
         elif damage_type == AttType.CRUSH:
             if self.type == CharType.UNDEAD:
                 damage *= 2
             elif self.type == CharType.ABOMINATION:
                 damage = int(damage / 2)
+            elif self.type == CharType.INSECT:
+                damage = int(damage * 1.5)
         elif damage_type == AttType.FIRE:
             if self.type == CharType.UNDEAD:
                 damage = 0
+            elif self.type == CharType.INSECT:
+                damage *= 2
 
-        self.hp -= damage
+        self._deal_damage(damage)
+        self._deal_energy_damage(energy_damage)
+        if self.hp == 0:
+            return self.name + " was killed by " + attacker + \
+                   "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
+
+        if damage_type == AttType.HEALING:
+            return self.name + " was healed by " + attacker + \
+                   "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
+
+        return self.name + " was attacked by " + \
+                   "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
+
+    def _deal_damage(self, value: int):
+        self.hp -= value
         if self.hp < 0:
             self.hp = 0
-            return self.name + " was killed by " + attacker + "[" + str(damage) + " " + attack + "]"
-        if self.hp > self.base_hp:
+        elif self.hp > self.base_hp:
             self.hp = self.base_hp
-            return self.name + " was healed by " + attacker + "[" + str(damage * -1) + " " + attack + "]"
 
-        return self.name + " was attacked by " + attacker + "[" + str(damage) + " " + attack + "]"
+    def _deal_energy_damage(self, value: int):
+        self.energy -= value
+        if self.energy < 0:
+            self.energy = 0
+        elif self.energy > self.base_energy:
+            self.energy = self.base_energy
 
     def use_skill_on(self, skill: AttackBase, target: Character) -> str:
         """
@@ -75,7 +82,6 @@ class Character:
         return skill.use_on(self, target)
 
     def rest(self) -> str:
-        #rest_efficiency = config["base"]["rest_efficiency"]
         rest_efficiency = self.strength * 5
         self.base_energy += rest_efficiency
         return self.name + " rests"

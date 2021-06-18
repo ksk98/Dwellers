@@ -1,6 +1,7 @@
 from characters.attacks.attack_base import AttackBase
 from characters.character import Character
 from characters.enums.attack_type_enum import Type
+import random
 
 
 class AttackHeal(AttackBase):
@@ -11,5 +12,6 @@ class AttackHeal(AttackBase):
         self.type = Type.HEALING
 
     def use_on(self, user: Character, target: Character) -> str:
-        damage_out = -20
-        return target.get_hit(damage_out, self.type, user.name, self.name)
+        damage_out = random.randint(-27, -14)
+        energy_damage_out = random.randint(-10, 0)
+        return target.get_hit(damage_out, self.type, user.name, self.name, energy_damage_out)
