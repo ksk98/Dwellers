@@ -11,6 +11,7 @@ from views.view_enum import Views
 class ViewLobby(ViewBase):
     def __init__(self):
         super().__init__()
+        self._notify_all_players_ready = False
         lobby_is_local = context.GAME.lobby.local_lobby
         self.options = [
             ["READY", Views.LOBBY, lambda: self.send_ready(), Input.SELECT],
@@ -31,9 +32,15 @@ class ViewLobby(ViewBase):
                 player_string += "[NOT READY]"
 
             print(player_string.center(settings["MAX_WIDTH"]))
+
         for i in range(config["MAX_PLAYERS"] - len(participants)):
             print("free".center(settings["MAX_WIDTH"]))
         print("")
+
+        if self._notify_all_players_ready:
+            print("ALL PLAYERS MUST BE READY TO START A GAME!".center(settings["MAX_WIDTH"]))
+            self._notify_all_players_ready = False
+
         self._print_options()
 
     def send_ready(self):
@@ -49,3 +56,12 @@ class ViewLobby(ViewBase):
         else:
             value = not local_participant.ready
             communication.communicate(context.GAME.host_socket, ["LOBBY_PLAYER_STATUS", "READY:" + str(value)])
+
+    def start_a_game(self):
+        for participant in context.GAME.lobby.participants:
+            if not participant.ready:
+                self._notify_all_players_ready = True
+                context.GAME.view_manager.refresh()
+                pass
+
+        communication.communicate(context.GAME.host_socket, ["GAME_START", "READY:" + str(value)])

@@ -9,7 +9,7 @@ from network.communication import communicate
 
 def carry_out(sckt: socket.socket, frame: str) -> str:
     """
-    Pass the lobby to the player.
+    Send player status to all clients.
     Returns a log.
     """
     sckt_id = context.GAME.get_id_of_socket(sckt)
@@ -24,4 +24,4 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         communicate(client, ["LOBBY_UPDATE", "ACTION:PLAYER_READY", "STATUS:" + str(player_status), "PLAYER_ID:" + str(sckt_id)])
 
     context.GAME.view_manager.refresh()
-    return utility.get_ip_and_address_of_client_socket(sckt) + " LOBBY OBJECT PASSED"
+    return utility.get_ip_and_address_of_client_socket(sckt) + " PLAYER STATUS SENT"

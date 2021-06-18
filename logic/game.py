@@ -7,6 +7,9 @@ from os import name
 import jsonpickle
 
 from config import config
+from dungeon.map import Map
+from dungeon.map_size_enum import MapSize
+from dungeon.room import Room
 from logic.lobby import Lobby
 from logic.participant import Participant
 from network import communication
@@ -50,6 +53,12 @@ class Game:
 
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
+
+        # Instance of map object
+        self.map: Map = None
+
+        # Instance of current room
+        self.current_room: Room = None
 
     def view(self):
         """
@@ -366,22 +375,18 @@ class Game:
         self.abandon_lobby()
         self.running = False
 
-    def toggle_ready_bc(self):
+    def generate_map(self, size: MapSize):
         """
-        Toggle ready in lobby. Host checks if all players are ready and starts a game
+        Create a new map object
+        :param size: enum for size of generated map
         :return:
         """
-        # TODO Reimplement this
-        participant = self.lobby.get_local_participant()
-        participant.toggle_ready()
-        self.view_manager.refresh()
-        # TODO send ready
-        if participant.player_id == 0:
-            all_players_ready = True
-            for player in self.lobby.participants:
-                if not player.ready:
-                    all_players_ready = False
-                    break
-            if all_players_ready:
-                self.view_manager.set_new_view_for_enum(Views.CHARACTER_POINTS, ViewCharacterPoints())
-                self.view_manager.set_current(Views.CHARACTER_POINTS)
+        self.map = Map()
+        self.map.generate(size)
+        self.current_room = self.map.get_first_room()
+
+    def start_game(self):
+        self.generate_map(MapSize.MEDIUM)
+        map_json = jsonpickle.encode(self.map)
+        for client in self.sockets.values():
+            communication.communicate(client, ["GAME_START", "CONTENT-LENGTH:" + str(len(map_json))], map_json)
