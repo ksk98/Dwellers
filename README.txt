@@ -5,17 +5,19 @@ ABOUT:
     any creature that comes your way!
 
 HOW TO LAUNCH
-    Just run dist\main.exe
-
-HOW TO COMPILE FROM CONSOLE
-    May require to install jsonpickle (pip install jsonpickle)
-    1. venv\Scripts\activate
-    2. py main.py
+    Just run dist\main.exe.
+    It may occur that the executable will be out of date.
+    In that case the file can be recreated.
 
 HOW TO CREATE EXECUTABLE
     1. venv\Scripts\activate
     2. python setup.py install (or py setup.py install)
     3. python setup.py py2exe
+
+HOW TO COMPILE FROM CONSOLE
+    May require to install jsonpickle (pip install jsonpickle)
+    1. venv\Scripts\activate
+    2. py main.py
 
 HOW TO PLAY:
     - Create a character and distribute skillpoints
