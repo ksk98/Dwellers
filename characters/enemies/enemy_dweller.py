@@ -39,5 +39,5 @@ class Dweller(EnemyBase):
     def get_nonsense() -> str:
         nonsense = ["horses in pajamas", "toddlers eating dynamite", "devilish teddy bears",
                     "monty python jokes", "the superiority of the number 8", "the latest Tool album"]
-        index = random.randint(0, len(nonsense))
+        index = random.randint(0, len(nonsense) - 1)
         return nonsense[index]

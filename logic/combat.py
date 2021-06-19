@@ -107,6 +107,7 @@ class Combat:
     def end_combat(self, is_won: bool):
         if is_won:
             context.GAME.view_manager.set_current(Views.ROOM)
+            self._character_with_turn = self._queue.pop(0)
             self.start()
         # else: game.close
 
@@ -154,6 +155,7 @@ class Combat:
     def end_turn(self):
         self._is_my_turn = False
         self._combat_view = ViewCombat(False, self._outcomes)
+        self._next_character_in_queue()
         self.start()
 
     def get_current_character_name(self) -> str:
