@@ -1,3 +1,5 @@
+import jsonpickle
+
 import context
 from characters.hit import Hit
 from characters.player import Player
@@ -12,7 +14,8 @@ class Combat:
     def __init__(self, players: list[Character], enemies: list[Character]):
         self._players = players
         self._enemies = enemies
-        self._combat_view = ViewCombat()
+        self._combat_view = ViewCombat(False)
+        self._outcomes = list[str]()
         self._character_with_turn: Character = None
         self._is_host = context.GAME.lobby.local_lobby
 
@@ -22,7 +25,7 @@ class Combat:
     def start(self):
         context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT, self._combat_view)
         context.GAME.view_manager.set_current(Views.COMBAT)
-        self._new_turn()
+        self._new_turn()  # set turn order for all characters
         self._character_with_turn = self._queue.pop(0)
         self._make_turn()
         context.GAME.view_manager.refresh()
@@ -32,7 +35,7 @@ class Combat:
             self._broadcast_data()
 
         char_id = self._character_with_turn.id
-        char = self._get_character_with_id(char_id)
+        char = self.get_character_with_id(char_id)
         outcome = char.get_hit(hit.damage, hit.damage_type, hit.attacker, hit.attack, hit.energy_damage)
         if self._is_host:
             self._check_win()
@@ -47,14 +50,11 @@ class Combat:
         if type(self._character_with_turn) == EnemyBase:
             if self._is_host:
                 self._character_with_turn.act(self._get_alive_players())
-                self._broadcast_data()
             # else: wait for an update
         else:
             # Check if this is my turn
             if context.GAME.lobby.get_local_participant().player_id == self._character_with_turn.id:
                 self._my_turn()
-                if self._is_host:
-                    self._broadcast_data()
             # else: wait for an update
 
     def _my_turn(self):
@@ -68,6 +68,21 @@ class Combat:
 
     def _my_turn(self):
         pass
+
+    def make_hit(self, hit: Hit):
+        target = self.get_character_with_id(hit.target_id)
+        if target is not None and target.id == self.get_current_character_id():
+            # host broadcasts valid hit
+            if context.GAME.lobby.local_lobby:
+                pickled_hit = jsonpickle.encode(hit)
+                for client in context.GAME.sockets.values():
+                    communicate(client,
+                                ["GAMEPLAY", "ACTION:ATTACK", "CONTENT-LENGTH:" + str(len(pickled_hit))],
+                                pickled_hit)
+            # take a hit
+            outcome = target.get_hit(hit.damage, hit.damage_type, hit.attacker, hit.attack, hit.energy_damage)
+            self.add_outcome(outcome)
+            # TODO PRINT...
 
     def _check_win(self):
         if len(self._get_alive_enemies()) == 0:
@@ -105,7 +120,7 @@ class Combat:
                 alive_enemies.append(enemy)
         return alive_enemies
 
-    def _get_character_with_id(self, id: int):
+    def get_character_with_id(self, id: int):
         for char in self._players:
             if char.id == id:
                 return char
@@ -113,6 +128,12 @@ class Combat:
             if char.id == id:
                 return char
         return None
+
+    def get_current_character_id(self) -> int:
+        return self._character_with_turn.id
+
+    def add_outcome(self, outcome: str):
+        pass
 
     @staticmethod
     def _win():

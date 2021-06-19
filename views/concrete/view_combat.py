@@ -8,14 +8,18 @@ from views.view_enum import Views
 
 
 class ViewCombat(ViewBase):
-    def __init__(self):
+    def __init__(self, my_turn: bool):
         super().__init__()
-        self._notify_cant_go = False
-        self._no_rooms_left = False
+        self._my_turn = my_turn
         self.options = [
-            ["ATTACK", None, lambda: None, Input.SELECT],
             ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
+        if self._my_turn:
+            self.inputs = {
+                "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE", "HEALING"]]
+            }
+            self.options.insert(0, ["ATTACK", None, lambda: None, Input.SELECT])
+            self.options.insert(0, ["ATTACK TYPE", None, lambda: None, Input.MULTI_TOGGLE])
 
     def print_screen(self):
         print()
@@ -35,12 +39,9 @@ class ViewCombat(ViewBase):
         print_whole_line_of_char('=', settings["MAX_WIDTH"])
         print()
 
-        if self._notify_cant_go:
-            print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
-            self._notify_cant_go = False
-        if self._no_rooms_left:
-            print("We have reached the end!".center(settings["MAX_WIDTH"]))
-            self._no_rooms_left = False
+        # if self._notify_cant_go:
+        #     print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
+        #     self._notify_cant_go = False
 
         for option in self.options:
             to_print = option[0]
@@ -51,12 +52,4 @@ class ViewCombat(ViewBase):
                 print((">" + to_print).center(settings["MAX_WIDTH"]))
             else:
                 print(to_print.center(settings["MAX_WIDTH"]))
-
-    def go_to_next_room(self):
-        if context.GAME.lobby.local_lobby:
-            if not context.GAME.current_room.has_next():
-                self._no_rooms_left = True
-            context.GAME.send_next_room_action()
-        else:
-            self._notify_cant_go = True
 
