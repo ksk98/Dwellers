@@ -19,7 +19,7 @@ class SkeletonLazy(EnemyBase):
     def act(self, targets: list[Character]) -> str:
         # Lazy boy likes to rest whenever he can
         if self.energy < self.base_energy:
-            return self.refresh()
+            return self.rest()
 
         # If at full energy, the lazy boy tends to pick a random target to smack
         target_ind = self.get_index_of_random_target(targets)

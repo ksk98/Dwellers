@@ -24,10 +24,10 @@ class Bloodsucker(EnemyBase):
         if self.hp < self.base_hp:
             outcome = self.use_skill_on(self.attacks[1], targets[target_ind])
             if outcome == "":
-                return self.refresh()
+                return self.rest()
         else:
             outcome = self.use_skill_on(self.attacks[0], targets[target_ind])
             if outcome == "":
-                return self.refresh()
+                return self.rest()
 
         return outcome

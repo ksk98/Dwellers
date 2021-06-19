@@ -49,14 +49,14 @@ class Character:
         self.deal_energy_damage(energy_damage)
         if self.hp == 0:
             return self.name + " was killed by " + attacker + \
-                   "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
+                   "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
 
         if damage_type == AttType.HEALING:
             return self.name + " was healed by " + attacker + \
-                   "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
+                   "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
 
         return self.name + " was attacked by " + \
-                   "[" + str(damage) + " " + attack + "/" + str(energy_damage) + "]"
+                   "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
 
     def deal_damage(self, value: int):
         self.hp -= value
