@@ -1,5 +1,5 @@
 PROCEDURE:      HANDLING GAMEPLAY
-DESCRIPTION:    After succesfully starting a game, we can now
+DESCRIPTION:    After successfully starting a game, we can now
                 finally play the game (yay)!
 
 A. Host tells clients that party is going to the next room.

@@ -1,6 +1,8 @@
 import socket
 import context
 import jsonpickle
+
+from characters.hit import Hit
 from network import utility
 from network.communication import communicate
 from views.view_enum import Views
@@ -21,5 +23,24 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
     if action == "NEXT_ROOM":
         context.GAME.go_to_the_next_room()
         return utility.get_ip_and_address_of_client_socket(sckt) + " GOING TO NEXT ROOM "
+    elif action == "ATTACK":
+        clength = utility.get_content_length_from_header(frame)
+
+        if clength == 0:
+            communicate(sckt, ["400"])
+            return utility.get_ip_and_address_of_client_socket(sckt) + " HIT RECEIVE ERROR " \
+                                                                       "CONTENT LENGTH INDICATES NO BODY"
+
+        body = utility.get_specific_amount_of_data(sckt, clength)
+        if body == "":
+            communicate(sckt, ["400"])
+            return utility.get_ip_and_address_of_client_socket(sckt) + " HIT RECEIVE ERROR " \
+                                                                       "NO BODY WAS PROVIDED"
+
+        hit = jsonpickle.decode(body)
+        combat = context.GAME.combat
+        if combat is not None:
+            combat.make_hit(hit)
+
 
     return utility.get_ip_and_address_of_client_socket(sckt) + " GAME STARTED"

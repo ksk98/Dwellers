@@ -40,7 +40,10 @@ class ViewRoom(ViewBase):
         line = "You are in a " + context.GAME.current_room.get_type().name + " room."
         print(line.center(settings["MAX_WIDTH"]))
         gold = context.GAME.current_room.get_gold()
-        line = "There is " + str(gold) + " gold in this room!"
+        if gold > 0:
+            line = "There is " + str(gold) + " gold in this room!"
+        else:
+            line = "There is no gold in this room :("
         context.GAME.gold += gold
         print(line.center(settings["MAX_WIDTH"]))
         print()
