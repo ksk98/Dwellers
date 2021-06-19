@@ -25,6 +25,6 @@ class SkeletonHunter(EnemyBase):
         if outcome == "":
             outcome = self.use_skill_on(self.attacks[0], targets[target_ind])
             if outcome == "":
-                outcome = self.refresh()
+                outcome = self.rest()
 
         return outcome

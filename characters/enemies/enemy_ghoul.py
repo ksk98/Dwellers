@@ -27,6 +27,6 @@ class Ghoul(EnemyBase):
         attack = random.randint(0, len(self.attacks))
         outcome = self.use_skill_on(self.attacks[attack], targets[target_ind])
         if outcome == "":
-            return self.refresh()
+            return self.rest()
 
         return outcome

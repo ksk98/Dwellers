@@ -25,12 +25,12 @@ class Skeleton(EnemyBase):
         roll = random.randint(0, 1)
         if roll == 0:
             if self.energy < self.base_energy:
-                return self.refresh()
+                return self.rest()
             else:
                 return self.use_skill_on(self.attacks[0], targets[target_ind])
         else:
             outcome = self.use_skill_on(self.attacks[0], targets[target_ind])
             if outcome == "":
-                return self.refresh()
+                return self.rest()
             else:
                 return outcome
