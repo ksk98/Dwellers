@@ -28,7 +28,7 @@ class Dweller(EnemyBase):
         if nonsense_roll == 0:
             return self.name + " yells angrily at " + targets[target_ind].name + " about " + self.get_nonsense()
         else:
-            attack = random.randint(0, len(self.attacks))
+            attack = random.randint(0, len(self.attacks) - 1)
             outcome = self.use_skill_on(self.attacks[attack], targets[target_ind])
             if outcome == "":
                 return self.refresh()

@@ -23,6 +23,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
     if action == "NEXT_ROOM":
         context.GAME.go_to_the_next_room()
         return utility.get_ip_and_address_of_client_socket(sckt) + " GOING TO NEXT ROOM "
+
     elif action == "ATTACK":
         clength = utility.get_content_length_from_header(frame)
 
@@ -42,5 +43,10 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         if combat is not None:
             combat.make_hit(hit)
 
+    elif action == "WIN":
+        context.GAME.combat.win()
+
+    elif action == "DEFEAT":
+        context.GAME.combat.defeat()
 
     return utility.get_ip_and_address_of_client_socket(sckt) + " GAME STARTED"

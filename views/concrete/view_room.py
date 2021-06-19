@@ -12,9 +12,7 @@ from views.view_enum import Views
 class ViewRoom(ViewBase):
     def __init__(self, room: Room):
         super().__init__()
-        if len(room.get_enemies()) > 0:
-            context.GAME.combat = Combat(context.GAME.get_players(), room.get_enemies())
-            context.GAME.combat.start()
+        self._room = room
         self._notify_cant_go = False
         self._no_rooms_left = False
         self.options = [
@@ -23,49 +21,53 @@ class ViewRoom(ViewBase):
         ]
 
     def print_screen(self):
-        print()
-        print_whole_line_of_char('=', settings["MAX_WIDTH"])
-
-        participants = context.GAME.lobby.participants
-        player_list = ["PARTY:"]
-        for participant in participants:
-            player_list.append(participant.character.name)
-
-        enemies = context.GAME.current_room.get_enemies()
-        enemy_list = [""]
-
-        print_in_two_columns([player_list, enemy_list], settings["MAX_WIDTH"])
-        print_whole_line_of_char('=', settings["MAX_WIDTH"])
-
-        line = "You are in a " + context.GAME.current_room.get_type().name + " room."
-        print(line.center(settings["MAX_WIDTH"]))
-        gold = context.GAME.current_room.get_gold()
-        if gold > 0:
-            line = "There is " + str(gold) + " gold in this room!"
+        if len(self._room.get_enemies()) > 0:
+            context.GAME.combat = Combat(context.GAME.get_players(), self._room.get_enemies())
+            context.GAME.combat.start()
         else:
-            line = "There is no gold in this room :("
-        context.GAME.gold += gold
-        print(line.center(settings["MAX_WIDTH"]))
-        print()
+            print()
+            print_whole_line_of_char('=', settings["MAX_WIDTH"])
 
-        if self._notify_cant_go:
-            print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
-            self._notify_cant_go = False
-        if self._no_rooms_left:
-            context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
-            context.GAME.view_manager.set_current(Views.SUMMARY)
-            print("We have reached the end!".center(settings["MAX_WIDTH"]))
-            self._no_rooms_left = False
+            participants = context.GAME.lobby.participants
+            player_list = ["PARTY:"]
+            for participant in participants:
+                player_list.append(participant.character.name)
 
-        for option in self.options:
-            to_print = option[0]
-            value = self.inputs.get(option[0])
-            if value is not None:
-                to_print = to_print + ": " + str(value)
-            if self.options.index(option) == self.selected:
-                print((">" + to_print).center(settings["MAX_WIDTH"]))
+            enemies = context.GAME.current_room.get_enemies()
+            enemy_list = [""]
+
+            print_in_two_columns([player_list, enemy_list], settings["MAX_WIDTH"])
+            print_whole_line_of_char('=', settings["MAX_WIDTH"])
+
+            line = "You are in a " + context.GAME.current_room.get_type().name + " room."
+            print(line.center(settings["MAX_WIDTH"]))
+            gold = context.GAME.current_room.get_gold()
+            if gold > 0:
+                line = "There is " + str(gold) + " gold in this room!"
             else:
-                print(to_print.center(settings["MAX_WIDTH"]))
+                line = "There is no gold in this room :("
+            context.GAME.gold += gold
+            print(line.center(settings["MAX_WIDTH"]))
+            print()
+
+            if self._notify_cant_go:
+                print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
+                self._notify_cant_go = False
+            if self._no_rooms_left:
+                context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
+                context.GAME.view_manager.set_current(Views.SUMMARY)
+                print("We have reached the end!".center(settings["MAX_WIDTH"]))
+                self._no_rooms_left = False
+
+            for option in self.options:
+                to_print = option[0]
+                value = self.inputs.get(option[0])
+                if value is not None:
+                    to_print = to_print + ": " + str(value)
+                if self.options.index(option) == self.selected:
+                    print((">" + to_print).center(settings["MAX_WIDTH"]))
+                else:
+                    print(to_print.center(settings["MAX_WIDTH"]))
 
     def go_to_next_room(self):
         if context.GAME.lobby.local_lobby:

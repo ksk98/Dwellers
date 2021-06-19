@@ -421,8 +421,11 @@ class Game:
         self.close_connecter_thread()
         self.current_room = self.map.get_first_room()
         for participant in self.lobby.participants:
-            participant.character.name = participant.name
-            participant.character.id = participant.player_id
+            char = participant.character
+            char.name = participant.name
+            char.id = participant.player_id
+            char.hp = char.base_hp
+            char.energy = char.base_energy
         self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
         self.view_manager.set_current(Views.ROOM)
 

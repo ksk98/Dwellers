@@ -36,4 +36,4 @@ class EnemyBase(Character):
 
     @staticmethod
     def get_index_of_random_target(targets: list[Character]) -> int:
-        return random.randint(0, len(targets))
+        return random.randint(0, len(targets) - 1)
