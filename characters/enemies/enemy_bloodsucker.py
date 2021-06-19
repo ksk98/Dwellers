@@ -1,5 +1,3 @@
-import random
-
 from characters.attacks.attack_bite import AttackBite
 from characters.attacks.attack_drink_blood import AttackDrinkBlood
 from characters.character import Character

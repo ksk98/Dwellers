@@ -129,7 +129,7 @@ class Game:
             # If the player is not a host and we are here, check if the host socket isn't closed
             if utility.is_socket_closed(self.host_socket):
                 self.abandon_lobby()
-                self.view_manager.display_error_and_return("Lobby was closed.")
+                self.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
             # If socket close induced exception is caught, check who disconnected and remove him/her from the lobby
             dict_copy = self.sockets.copy()
             for pid in dict_copy.keys():
@@ -177,12 +177,14 @@ class Game:
             self.abandon_lobby()
 
     def close_connecter_thread(self):
+        # To stop the thread that listens for connection attempts we have to connect to it once
         if self.connecter_thread is not None:
             temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             temp_socket.connect((utility.get_hostname(), settings["HOSTING_PORT"]))
             temp_socket.sendall("IGNORE\r\n\r\n".encode("utf-8"))
             temp_socket.close()
             self.connecter_thread.join()
+            self.connecter_thread = None
 
     def join_external_lobby(self, ip: str, port: int, password: str = "") -> str:
         """
@@ -321,13 +323,16 @@ class Game:
                 sckt.close()
             self.sockets.clear()
 
-            # To stop the thread that listens for connection attempts we have to connect to it once
             self.close_connecter_thread()
         else:
             communication.communicate(self.host_socket, ["GOODBYE"])
             self.host_socket.close()
 
         self.host_socket = None
+        self.map = None
+        self.current_room = None
+        self.gold = 0
+        self.combat = None
 
     def get_new_id(self) -> int:
         """

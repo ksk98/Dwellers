@@ -1,5 +1,3 @@
-import random
-
 from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
