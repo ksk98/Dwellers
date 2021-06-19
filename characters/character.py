@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import context
 from characters.attacks.attack_base import AttackBase
 from characters.enums.character_type_enum import Type as CharType
 from characters.enums.attack_type_enum import Type as AttType
+from network.communication import communicate
 
 
 class Character:
@@ -55,7 +57,7 @@ class Character:
             return self.name + " was healed by " + attacker + \
                    "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
 
-        return self.name + " was attacked by " + \
+        return self.name + " was attacked by " + attacker + \
                    "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
 
     def deal_damage(self, value: int):
@@ -82,7 +84,15 @@ class Character:
         self.energy -= skill.cost
         return skill.use_on(self, target)
 
-    def rest(self) -> str:
+    def rest(self, send: bool = True) -> str:
+        if send:
+            if context.GAME.lobby.local_lobby:
+                for client in context.GAME.sockets.values():
+                    communicate(client, ["GAMEPLAY", "ACTION:REST", "ID:" + str(self.id)])
+            else:
+                communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:REST", "ID:" + str(self.id)])
         rest_efficiency = self.strength * 5
-        self.base_energy += rest_efficiency
+        self.energy += rest_efficiency
+        if self.energy > self.base_energy:
+            self.energy = self.base_energy
         return self.name + " rests"

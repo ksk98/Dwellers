@@ -23,7 +23,7 @@ class BuglingSpitter(EnemyBase):
         # Bugling spitters spit acid that saps energy
         # Their behavior is pretty random
         target_ind = self.get_index_of_random_target(targets)
-        attack = random.randint(0, len(self.attacks))
+        attack = random.randint(0, len(self.attacks) - 1)
         outcome = self.use_skill_on(self.attacks[attack], targets[target_ind])
         if outcome == "":
             return self.rest()

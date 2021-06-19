@@ -1,4 +1,8 @@
+from queue import Queue
+
 import context
+from characters.attacks.attack_crush import AttackCrush
+from characters.attacks.attack_fire import AttackFire
 from characters.attacks.attack_slash import AttackSlash
 from dungeon.room import Room
 from settings import settings
@@ -19,10 +23,11 @@ class ViewCombat(ViewBase):
         ]
         if self._my_turn:
             self.inputs = {
-                "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE", "HEALING"]]
+                "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE"]]
             }
+            self.options.insert(0, ["REST", Views.COMBAT, lambda: self.rest(), Input.SELECT])
             self.options.insert(0, ["ATTACK", Views.COMBAT, lambda: self.attack(), Input.SELECT])
-            self.options.insert(0, ["ATTACK TYPE", None, lambda: None, Input.MULTI_TOGGLE])
+            self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
 
     def print_screen(self):
         print()
@@ -77,19 +82,35 @@ class ViewCombat(ViewBase):
         :param outcomes:
         :return:
         """
-        indx = 0
+        queue = []
+        size = 0
         for outcome in outcomes:
+            queue.append(outcome)
+            if size >= 4:
+                queue.pop(0)
+            size += 1
+
+        for outcome in queue:
             print(outcome)
-            indx += 1
-            if indx >= 4:
-                break
 
     def attack(self):
         character = context.GAME.lobby.get_local_participant().character
         combat = context.GAME.combat
-        outcome = character.use_skill_on(AttackSlash(), combat.get_alive_enemies()[0])
+        if self.get_input_of_option("ATTACK TYPE") == "SLASH":
+            outcome = character.use_skill_on(AttackSlash(), combat.get_alive_enemies()[0])
+        elif self.get_input_of_option("ATTACK TYPE") == "CRUSH":
+            outcome = character.use_skill_on(AttackCrush(), combat.get_alive_enemies()[0])
+        elif self.get_input_of_option("ATTACK TYPE") == "FIRE":
+            outcome = character.use_skill_on(AttackFire(), combat.get_alive_enemies()[0])
         if outcome == "":
             self._enough_energy = False
         else:
             combat.add_outcome(outcome)
             combat.end_turn()
+
+    def rest(self):
+        character = context.GAME.lobby.get_local_participant().character
+        combat = context.GAME.combat
+        outcome = character.rest()
+        combat.add_outcome(outcome)
+        combat.end_turn()

@@ -33,3 +33,10 @@ Client:         GAMEPLAY\r\n
                 CONTENT-LENGTH:x\r\n
                 \r\n
                 object containing all hit data
+
+F. Send rest action
+
+Client/host:    GAMEPLAY\r\n
+                ACTION:REST\r\n
+                ID:x\r\n
+                \r\n

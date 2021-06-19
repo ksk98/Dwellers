@@ -9,6 +9,7 @@ from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from network.communication import communicate
 from views.concrete.view_combat import ViewCombat
+from views.concrete.view_game_summary import ViewGameSummary
 from views.view_enum import Views
 
 
@@ -67,6 +68,7 @@ class Combat:
             # Check if this is my turn
             if context.GAME.lobby.get_local_participant().player_id == self._character_with_turn.id:
                 self._my_turn()
+                self._check_win()
             else:
                 self._wait_for_update = True
 
@@ -80,7 +82,7 @@ class Combat:
     def make_hit(self, hit: Hit):
         self._wait_for_update = False
         target = self.get_character_with_id(hit.target_id)
-        if target is not None and target.id == self.get_current_character_id():
+        if target is not None:
             # host broadcasts valid hit
             if context.GAME.lobby.local_lobby:
                 pickled_hit = jsonpickle.encode(hit)
@@ -92,24 +94,20 @@ class Combat:
             outcome = target.get_hit(hit.damage, hit.damage_type, hit.attacker, hit.attack, hit.energy_damage)
             self.add_outcome(outcome)
             context.GAME.view_manager.refresh()
-            self._character_with_turn = self._queue.pop(0)
+            self._next_character_in_queue()
             self._make_turn()
 
     def get_outcomes(self) -> list[str]:
         return self._outcomes
 
     def _check_win(self):
-        if len(self.get_alive_enemies()) == 0:
-            self._communicate_win()
-        elif len(self.get_alive_players()) == 0:
-            self._communicate_defeat()
-
-    def end_combat(self, is_won: bool):
-        if is_won:
-            context.GAME.view_manager.set_current(Views.ROOM)
-            self._character_with_turn = self._queue.pop(0)
-            self.start()
-        # else: game.close
+        if context.GAME.lobby.local_lobby:
+            if len(self.get_alive_enemies()) == 0:
+                self._communicate_win()
+                self.win()
+            elif len(self.get_alive_players()) == 0:
+                self._communicate_defeat()
+                self.defeat()
 
     def _next_character_in_queue(self):
         if len(self._queue) > 0:
@@ -148,6 +146,12 @@ class Combat:
     def get_current_character_id(self) -> int:
         return self._character_with_turn.id
 
+    def rest_current_character(self):
+        self._character_with_turn.rest(False)
+        self._next_character_in_queue()
+        self._wait_for_update = False
+        self._make_turn()
+
     def add_outcome(self, outcome: str):
         self._outcomes.append(outcome)
         pass
@@ -162,6 +166,8 @@ class Combat:
         return self._character_with_turn.name
 
     def win(self):
+        for player in self._players:
+            player.energy = player.base_energy
         context.GAME.view_manager.remove_view_for_enum(Views.COMBAT)
         context.GAME.combat = None
         context.GAME.view_manager.set_current(Views.ROOM)
@@ -170,6 +176,7 @@ class Combat:
     def defeat(self):
         context.GAME.view_manager.remove_view_for_enum(Views.COMBAT)
         context.GAME.combat = None
+        context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary)
         context.GAME.view_manager.set_current(Views.SUMMARY)
         context.GAME.view_manager.refresh()
 

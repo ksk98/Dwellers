@@ -21,7 +21,8 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         return utility.get_ip_and_address_of_client_socket(sckt) + "GAMEPLAY RUINED: NO CONNECTION " \
                                                                    "ESTABLISHED "
     if action == "NEXT_ROOM":
-        context.GAME.go_to_the_next_room()
+        if context.GAME.combat is None:
+            context.GAME.go_to_the_next_room()
         return utility.get_ip_and_address_of_client_socket(sckt) + " GOING TO NEXT ROOM "
 
     elif action == "ATTACK":
@@ -48,5 +49,13 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
 
     elif action == "DEFEAT":
         context.GAME.combat.defeat()
+
+    elif action == "REST":
+        if context.GAME.combat is not None:
+            id = utility.get_value_of_argument(frame, "ID")
+            if context.GAME.combat.get_current_character_id() == int(id):
+                context.GAME.combat.rest_current_character()
+
+
 
     return utility.get_ip_and_address_of_client_socket(sckt) + " GAME STARTED"

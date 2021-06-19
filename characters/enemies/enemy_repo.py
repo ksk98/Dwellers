@@ -30,7 +30,7 @@ def roll_an_enemy() -> EnemyBase:
     else:
         pool = [BlindBloodbeast()]
 
-    ind = random.randint(0, len(pool)-1)
+    ind = random.randint(0, len(pool) - 1)
     return pool[ind]
 
 
