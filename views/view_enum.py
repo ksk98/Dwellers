@@ -17,4 +17,5 @@ class Views(Enum):
     ROOM = 23
     COMBAT = 24
     SUMMARY = 25
+    DEFEAT = 26
 

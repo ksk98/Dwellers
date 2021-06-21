@@ -1,7 +1,11 @@
 import random
 
+import jsonpickle
+
+import context
 from characters.character import Character
 from characters.enums.character_type_enum import Type
+from network.communication import communicate
 
 
 class EnemyBase(Character):
@@ -15,6 +19,15 @@ class EnemyBase(Character):
         self.attacks = []
 
         self.refresh()
+
+    def send_miss(self, miss: str):
+        pickled = jsonpickle.encode(miss)
+        headers = ["GAMEPLAY", "ACTION:MISS", "CONTENT-LENGTH:" + str(len(pickled)), "ID:" + str(self.id)]
+        if context.GAME.lobby.local_lobby:
+            for client in context.GAME.sockets.values():
+                communicate(client, headers, pickled)
+        else:
+            communicate(context.GAME.host_socket, headers, pickled)
 
     @staticmethod
     def get_index_of_weakest_target(targets: list[Character]) -> int:

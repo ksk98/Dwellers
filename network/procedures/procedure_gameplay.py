@@ -1,10 +1,11 @@
 import socket
-import context
+
 import jsonpickle
 
-from characters.hit import Hit
+import context
 from network import utility
 from network.communication import communicate
+from views.concrete.view_game_summary import ViewGameSummary
 from views.view_enum import Views
 
 
@@ -56,6 +57,28 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
             if context.GAME.combat.get_current_character_id() == int(id):
                 context.GAME.combat.rest_current_character()
 
+    elif action == "MISS":
+        clength = utility.get_content_length_from_header(frame)
 
+        if clength == 0:
+            communicate(sckt, ["400"])
+            return utility.get_ip_and_address_of_client_socket(sckt) + " MISS RECEIVE ERROR " \
+                                                                       "CONTENT LENGTH INDICATES NO BODY"
+
+        body = utility.get_specific_amount_of_data(sckt, clength)
+        if body == "":
+            communicate(sckt, ["400"])
+            return utility.get_ip_and_address_of_client_socket(sckt) + " MISS RECEIVE ERROR " \
+                                                                       "NO BODY WAS PROVIDED"
+        hit = jsonpickle.decode(body)
+        combat = context.GAME.combat
+        if combat is not None:
+            id = utility.get_value_of_argument(frame, "ID")
+            if context.GAME.combat.get_current_character_id() == int(id):
+                combat.current_character_missed(hit)
+
+        elif action == "END":
+            context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
+            context.GAME.view_manager.set_current(Views.SUMMARY)
 
     return utility.get_ip_and_address_of_client_socket(sckt) + " GAME STARTED"

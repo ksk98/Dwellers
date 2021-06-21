@@ -30,4 +30,6 @@ class BlindBloodbeast(EnemyBase):
 
             return outcome
 
-        return self.name + " swings at the air"
+        line = self.name + " swings at the air"
+        self.send_miss(line)
+        return line

@@ -8,6 +8,7 @@ from dungeon.room_type_enum import RoomType
 
 class Room:
     def __init__(self, room_type: RoomType):
+        self.gold_added = False
         self._gold = 0
         self._enemies: list[EnemyBase] = []
         self._next = None

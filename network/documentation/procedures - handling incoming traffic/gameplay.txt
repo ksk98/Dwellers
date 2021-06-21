@@ -40,3 +40,19 @@ Client/host:    GAMEPLAY\r\n
                 ACTION:REST\r\n
                 ID:x\r\n
                 \r\n
+
+F. Send miss
+
+HOST:           GAMEPLAY\r\n
+                ACTION:MISS\r\n
+                CONTENT-LENGTH:x\r\n
+                ID:x\r\n
+                \r\n
+                object containing string with miss text
+
+
+F. Send that party have reached the end of dungeon
+
+HOST:           GAMEPLAY\r\n
+                ACTION:END\r\n
+                \r\n

@@ -1,6 +1,7 @@
 import context
 from dungeon.room import Room
 from logic.combat import Combat
+from network.communication import communicate
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.concrete.view_game_summary import ViewGameSummary
@@ -15,6 +16,12 @@ class ViewRoom(ViewBase):
         self._room = room
         self._notify_cant_go = False
         self._no_rooms_left = False
+
+        if not room.gold_added:
+            gold = context.GAME.current_room.get_gold()
+            context.GAME.gold += gold
+            room.gold_added = True
+
         self.options = [
             ["GO TO THE NEXT ROOM", Views.ROOM, lambda: self.go_to_next_room(), Input.SELECT],
             ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
@@ -33,10 +40,7 @@ class ViewRoom(ViewBase):
             for participant in participants:
                 player_list.append(participant.character.name)
 
-            enemies = context.GAME.current_room.get_enemies()
-            enemy_list = [""]
-
-            print_in_two_columns([player_list, enemy_list], settings["MAX_WIDTH"])
+            print_in_two_columns([player_list, [""]], settings["MAX_WIDTH"])
             print_whole_line_of_char('=', settings["MAX_WIDTH"])
 
             line = "You are in a " + context.GAME.current_room.get_type().name + " room."
@@ -54,10 +58,11 @@ class ViewRoom(ViewBase):
                 print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
                 self._notify_cant_go = False
             if self._no_rooms_left:
+                if context.GAME.lobby.local_lobby:
+                    for client in context.GAME.sockets.values():
+                        communicate(client, ["GAMEPLAY", "ACTION:END"])
                 context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
                 context.GAME.view_manager.set_current(Views.SUMMARY)
-                print("We have reached the end!".center(settings["MAX_WIDTH"]))
-                self._no_rooms_left = False
 
             for option in self.options:
                 to_print = option[0]

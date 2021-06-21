@@ -1,10 +1,7 @@
-from queue import Queue
-
 import context
 from characters.attacks.attack_crush import AttackCrush
 from characters.attacks.attack_fire import AttackFire
 from characters.attacks.attack_slash import AttackSlash
-from dungeon.room import Room
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
@@ -25,8 +22,8 @@ class ViewCombat(ViewBase):
             self.inputs = {
                 "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE"]]
             }
-            self.options.insert(0, ["REST", Views.COMBAT, lambda: self.rest(), Input.SELECT])
-            self.options.insert(0, ["ATTACK", Views.COMBAT, lambda: self.attack(), Input.SELECT])
+            self.options.insert(0, ["REST", None, lambda: self.rest(), Input.SELECT])
+            self.options.insert(0, ["ATTACK", None, lambda: self.attack(), Input.SELECT])
             self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
 
     def print_screen(self):
@@ -96,14 +93,17 @@ class ViewCombat(ViewBase):
     def attack(self):
         character = context.GAME.lobby.get_local_participant().character
         combat = context.GAME.combat
-        if self.get_input_of_option("ATTACK TYPE") == "SLASH":
-            outcome = character.use_skill_on(AttackSlash(), combat.get_alive_enemies()[0])
-        elif self.get_input_of_option("ATTACK TYPE") == "CRUSH":
-            outcome = character.use_skill_on(AttackCrush(), combat.get_alive_enemies()[0])
-        elif self.get_input_of_option("ATTACK TYPE") == "FIRE":
-            outcome = character.use_skill_on(AttackFire(), combat.get_alive_enemies()[0])
+        outcome = "ERR"
+        if len(combat.get_alive_enemies()) > 0:
+            if self.get_input_of_option("ATTACK TYPE") == "SLASH":
+                outcome = character.use_skill_on(AttackSlash(), combat.get_alive_enemies()[0])
+            elif self.get_input_of_option("ATTACK TYPE") == "CRUSH":
+                outcome = character.use_skill_on(AttackCrush(), combat.get_alive_enemies()[0])
+            elif self.get_input_of_option("ATTACK TYPE") == "FIRE":
+                outcome = character.use_skill_on(AttackFire(), combat.get_alive_enemies()[0])
         if outcome == "":
             self._enough_energy = False
+            context.GAME.view_manager.refresh()
         else:
             combat.add_outcome(outcome)
             combat.end_turn()

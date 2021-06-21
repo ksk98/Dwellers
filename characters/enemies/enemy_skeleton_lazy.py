@@ -26,6 +26,8 @@ class SkeletonLazy(EnemyBase):
 
         outcome = self.use_skill_on(self.attacks[0], targets[target_ind])
         if outcome == "":
-            return self.name + " could not do anything!"
+            line = self.name + " could not do anything!"
+            self.send_miss(line)
+            return line
         else:
             return outcome
