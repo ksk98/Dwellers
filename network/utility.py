@@ -98,7 +98,9 @@ def get_hostname():
     """
     if settings["HOST_LOBBY_IS_LAN"]:
         return "localhost"
-    return "0.0.0.0"
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 53))
+    return s.getsockname()[0]
 
 
 # https://stackoverflow.com/a/62277798
