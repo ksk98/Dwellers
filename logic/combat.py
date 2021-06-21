@@ -175,6 +175,7 @@ class Combat:
 
     def defeat(self):
         self._end = True
+        context.GAME.abandon_lobby()
         context.GAME.view_manager.remove_view_for_enum(Views.COMBAT)
         context.GAME.combat = None
         context.GAME.view_manager.set_new_view_for_enum(Views.DEFEAT, ViewDefeat())

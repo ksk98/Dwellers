@@ -78,6 +78,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
                 combat.current_character_missed(hit)
 
         elif action == "END":
+            context.GAME.abandon_lobby()
             context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
             context.GAME.view_manager.set_current(Views.SUMMARY)
 

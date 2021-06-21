@@ -40,7 +40,7 @@ class ViewCombat(ViewBase):
                      + " ENERGY:" + str(character.energy) + "/" + str(character.base_energy)
             player_list.append(line)
 
-        enemies = context.GAME.current_room.get_enemies()
+        enemies = context.GAME.combat.get_alive_enemies()
         enemy_list = ["HOSTILES:"]
         for enemy in enemies:
             line = " HP:" + str(enemy.hp) + "/" + str(enemy.base_hp) \
