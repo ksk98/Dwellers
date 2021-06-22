@@ -72,14 +72,15 @@ class Combat:
                 # take a hit
                 outcome = target.get_hit(hit.damage, hit.damage_type, hit.attacker, hit.attack, hit.energy_damage)
                 self.add_outcome(outcome)
+
+                self._check_win()
                 # host broadcasts valid hit
-                if context.GAME.lobby.local_lobby:
+                if context.GAME.lobby.local_lobby and self._end:
                     pickled_hit = jsonpickle.encode(hit)
                     for client in context.GAME.sockets.values():
                         communicate(client,
                                     ["GAMEPLAY", "ACTION:ATTACK", "CONTENT-LENGTH:" + str(len(pickled_hit))],
                                     pickled_hit)
-                self._check_win()
                 self._wait_for_update = False
                 context.GAME.view_manager.refresh()
                 self._next_character_in_queue()
