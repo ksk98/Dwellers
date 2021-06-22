@@ -75,7 +75,7 @@ class Combat:
 
                 self._check_win()
                 # host broadcasts valid hit
-                if context.GAME.lobby.local_lobby and self._end:
+                if context.GAME.lobby.local_lobby and not self._end:
                     pickled_hit = jsonpickle.encode(hit)
                     for client in context.GAME.sockets.values():
                         communicate(client,
@@ -108,7 +108,7 @@ class Combat:
 
     def _new_turn(self):
         self._queue: list[Character] = self.get_alive_players() + self.get_alive_enemies()
-        self._queue.sort(key=self._compareEnergy)
+        self._queue.sort(key=self._compareEnergy, reverse=True)
 
     def get_alive_players(self) -> list[Character]:
         alive_players = list[Character]()
