@@ -19,3 +19,4 @@ class ViewGameSummary(ViewBase):
         self.print_text(line.center(settings["MAX_WIDTH"]))
         print()
         self._print_options()
+
