@@ -92,6 +92,9 @@ class ViewCombat(ViewBase):
 
     def set_target_list_for_attack(self):
         attack = self.get_input_of_next_option("ATTACK TYPE")
+        if attack is None:
+            return
+
         if attack == "HEAL":
             self.set_targets_input_to_friendlies()
         else:

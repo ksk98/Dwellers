@@ -104,12 +104,15 @@ class ViewBase(ABC):
         if input_name not in self.inputs:
             return None
 
-        inp = self.inputs[input_name]
-        option_index = self.get_index_of_option(input_name)
-        if self.options[option_index][3] == Input.MULTI_TOGGLE:
-            return inp[1][inp[0]]
+        try:
+            inp = self.inputs[input_name]
+            option_index = self.get_index_of_option(input_name)
+            if self.options[option_index][3] == Input.MULTI_TOGGLE:
+                return inp[1][inp[0]]
 
-        return inp
+            return inp
+        except IndexError:
+            return None
 
     def get_input_of_next_option(self, input_name: str):
         """
@@ -118,14 +121,17 @@ class ViewBase(ABC):
         if input_name not in self.inputs:
             return None
 
-        inp = self.inputs[input_name]
-        option_index = self.get_index_of_option(input_name)
-        if self.options[option_index][3] == Input.MULTI_TOGGLE:
-            index_of_next = inp[0] + 1
-            if index_of_next >= len(inp[1]):
-                index_of_next = 0
-            return inp[1][index_of_next]
-        else:
+        try:
+            inp = self.inputs[input_name]
+            option_index = self.get_index_of_option(input_name)
+            if self.options[option_index][3] == Input.MULTI_TOGGLE:
+                index_of_next = inp[0] + 1
+                if index_of_next >= len(inp[1]):
+                    index_of_next = 0
+                return inp[1][index_of_next]
+            else:
+                return None
+        except IndexError:
             return None
 
     def get_input_of_option_index(self, option_index: int):
