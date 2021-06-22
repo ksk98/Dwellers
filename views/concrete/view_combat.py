@@ -95,7 +95,8 @@ class ViewCombat(ViewBase):
         if attack == "HEAL":
             self.set_targets_input_to_friendlies()
         else:
-            self.set_targets_input_to_enemies()
+            if self.get_input_of_option("ATTACK TYPE") == "HEAL":
+                self.set_targets_input_to_enemies()
 
     def print_outcomes(self, outcomes: list[str]):
         """
