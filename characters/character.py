@@ -55,7 +55,7 @@ class Character:
 
         if damage_type == AttType.HEALING:
             return self.name + " was healed by " + attacker + \
-                   "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
+                   "[" + attack + " " + str(damage*-1) + "/" + str(energy_damage*-1) + "]"
 
         return self.name + " was attacked by " + attacker + \
                    "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"

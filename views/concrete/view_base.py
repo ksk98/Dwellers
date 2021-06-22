@@ -111,6 +111,23 @@ class ViewBase(ABC):
 
         return inp
 
+    def get_input_of_next_option(self, input_name: str):
+        """
+        Used only for Input.MULTI_TOGGLE. Returns None for others!
+        """
+        if input_name not in self.inputs:
+            return None
+
+        inp = self.inputs[input_name]
+        option_index = self.get_index_of_option(input_name)
+        if self.options[option_index][3] == Input.MULTI_TOGGLE:
+            index_of_next = inp[0] + 1
+            if index_of_next >= len(inp[1]):
+                index_of_next = 0
+            return inp[1][index_of_next]
+        else:
+            return None
+
     def get_input_of_option_index(self, option_index: int):
         return self.get_input_of_option(self.get_option_for_index(option_index))
 

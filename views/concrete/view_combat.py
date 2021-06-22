@@ -1,6 +1,7 @@
 import context
 from characters.attacks.attack_crush import AttackCrush
 from characters.attacks.attack_fire import AttackFire
+from characters.attacks.attack_heal import AttackHeal
 from characters.attacks.attack_slash import AttackSlash
 from settings import settings
 from views.concrete.view_base import ViewBase
@@ -20,11 +21,13 @@ class ViewCombat(ViewBase):
         ]
         if self._my_turn:
             self.inputs = {
-                "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE"]]
+                "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE", "HEAL"]]
             }
             self.options.insert(0, ["REST", None, lambda: self.rest(), Input.SELECT])
             self.options.insert(0, ["ATTACK", None, lambda: self.attack(), Input.SELECT])
-            self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
+            self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self.set_target_list_for_attack(), Input.MULTI_TOGGLE])
+            self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
+            self.set_targets_input_to_enemies()
 
     def print_screen(self):
         print()
@@ -73,6 +76,27 @@ class ViewCombat(ViewBase):
             else:
                 print(to_print.center(settings["MAX_WIDTH"]))
 
+    def set_targets_input_to_enemies(self):
+        alive_enemies = []
+        for enemy in context.GAME.combat.get_alive_enemies():
+            alive_enemies.append(enemy.name)
+        self.inputs["TARGET"] = [0, alive_enemies]
+        self.refresh_view()
+
+    def set_targets_input_to_friendlies(self):
+        alive_players = []
+        for friendly in context.GAME.combat.get_alive_players():
+            alive_players.append(friendly.name)
+        self.inputs["TARGET"] = [0, alive_players]
+        self.refresh_view()
+
+    def set_target_list_for_attack(self):
+        attack = self.get_input_of_next_option("ATTACK TYPE")
+        if attack == "HEAL":
+            self.set_targets_input_to_friendlies()
+        else:
+            self.set_targets_input_to_enemies()
+
     def print_outcomes(self, outcomes: list[str]):
         """
         Used to print last 4 outcomes
@@ -95,12 +119,15 @@ class ViewCombat(ViewBase):
         combat = context.GAME.combat
         outcome = "ERR"
         if len(combat.get_alive_enemies()) > 0:
+            target_index = self.inputs["TARGET"][0]
             if self.get_input_of_option("ATTACK TYPE") == "SLASH":
-                outcome = character.use_skill_on(AttackSlash(), combat.get_alive_enemies()[0])
+                outcome = character.use_skill_on(AttackSlash(), combat.get_alive_enemies()[target_index])
             elif self.get_input_of_option("ATTACK TYPE") == "CRUSH":
-                outcome = character.use_skill_on(AttackCrush(), combat.get_alive_enemies()[0])
+                outcome = character.use_skill_on(AttackCrush(), combat.get_alive_enemies()[target_index])
             elif self.get_input_of_option("ATTACK TYPE") == "FIRE":
-                outcome = character.use_skill_on(AttackFire(), combat.get_alive_enemies()[0])
+                outcome = character.use_skill_on(AttackFire(), combat.get_alive_enemies()[target_index])
+            elif self.get_input_of_option("ATTACK TYPE") == "HEAL":
+                outcome = character.use_skill_on(AttackHeal(), combat.get_alive_players()[target_index])
         if outcome == "":
             self._enough_energy = False
             context.GAME.view_manager.refresh()
