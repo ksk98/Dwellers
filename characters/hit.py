@@ -1,7 +1,15 @@
 from characters.enums.attack_type_enum import Type as AttType
 
 class Hit:
-    def __init__(self, user_id: int, target_id: int, damage: int, damage_type: AttType, attacker: str, attack: str, energy_damage: int = 0):
+    def __init__(self,
+                 user_id: int,
+                 target_id: int,
+                 damage: int,
+                 damage_type: AttType,
+                 attacker: str,
+                 attack: str,
+                 energy_damage: int = 0):
+
         self.user_id = user_id
         self.target_id = target_id
         self.damage = damage
