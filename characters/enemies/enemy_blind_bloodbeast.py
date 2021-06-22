@@ -21,7 +21,7 @@ class BlindBloodbeast(EnemyBase):
     def act(self, targets: list[Character]) -> str:
         # Ancient bloodbeast that fortunately for the players has become blind
         # It often misses but can strike a random player down with a single strike
-        roll = random.randint(0, 25)
+        roll = random.randint(0, 20)
         if roll == 0:
             target_ind = self.get_index_of_random_target(targets)
             outcome = self.use_skill_on(self.attacks[0], targets[target_ind])

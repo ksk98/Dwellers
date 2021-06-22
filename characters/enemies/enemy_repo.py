@@ -26,9 +26,9 @@ def roll_an_enemy() -> EnemyBase:
     elif chance_roll in range(20, 65):
         pool = [Skeleton(), RogueMage(), Bugling(), Bloodsucker()]
     elif chance_roll in range(65, 95):
-        pool = [SkeletonHunter(), Worshipper(), Ghoul(), BuglingSpitter()]
+        pool = [SkeletonHunter(), Worshipper(), BuglingSpitter()]
     else:
-        pool = [BlindBloodbeast()]
+        pool = [BlindBloodbeast(), Ghoul()]
 
     ind = random.randint(0, len(pool) - 1)
     return pool[ind]
