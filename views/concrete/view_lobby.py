@@ -4,7 +4,6 @@ from dungeon.map_size_enum import MapSize
 from network import communication
 from settings import settings
 from views.concrete.view_base import ViewBase
-from views.concrete.view_room import ViewRoom
 from views.input_enum import Input
 from views.view_enum import Views
 
@@ -27,36 +26,20 @@ class ViewLobby(ViewBase):
             self.options.insert(0, ["START GAME", None, lambda: self.start_a_game(), Input.SELECT])
 
     def print_screen(self):
-        self.print_text(context.GAME.lobby.address + ":" + str(context.GAME.lobby.port))
-        participants = context.GAME.lobby.participants
-        for player in participants:
-            player_string = player.name + "[" + str(player.player_id) + "]"
-            if player.ready:
-                player_string += "[READY]"
-            else:
-                player_string += "[NOT READY]"
+        self.print_multiline_text("\nListening on {address}:{port}\n"
+                                  .format(address=context.GAME.lobby.address, port=str(context.GAME.lobby.port)))
+        participants = self.print_participants()
 
-            print(player_string.center(settings["MAX_WIDTH"]))
+        self.print_empty_slots(participants)
 
-        for i in range(config["MAX_PLAYERS"] - len(participants)):
-            print("free".center(settings["MAX_WIDTH"]))
-        print("")
+        self.notify_ready()
 
-        if self._notify_all_players_must_be_ready:
-            print("ALL PLAYERS MUST BE READY TO START A GAME!".center(settings["MAX_WIDTH"]))
-            self._notify_all_players_must_be_ready = False
-
-        for option in self.options:
-            to_print = option[0]
-            value = self.get_input_of_option(option[0])
-            if value is not None:
-                to_print = to_print + ": " + str(value)
-            if self.options.index(option) == self.selected:
-                print((">" + to_print).center(settings["MAX_WIDTH"]))
-            else:
-                print(to_print.center(settings["MAX_WIDTH"]))
+        self._print_options()
 
     def send_ready(self):
+        """
+        Toggles ready status and sends this information to host or other users
+        """
         lobby_is_local = context.GAME.lobby.local_lobby
         local_participant = context.GAME.lobby.get_local_participant()
         if lobby_is_local:
@@ -64,30 +47,51 @@ class ViewLobby(ViewBase):
 
             # TODO It shouldn't be here...
             for client in context.GAME.sockets.values():
-                communication.communicate(client, ["LOBBY_UPDATE", "ACTION:PLAYER_READY", "STATUS:" + str(local_participant.ready),
+                communication.communicate(client, ["LOBBY_UPDATE", "ACTION:PLAYER_READY",
+                                                   "STATUS:" + str(local_participant.ready),
                                                    "PLAYER_ID:" + str(local_participant.player_id)])
         else:
             value = not local_participant.ready
             communication.communicate(context.GAME.host_socket, ["LOBBY_PLAYER_STATUS", "READY:" + str(value)])
 
     def start_a_game(self):
+        """
+        Try to start a game - check if all players are ready, generate map and start the game
+        """
         for participant in context.GAME.lobby.participants:
             if not participant.ready:
                 self._notify_all_players_must_be_ready = True
+
         if not self._notify_all_players_must_be_ready:
             # Generate map
+            map_size = MapSize.MEDIUM
             if self.inputs:
                 if self.inputs["MAP SIZE"] == "SMALL":
-                    context.GAME.generate_map(MapSize.SMALL)
-                elif self.inputs["MAP SIZE"] == "MEDIUM":
-                    context.GAME.generate_map(MapSize.MEDIUM)
+                    map_size = MapSize.SMALL
                 elif self.inputs["MAP SIZE"] == "LARGE":
-                    context.GAME.generate_map(MapSize.LARGE)
-                else:
-                    context.GAME.generate_map(MapSize.MEDIUM)
-            else:
-                context.GAME.generate_map(MapSize.MEDIUM)
+                    map_size = MapSize.LARGE
+            context.GAME.generate_map(map_size)
 
             context.GAME.begin_game_start_procedure()
 
         context.GAME.view_manager.refresh()
+
+    def print_participants(self):
+        participants = context.GAME.lobby.participants
+        for player in participants:
+            status = "READY" if player.ready else "NOT READY"
+            player_string = "{name}[{id}][{status}]".format(name=player.name, id=str(player.player_id), status=status)
+
+            self.print_text(player_string)
+        return participants
+
+    def print_empty_slots(self, participants):
+        empty_slots = config["MAX_PLAYERS"] - len(participants)
+        for i in range(empty_slots):
+            self.print_text("- EMPTY -")
+        self.print_text("\n")
+
+    def notify_ready(self):
+        if self._notify_all_players_must_be_ready:
+            print("ALL PLAYERS MUST BE READY TO START A GAME!".center(settings["MAX_WIDTH"]))
+            self._notify_all_players_must_be_ready = False

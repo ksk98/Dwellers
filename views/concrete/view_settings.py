@@ -5,6 +5,9 @@ from views.view_enum import Views
 
 
 class ViewSettings(ViewBase):
+    """
+    Setting view (duh)
+    """
     def __init__(self):
         super().__init__()
 
@@ -28,12 +31,5 @@ class ViewSettings(ViewBase):
             settings[setting] = self.inputs[setting]
 
     def print_screen(self):
-        for option in self.options:
-            to_print = option[0]
-            value = self.inputs.get(option[0])
-            if value is not None:
-                to_print = to_print + ": " + str(value)
-            if self.options.index(option) == self.selected:
-                print((">" + to_print).center(settings["MAX_WIDTH"]))
-            else:
-                print(to_print.center(settings["MAX_WIDTH"]))
+        self._print_logo()
+        self._print_options()

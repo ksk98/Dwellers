@@ -1,5 +1,8 @@
 from abc import ABC
 from os import system, name
+
+import title_ascii
+from config import config
 from settings import settings
 from views.input_enum import Input
 from views.view_enum import Views
@@ -65,15 +68,34 @@ class ViewBase(ABC):
         """
         pass
 
+    def _print_logo(self):
+        """
+        Prints the Dwellers logo with the version number
+        """
+        for line in title_ascii.title:
+            if title_ascii.title.index(line) != len(title_ascii.title)-1:
+                self.print_text(line)
+            else:
+                ver = config["VERSION"]
+                print((line + ver).center(settings["MAX_WIDTH"] + len(ver)-1))
+        print("")
+
     def _print_options(self):
         """
         Print every selectable option of the view as centered.
         """
         for option in self.options:
-            if self.options.index(option) == self.selected:
-                print((">" + option[0]).center(settings["MAX_WIDTH"]))
+            to_print = option[0]
+            value = self.get_input_of_option(option[0])
+            if not value:
+                value = self.inputs.get(option[0])
             else:
-                print(option[0].center(settings["MAX_WIDTH"]))
+                to_print = to_print + ": " + str(value)
+
+            if self.options.index(option) == self.selected:
+                self.print_text((">" + to_print))
+            else:
+                self.print_text(to_print)
 
     def execute_current_option(self) -> Views:
         """
@@ -206,3 +228,12 @@ class ViewBase(ABC):
         chunks = list((text[0+i:(settings["MAX_WIDTH"]-4)+i] for i in range(0, len(text), (settings["MAX_WIDTH"]-4))))
         for chunk in chunks:
             print(chunk.center(settings["MAX_WIDTH"]))
+
+    @staticmethod
+    def print_multiline_text(text: str):
+        """
+        Break given multiline text into separate lines and print them as centered.
+        """
+        text = text.splitlines()
+        for line in text:
+            ViewBase.print_text(line)

@@ -1,4 +1,3 @@
-import context
 from characters.character_config import config
 from characters.enums.stats_enum import Stat
 from characters.player import Player
@@ -9,6 +8,9 @@ from views.view_enum import Views
 
 
 class ViewCharacterPoints(ViewBase):
+    """
+    View used to create or modify character
+    """
     def __init__(self):
         super().__init__()
         self.saved_character_name = settings["SELECTED_CHARACTER"]
@@ -19,9 +21,10 @@ class ViewCharacterPoints(ViewBase):
 
         self._character = Player(self._name)
 
-        hp_button_string = "Health Points (+" + self.get_upgrade_amount_for(Stat.HEALTH) + ")"
-        ep_button_string = "Energy Points (+" + self.get_upgrade_amount_for(Stat.ENERGY) + ")"
-        sp_button_string = "Strength Points (+" + self.get_upgrade_amount_for(Stat.STRENGTH) + ")"
+        hp_button_string = "Health Points (+{0})".format(self.get_upgrade_amount_for(Stat.HEALTH))
+        ep_button_string = "Energy Points (+{0})".format(self.get_upgrade_amount_for(Stat.ENERGY))
+        sp_button_string = "Strength Points (+{0})".format(self.get_upgrade_amount_for(Stat.STRENGTH))
+
         self.options = [
             ["NAME", None, lambda: None, Input.TEXT_FIELD],
             [hp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.HEALTH), Input.SELECT],
@@ -35,6 +38,18 @@ class ViewCharacterPoints(ViewBase):
             "NAME": self._name
         }
 
+    def print_screen(self):
+        self.print_multiline_text(
+            "Current statistics:\n"
+            "Health Points: {0}\n"
+            "Energy Points: {1}\n"
+            "Strength Points: {2}\n"
+            "You have {3} points to spend!\n \n".format(
+                str(self._character.base_hp), str(self._character.base_energy),
+                str(self._character.strength), str(self._character.points)))
+
+        self._print_options()
+
     def save(self):
         # TODO confirmation on overwriting another character
         self._character.name = self.inputs["NAME"]
@@ -42,24 +57,6 @@ class ViewCharacterPoints(ViewBase):
             self._character.overwrite_stats(self.saved_character_name)
         else:
             self._character.save_stats()
-
-    # TODO refactor views with (self._print_options()...)
-    def print_screen(self):
-        print("Current statistics:".center(settings["MAX_WIDTH"]))
-        print(("Health Points: " + str(self._character.base_hp)).center(settings["MAX_WIDTH"]))
-        print(("Energy Points: " + str(self._character.base_energy)).center(settings["MAX_WIDTH"]))
-        print(("Strength Points: " + str(self._character.strength)).center(settings["MAX_WIDTH"]))
-        print(("You have " + str(self._character.points) + " points to spend!").center(settings["MAX_WIDTH"]))
-        print()
-        for option in self.options:
-            to_print = option[0]
-            value = self.inputs.get(option[0])
-            if value is not None:
-                to_print = to_print + ": " + str(value)
-            if self.options.index(option) == self.selected:
-                print((">" + to_print).center(settings["MAX_WIDTH"]))
-            else:
-                print(to_print.center(settings["MAX_WIDTH"]))
 
     @staticmethod
     def get_upgrade_amount_for(stat: Stat) -> str:

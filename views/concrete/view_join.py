@@ -24,15 +24,7 @@ class ViewJoin(ViewBase):
         }
 
     def print_screen(self):
-        for option in self.options:
-            to_print = option[0]
-            value = self.inputs.get(option[0])
-            if value is not None:
-                to_print = to_print + ": " + str(value)
-            if self.options.index(option) == self.selected:
-                print((">" + to_print).center(settings["MAX_WIDTH"]))
-            else:
-                print(to_print.center(settings["MAX_WIDTH"]))
+        self._print_options()
 
     def _join_action(self):
         err = context.GAME.join_external_lobby(self.inputs.get("IP"),

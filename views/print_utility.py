@@ -1,4 +1,12 @@
-def print_whole_line_of_char(char: chr, width: int):
+from settings import settings
+
+
+def print_whole_line_of_char(char: chr):
+    """
+    Prints character few times in order to fill whole line
+    :param char: to be printed
+    """
+    width = settings["MAX_WIDTH"]
     indx = 0
     while indx < width:
         print(char, end='')
@@ -6,31 +14,52 @@ def print_whole_line_of_char(char: chr, width: int):
     print()
 
 
-def print_in_two_columns(column_list: list[list[str]], width: int):
+def print_in_two_columns(column_list: list[list[str]]):
+    """
+    Prints two lists in separate columns
+    :param column_list:
+    """
+    width = settings["MAX_WIDTH"]
     if len(column_list) == 2:
         left_column_elements = column_list[0]
         right_column_elements = column_list[1]
+
+        # Print both lists until one ends
         for left, right in zip(left_column_elements, right_column_elements):
-            elements_length = len(left) + len(right)
-            rest = width - elements_length
-            if rest > 0:
+            rest = width - len(left)
+            if rest > len(right): # both values can be printed in the same line
                 print(left, end='')
-                for x in range(0, rest):
-                    print(' ', end='')
             else:
+                # print(divide_if_too_long(left))
                 print(left)
-                for x in range(0, width - len(right)):
-                    print(' ', end='')
-            print(right)
-        if len(left_column_elements) > len(right_column_elements):
-            right_len = len(right_column_elements)
-            left_len = len(left_column_elements)
-            for x in range (right_len, left_len):
+                rest = width    # whole new line for the right element
+
+            print(right.rjust(rest))
+
+        rcol_len = len(right_column_elements)
+        lcol_len = len(left_column_elements)
+
+        # Print rest of the left column
+        if lcol_len > rcol_len:
+            for x in range(rcol_len, lcol_len):
                 print(left_column_elements[x])
+
+        # Print rest of the right column
         else:
-            right_len = len(right_column_elements)
-            left_len = len(left_column_elements)
-            for x in range (left_len, right_len):
-                for y in range(0, width - len(right_column_elements[x])):
-                    print(' ', end='')
-                print(right_column_elements[x])
+            for x in range(lcol_len, rcol_len):
+                print(right_column_elements[x].rjust(width))
+
+
+def divide_if_too_long(text: str):
+    # TODO implement this
+    # TODO recursion?
+    width = settings["MAX_WIDTH"]
+    if len(text) > width:
+        # search for the last indx in the line
+        indx = text.find(" ", width, 0)
+        if indx >= 0:
+            return text[:indx] + "\n" + text[indx + 1:]
+        else:
+            return text[:indx] + "\n" + text[indx:]
+
+
