@@ -1,3 +1,4 @@
+import context
 from characters.character_config import config
 from characters.enums.stats_enum import Stat
 from characters.player import Player
@@ -13,6 +14,7 @@ class ViewCharacterPoints(ViewBase):
     """
     def __init__(self):
         super().__init__()
+        self.confirm_overwrite = False
         self.saved_character_name = settings["SELECTED_CHARACTER"]
         if self.saved_character_name == "":
             self._name = "Default"
@@ -31,7 +33,7 @@ class ViewCharacterPoints(ViewBase):
             [ep_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.ENERGY), Input.SELECT],
             [sp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.STRENGTH),
              Input.SELECT],
-            ["SAVE", Views.CHARACTERS, lambda: self.save(), Input.SELECT],
+            ["SAVE", None, lambda: self.save(), Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
         self.inputs = {
@@ -48,15 +50,24 @@ class ViewCharacterPoints(ViewBase):
                 str(self._character.base_hp), str(self._character.base_energy),
                 str(self._character.strength), str(self._character.points)))
 
+        if self.confirm_overwrite:
+            self.confirm_overwrite = False
+
         self._print_options()
 
     def save(self):
-        # TODO confirmation on overwriting another character
         self._character.name = self.inputs["NAME"]
-        if self._character.name != self.saved_character_name:
-            self._character.overwrite_stats(self.saved_character_name)
+        from characters.saved_characters import saved_characters
+        if self._character.name != self.saved_character_name and saved_characters.get(self._character.name):
+            if self.confirm_overwrite:
+                self._character.overwrite_stats(self.saved_character_name)
+                context.GAME.view_manager.set_current(Views.CHARACTERS)
+            else:
+                self.confirm_overwrite = True
+                self.print_text("This will overwrite existing character! Press again to confirm.")
         else:
             self._character.save_stats()
+            context.GAME.view_manager.set_current(Views.CHARACTERS)
 
     @staticmethod
     def get_upgrade_amount_for(stat: Stat) -> str:

@@ -26,7 +26,6 @@ class ViewCombat(ViewBase):
             self.options.insert(0, ["ATTACK", None, lambda: self.attack(), Input.SELECT])
             self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self.set_target_list_for_attack(),
                                     Input.MULTI_TOGGLE])
-            # TODO add id to target's name
             self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
             self.set_targets_input_to_enemies()
 
@@ -59,13 +58,14 @@ class ViewCombat(ViewBase):
     def set_targets_input_to_enemies(self):
         alive_enemies = []
         for enemy in context.GAME.combat.get_alive_enemies():
-            alive_enemies.append(enemy.name)
+            alive_enemies.append("{name}[{id}]".format(name=enemy.name, id=enemy.id))
         self.inputs["TARGET"] = [0, alive_enemies]
         self.refresh_view()
 
     def set_targets_input_to_friendlies(self):
         alive_players = []
         for friendly in context.GAME.combat.get_alive_players():
+            alive_players.append("{name}[{id}]".format(name=friendly.name, id=friendly.id))
             alive_players.append(friendly.name)
         self.inputs["TARGET"] = [0, alive_players]
         self.refresh_view()
@@ -162,13 +162,14 @@ class ViewCombat(ViewBase):
         enemies = context.GAME.combat.get_alive_enemies()
         enemy_list = ["HOSTILES:"]
         for enemy in enemies:
-            line = "HP:{0}/{1} ENERGY: {2}/{3} - {4}"\
+            line = "HP:{0}/{1} ENERGY: {2}/{3} - {4}[{5}]"\
                 .format(
                     str(enemy.hp),
                     str(enemy.base_hp),
                     str(enemy.energy),
                     str(enemy.base_energy),
-                    enemy.name)
+                    enemy.name,
+                    enemy.id)
 
             enemy_list.append(line)
 
