@@ -66,7 +66,6 @@ class ViewCombat(ViewBase):
         alive_players = []
         for friendly in context.GAME.combat.get_alive_players():
             alive_players.append("{name}[{id}]".format(name=friendly.name, id=friendly.id))
-            alive_players.append(friendly.name)
         self.inputs["TARGET"] = [0, alive_players]
         self.refresh_view()
 
@@ -107,9 +106,13 @@ class ViewCombat(ViewBase):
         if len(combat.get_alive_enemies()) > 0:
             target_index = self.inputs["TARGET"][0]
             attack_type = self.get_input_of_option("ATTACK TYPE")
-            enemy = combat.get_alive_enemies()[target_index]
 
-            attack = None  # TODO display cost of each attack
+            if attack_type == "HEAL":
+                target = combat.get_alive_players()[target_index]
+            else:
+                target = combat.get_alive_enemies()[target_index]
+
+            attack = None  # TODO display cost of each attack / damage modifiers
             attack = {
                 "SLASH": AttackSlash(),
                 "CRUSH": AttackCrush(),
@@ -118,7 +121,7 @@ class ViewCombat(ViewBase):
             }[attack_type]
 
             if attack:
-                outcome = character.use_skill_on(attack, enemy)
+                outcome = character.use_skill_on(attack, target)
 
         if outcome == "":
             self._enough_energy = False

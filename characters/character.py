@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import context
 from characters.attacks.attack_base import AttackBase
-from characters.enums.character_type_enum import Type as CharType
 from characters.enums.attack_type_enum import Type as AttType
+from characters.enums.character_type_enum import Type as CharType
 from network.communication import communicate
 
 
@@ -18,7 +18,7 @@ class Character:
         self.id = -1
         self.base_hp = self.base_energy = self.strength = 0
         self.hp = self.energy = 0
-        self.name = "KAROLEK, PRZELADUJ TO NA NICK GRACZA JAK BEDZIESZ WCHODZIC DO GRY"
+        self.name = "KAROLEK, PRZELADUJ TO NA NICK GRACZA JAK BEDZIESZ WCHODZIC DO GRY"  # XD
         self.type: CharType = CharType.HUMAN
 
     def act(self, targets: list[Character]) -> str:
@@ -49,16 +49,25 @@ class Character:
 
         self.deal_damage(damage)
         self.deal_energy_damage(energy_damage)
+
+        # Create outcome text
+        action = ""
+        multiplier = 1  # TODO decide - is it necessary? DMG: -20 looks weird...
         if self.hp == 0:
-            return self.name + " was killed by " + attacker + \
-                   "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
-
-        if damage_type == AttType.HEALING:
-            return self.name + " was healed by " + attacker + \
-                   "[" + attack + " " + str(damage*-1) + "/" + str(energy_damage*-1) + "]"
-
-        return self.name + " was attacked by " + attacker + \
-                   "[" + attack + " " + str(damage) + "/" + str(energy_damage) + "]"
+            action = "killed"
+        elif damage_type == AttType.HEALING:
+            action = "healed"
+            inverse = -1
+        else:
+            action = "attacked"
+        return "{target} was {action} by {attacker} with {attack} [DMG: {damage}, Energy DMG: {energy}]" \
+            .format(
+            target=self.name,
+            action=action,
+            attacker=attacker,
+            attack=attack,
+            damage=str(damage * multiplier),
+            energy=str(energy_damage * multiplier))
 
     def deal_damage(self, value: int):
         self.hp -= value
