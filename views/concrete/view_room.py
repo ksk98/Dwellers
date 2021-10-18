@@ -34,6 +34,7 @@ class ViewRoom(ViewBase):
         else:
             print()
             print_whole_line_of_char('=')
+            self.print_text("Total looted gold: {0}".format(context.GAME.gold))
 
             self.print_participants()
 
@@ -65,6 +66,7 @@ class ViewRoom(ViewBase):
             context.GAME.view_manager.set_current(Views.SUMMARY)
 
     def print_participants(self):
+        # TODO Display health?
         participants = context.GAME.lobby.participants
         player_list = ["PARTY:"]
         for participant in participants:

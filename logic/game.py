@@ -324,9 +324,6 @@ class Game:
             self.sockets.clear()
 
             self.close_connecter_thread()
-        else:
-            communication.communicate(self.host_socket, ["GOODBYE"])
-            self.host_socket.close()
 
         self.host_socket = None
         self.map = None

@@ -70,6 +70,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
             communicate(sckt, ["400"])
             return utility.get_ip_and_address_of_client_socket(sckt) + " MISS RECEIVE ERROR " \
                                                                        "NO BODY WAS PROVIDED"
+
         hit = jsonpickle.decode(body)
         combat = context.GAME.combat
         if combat is not None:
@@ -77,8 +78,8 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
             if context.GAME.combat.get_current_character_id() == int(id):
                 combat.current_character_missed(hit)
 
-        elif action == "END":
-            context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
-            context.GAME.view_manager.set_current(Views.SUMMARY)
+    elif action == "END":
+        context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
+        context.GAME.view_manager.set_current(Views.SUMMARY)
 
     return utility.get_ip_and_address_of_client_socket(sckt) + " GAME STARTED"

@@ -81,9 +81,7 @@ class ViewCharacters(ViewBase):
         """
         if settings["SELECTED_CHARACTER"] != name:
             settings["SELECTED_CHARACTER"] = name
-            if name != "":  # character already exists
-                context.GAME.view_manager.set_current(Views.CHARACTERS)
-                pass
+            context.GAME.view_manager.set_current(Views.CHARACTERS)
         else:
             # Create new character
             context.GAME.view_manager.remove_view_for_enum(Views.CHARACTER_POINTS)

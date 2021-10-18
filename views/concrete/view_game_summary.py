@@ -12,7 +12,7 @@ class ViewGameSummary(ViewBase):
         ]
 
     def print_screen(self):
-        # TODO Looted gold sent by server
+        # TODO Looted gold sent by server?
         # TODO Number of defeated creatures?
         self.print_multiline_text(
             "CONGRATULATIONS!\nYOU HAVE REACHED THE END OF A DUNGEON!\nLOOTED GOLD: {0}\n \n".format(
