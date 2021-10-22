@@ -42,16 +42,16 @@ In that case the file can be recreated.
 
 ### How to create executable
 ```
-> venv/Scripts/activate
-> python setup.py install
-> python setup.py py2exe
+venv/Scripts/activate
+python setup.py install
+python setup.py py2exe
 ```
 
 ### How to compile from console
 May require to install jsonpickle (`pip install jsonpickle`)
 ```
-> venv/Scripts/activate
-> py main.py
+venv/Scripts/activate
+py main.py
 ```
 
 ### How to play
