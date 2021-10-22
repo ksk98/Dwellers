@@ -1,3 +1,5 @@
+from characters.enums.stats_enum import Stat
+
 saved_characters = {
     # "BodyKox": {
     #     Stat.HEALTH: 888,
