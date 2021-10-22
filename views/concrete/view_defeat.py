@@ -17,7 +17,6 @@ class ViewDefeat(ViewBase):
 
     def print_screen(self):
         # TODO DELETE CHARACTER...
-        # TODO Can't host next game after defeat...
         print()
         print_whole_line_of_char('=')
         self.print_multiline_text("\nDEFEAT!\n \nYOU HAVE BEEN WIPED OUT!\n")

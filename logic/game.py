@@ -310,6 +310,7 @@ class Game:
         return True
 
     def abandon_lobby(self):
+        # TODO Can't host another game after leaving mid-game
         """
         Leave/close a current lobby.
         :return:
