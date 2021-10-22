@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import context
 from characters.attacks.attack_base import AttackBase
 from characters.enums.attack_type_enum import Type as AttType
 from characters.enums.character_type_enum import Type as CharType
-from network.communication import communicate
+from characters.hit import Hit
 
 
 class Character:
@@ -20,15 +19,42 @@ class Character:
         self.hp = self.energy = 0
         self.name = "KAROLEK, PRZELADUJ TO NA NICK GRACZA JAK BEDZIESZ WCHODZIC DO GRY"  # XD
         self.type: CharType = CharType.HUMAN
+        self.attacks = []
 
     def act(self, targets: list[Character]) -> str:
         return "Nothing happened..."
 
-    def refresh(self):
-        self.hp = self.base_hp
-        self.energy = self.base_energy
+    def deal_damage(self, value: int):
+        self.hp -= value
+        if self.hp < 0:
+            self.hp = 0
+        elif self.hp > self.base_hp:
+            self.hp = self.base_hp
 
-    def get_hit(self, damage: int, damage_type: AttType, attacker: str, attack: str, energy_damage: int = 0) -> str:
+    def deal_energy_damage(self, value: int):
+        self.energy -= value
+        if self.energy < 0:
+            self.energy = 0
+        elif self.energy > self.base_energy:
+            self.energy = self.base_energy
+
+    def get_attack(self, type: str):
+        for attack in self.attacks:
+            if attack.name == type:
+                return attack
+        return None
+
+    def get_hit(self, damage: int,
+                user: Character,
+                attack: AttackBase,
+                energy_damage: int = 0,
+                user_damage: int = 0) -> tuple[str, Hit]:
+
+        # Take energy
+        if attack.cost > user.energy:
+            return "", None
+
+        damage_type = attack.type
         if damage_type == AttType.SLASH:
             if self.type == CharType.UNDEAD:
                 damage = int(damage / 3)
@@ -47,8 +73,18 @@ class Character:
             elif self.type == CharType.INSECT:
                 damage *= 2
 
+        # Create hit object
+        hit = Hit(user_id=user.id,
+                  energy_cost=attack.cost,
+                  target_id=self.id,
+                  damage=damage,
+                  energy_damage=energy_damage)
+
+        # Deal damage
         self.deal_damage(damage)
         self.deal_energy_damage(energy_damage)
+        user.take_energy(attack.cost)
+        user.deal_damage(user_damage)
 
         # Create outcome text
         action = ""
@@ -60,48 +96,48 @@ class Character:
             inverse = -1
         else:
             action = "attacked"
-        return "{target} was {action} by {attacker} with {attack} [DMG: {damage}, Energy DMG: {energy}]" \
-            .format(
-            target=self.name,
-            action=action,
-            attacker=attacker,
-            attack=attack,
-            damage=str(damage * multiplier),
-            energy=str(energy_damage * multiplier))
+        return \
+            "{target} was {action} by {attacker} with {attack} [DMG: {damage}, Energy DMG: {energy}]".format(
+                target=self.name,
+                action=action,
+                attacker=user.name,
+                attack=attack.name,
+                damage=str(damage * multiplier),
+                energy=str(energy_damage * multiplier)), \
+            hit
 
-    def deal_damage(self, value: int):
-        self.hp -= value
-        if self.hp < 0:
-            self.hp = 0
-        elif self.hp > self.base_hp:
-            self.hp = self.base_hp
+    def rest(self) -> (str, Hit):
+        # Calculate
+        rest_efficiency = self.strength * 5
 
-    def deal_energy_damage(self, value: int):
+        if self.base_energy - self.energy < rest_efficiency:
+            rest_efficiency = self.base_energy - self.energy
+
+        # Restore energy
+        self.energy += rest_efficiency
+
+        hit = Hit(user_id=self.id,
+                  energy_cost=0,
+                  target_id=self.id,
+                  damage=0,
+                  user_damage=0,
+                  energy_damage=rest_efficiency * -1)
+
+        return self.name + " rests", hit
+
+    def restore(self):
+        self.hp = self.base_hp
+        self.energy = self.base_energy
+
+    def take_energy(self, value: int):
         self.energy -= value
         if self.energy < 0:
             self.energy = 0
-        elif self.energy > self.base_energy:
-            self.energy = self.base_energy
+        elif self.energy > self.base_hp:
+            self.energy = self.base_hp
 
-    def use_skill_on(self, skill: AttackBase, target: Character) -> str:
+    def use_skill_on(self, skill: AttackBase, target: Character) -> tuple[str, Hit]:
         """
         Returns empty string if user has not enough energy.
         """
-        if skill.cost > self.energy:
-            return ""
-
-        self.energy -= skill.cost
         return skill.use_on(self, target)
-
-    def rest(self, send: bool = True) -> str:
-        if send:
-            if context.GAME.lobby.local_lobby:
-                for client in context.GAME.sockets.values():
-                    communicate(client, ["GAMEPLAY", "ACTION:REST", "ID:" + str(self.id)])
-            else:
-                communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:REST", "ID:" + str(self.id)])
-        rest_efficiency = self.strength * 5
-        self.energy += rest_efficiency
-        if self.energy > self.base_energy:
-            self.energy = self.base_energy
-        return self.name + " rests"

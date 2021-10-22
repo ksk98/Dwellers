@@ -2,7 +2,6 @@ import socket
 from distutils.util import strtobool
 
 import context
-import jsonpickle
 from network import utility
 from network.communication import communicate
 

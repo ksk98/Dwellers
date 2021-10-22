@@ -1,5 +1,6 @@
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
+from views.print_utility import print_whole_line_of_char
 from views.view_enum import Views
 
 
@@ -14,5 +15,11 @@ class ViewDefeat(ViewBase):
         ]
 
     def print_screen(self):
-        self.print_multiline_text("DEFEAT!\nYOU HAVE BEEN WIPED OUT!\n \n")
+        # TODO DELETE CHARACTER...
+        # TODO DISCONNECT
+        print()
+        print_whole_line_of_char('=')
+        self.print_multiline_text("\nDEFEAT!\n \nYOU HAVE BEEN WIPED OUT!\n")
+        print_whole_line_of_char('=')
+        print()
         self._print_options()

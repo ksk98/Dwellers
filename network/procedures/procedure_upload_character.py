@@ -1,8 +1,10 @@
 import socket
-import context
+
 import jsonpickle
-from network.communication import communicate
+
+import context
 from network import utility
+from network.communication import communicate
 
 
 def carry_out(sckt: socket.socket, frame: str) -> str:

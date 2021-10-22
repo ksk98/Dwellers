@@ -1,33 +1,59 @@
 import context
-from characters.attacks.attack_crush import AttackCrush
-from characters.attacks.attack_fire import AttackFire
-from characters.attacks.attack_heal import AttackHeal
-from characters.attacks.attack_slash import AttackSlash
+from characters.character import Character
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.print_utility import print_whole_line_of_char, print_in_two_columns
 from views.view_enum import Views
 
 
+# TODO CANNOT HOST ANOTHER GAME AFTER LEAVING DURING COMBAT
 class ViewCombat(ViewBase):
-    def __init__(self, my_turn: bool, outcomes: list[str]):
+    def __init__(self, char_with_turn: Character, outcomes: list[str]):
         super().__init__()
+
+        # List of players in game
+        self._players = context.GAME.get_players()
+
+        # List of enemies in battle
+        self._enemies = context.GAME.combat.get_alive_enemies()
+
+        # List of outcomes - strings containing info about previous turns
         self._outcomes = outcomes
-        self._my_turn = my_turn
+
+        # Used to display info about not having enough energy to attack when False
         self._enough_energy = True
+
+        # Character of local player
+        self._my_character = context.GAME.lobby.get_local_participant().character
+
+        # Id of character currently having turn
+        self._char_with_turn = char_with_turn
+
+        # If it's my turn - display more buttons
+        self._my_turn = False
+        if self._char_with_turn.id == self._my_character.id:
+            self._my_turn = True
+
+        # Combat object
+        self._combat = context.GAME.combat
         self.options = [
             ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
         if self._my_turn:
+            # get attack names
+            attacks = context.GAME.lobby.get_local_participant().character.attacks
+            attack_names=[]
+            for attack in attacks:
+                attack_names.append(attack.name.capitalize())
+
             self.inputs = {
-                "ATTACK TYPE": [0, ["SLASH", "CRUSH", "FIRE", "HEAL"]]
+                "ATTACK TYPE": [0, attack_names]
             }
-            self.options.insert(0, ["REST", None, lambda: self.rest(), Input.SELECT])
-            self.options.insert(0, ["ATTACK", None, lambda: self.attack(), Input.SELECT])
-            self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self.set_target_list_for_attack(),
+            self.options.insert(0, ["REST", None, lambda: self._combat.rest(), Input.SELECT])
+            self.options.insert(0, ["ATTACK", None, lambda: self._combat.attack(), Input.SELECT])
+            self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self._combat.set_target_list_for_attack(),
                                     Input.MULTI_TOGGLE])
             self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
-            self.set_targets_input_to_enemies()
 
     def print_screen(self):
         print()
@@ -43,8 +69,7 @@ class ViewCombat(ViewBase):
 
         # Print turn
         if not self._my_turn:
-            character_with_turn = context.GAME.combat.get_current_character_name()
-            turn = "This is " + character_with_turn + "'s turn!"
+            turn = "This is " + self._char_with_turn.name + "'s turn!"
         else:
             turn = "This is your turn!"
         self.print_text(turn)
@@ -55,106 +80,35 @@ class ViewCombat(ViewBase):
 
         self._print_options()
 
-    def set_targets_input_to_enemies(self):
-        alive_enemies = []
-        for enemy in context.GAME.combat.get_alive_enemies():
-            alive_enemies.append("{name}[{id}]".format(name=enemy.name, id=enemy.id))
-        self.inputs["TARGET"] = [0, alive_enemies]
+    def set_targets(self, list_of_targets):
+        """
+        Sets the list displaying under "TARGET" option
+        :param list_of_targets: list to display
+        """
+        self.inputs["TARGET"] = [0, list_of_targets]
+
+    def not_enough_energy(self):
+        """
+        Displays info about not enough energy
+        :return:
+        """
+        self._enough_energy = False
         self.refresh_view()
 
-    def set_targets_input_to_friendlies(self):
-        alive_players = []
-        for friendly in context.GAME.combat.get_alive_players():
-            alive_players.append("{name}[{id}]".format(name=friendly.name, id=friendly.id))
-        self.inputs["TARGET"] = [0, alive_players]
-        self.refresh_view()
-
-    def set_target_list_for_attack(self):
-        attack = self.get_input_of_next_option("ATTACK TYPE")
-        if attack is None:
-            return
-
-        if attack == "HEAL":
-            self.set_targets_input_to_friendlies()
-        else:
-            if self.get_input_of_option("ATTACK TYPE") == "HEAL":
-                self.set_targets_input_to_enemies()
-
-    def print_outcomes(self, outcomes: list[str]):
-        """
-        Used to print last 4 outcomes
-        :param outcomes: list of all outcomes
-        """
-        queue = []
-        size = 0
-        for outcome in outcomes:
-            queue.append(outcome)
-            if size >= 4:
-                queue.pop(0)
-            size += 1
-
-        for outcome in queue:
-            print(outcome)
-
-    def attack(self):
-        """
-        Take attack type from input and attack selected character
-        """
-        character = context.GAME.lobby.get_local_participant().character
-        combat = context.GAME.combat
-        outcome = "ERR"
-        if len(combat.get_alive_enemies()) > 0:
-            target_index = self.inputs["TARGET"][0]
-            attack_type = self.get_input_of_option("ATTACK TYPE")
-
-            if attack_type == "HEAL":
-                target = combat.get_alive_players()[target_index]
-            else:
-                target = combat.get_alive_enemies()[target_index]
-
-            attack = None  # TODO display cost of each attack / damage modifiers
-            attack = {
-                "SLASH": AttackSlash(),
-                "CRUSH": AttackCrush(),
-                "HEAL": AttackHeal(),
-                "FIRE": AttackFire()
-            }[attack_type]
-
-            if attack:
-                outcome = character.use_skill_on(attack, target)
-
-        if outcome == "":
-            self._enough_energy = False
-            context.GAME.view_manager.refresh()
-        else:
-            combat.add_outcome(outcome)
-            combat.end_turn()
-
-    @staticmethod
-    def rest():
-        """
-        Rest action for character. Uses character.rest() on player's character and adds outcome.
-        """
-        character = context.GAME.lobby.get_local_participant().character
-        combat = context.GAME.combat
-        outcome = character.rest()
-        combat.add_outcome(outcome)
-        combat.end_turn()
-
-    @staticmethod
-    def prepare_participants():
+    def prepare_participants(self):
         """
         Makes two lists of participants - player characters and enemies.
         Lists contain strings telling character's name and it's stats.
         :return: those lists
         """
-        participants = context.GAME.lobby.participants
+        participants = self._players
         player_list = ["PARTY:"]
-        for participant in participants:
-            character = participant.character
-            line = "{0} - HP:{1}/{2} ENERGY: {3}/{4}" \
+        for character in participants:
+            # character = participant.character
+            line = "{0}[{1}] - HP:{2}/{3} ENERGY: {4}/{5}" \
                 .format(
                     character.name,
+                    character.id,
                     str(character.hp),
                     str(character.base_hp),
                     str(character.energy),
@@ -162,7 +116,7 @@ class ViewCombat(ViewBase):
 
             player_list.append(line)
 
-        enemies = context.GAME.combat.get_alive_enemies()
+        enemies = self._enemies
         enemy_list = ["HOSTILES:"]
         for enemy in enemies:
             line = "HP:{0}/{1} ENERGY: {2}/{3} - {4}[{5}]"\
@@ -177,3 +131,21 @@ class ViewCombat(ViewBase):
             enemy_list.append(line)
 
         return player_list, enemy_list
+
+    @staticmethod
+    def print_outcomes(outcomes: list[str]):
+        """
+        Used to print last 4 outcomes
+        :param outcomes: list of all outcomes
+        """
+        # TODO print more outcomes
+        queue = []
+        size = 0
+        for outcome in outcomes:
+            queue.append(outcome)
+            if size >= 4:
+                queue.pop(0)
+            size += 1
+
+        for outcome in queue:
+            print(outcome)

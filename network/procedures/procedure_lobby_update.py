@@ -1,11 +1,12 @@
 import socket
 from distutils.util import strtobool
 
-import context
 import jsonpickle
+
+import context
 from network import utility
-from views.view_enum import Views
 from network.communication import communicate
+from views.view_enum import Views
 
 
 def carry_out(sckt: socket.socket, frame: str) -> str:

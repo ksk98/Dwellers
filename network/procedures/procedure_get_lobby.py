@@ -1,6 +1,8 @@
 import socket
-import context
+
 import jsonpickle
+
+import context
 from network import utility
 from network.communication import communicate
 

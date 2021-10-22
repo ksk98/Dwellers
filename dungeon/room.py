@@ -13,27 +13,44 @@ class Room:
         self._enemies: list[EnemyBase] = []
         self._next = None
         self._room_type = room_type
-        self.generate_content()
+        self._generate_content()
 
-    def to_string(self):
-        print("Type:", self._room_type, "Gold:", self._gold, "Enemies:", len(self._enemies), end=' ')
-        if self._next is not None:
-            print("Next:", self._next.get_type())
+    # public
 
-    def generate_content(self):
-        rand_range_dict = self.get_from_config()    # get a dictionary containing all min / max values
+    def clear_enemies(self):
+        """
+        Deletes all enemies in this room
+        """
+        self._enemies = []
 
-        # Generate enemies
-        enemy_count = randint(rand_range_dict["enemies_min"], rand_range_dict["enemies_max"])
-        for x in range(0, enemy_count):
-            self.add_enemy(roll_an_enemy())
-            # Give an enemy id
-            self._enemies[len(self._enemies) - 1].id = x + 100
+    def has_next(self) -> bool:
+        """
+        Return true when this isn't the last room in the dungeon
+        """
+        if self._next is None:
+            return False
+        return True
 
-        # Generate gold
-        self._gold = randint(rand_range_dict["gold_min"], rand_range_dict["gold_max"])
+    def set_next(self, next_room):
+        """
+        Sets the room after this one
+        :param next_room: room to set as next
+        """
+        self._next = next_room
+
+    # getters
+
+    def get_enemies(self) -> list[EnemyBase]:
+        """
+        Returns the list of enemies in this room
+        :return: list of enemies
+        """
+        return self._enemies
 
     def get_from_config(self) -> dict:
+        """
+        Loads values from config file
+        """
         values = {
             "enemies_min": config[self._room_type]["enemies_min"],
             "enemies_max": config[self._room_type]["enemies_max"],
@@ -42,25 +59,36 @@ class Room:
         }
         return values
 
-    def set_next(self, next_room):
-        self._next = next_room
-
     def get_gold(self) -> int:
         return self._gold
-
-    def get_enemies(self) -> list[EnemyBase]:
-        return self._enemies
-
-    def get_type(self) -> RoomType:
-        return self._room_type
 
     def get_next(self):
         return self._next
 
-    def add_enemy(self, enemy: EnemyBase):
+    def get_type(self) -> RoomType:
+        return self._room_type
+
+    # private
+
+    def _add_enemy(self, enemy: EnemyBase):
+        """
+        Adds enemy to the current room
+        :param enemy: character object
+        """
         self._enemies.append(enemy)
 
-    def has_next(self) -> bool:
-        if self._next is None:
-            return False
-        return True
+    def _generate_content(self):
+        """
+        Adds random amount of enemies and gold to the room
+        """
+        rand_range_dict = self.get_from_config()    # get a dictionary containing all min / max values
+
+        # Generate enemies
+        enemy_count = randint(rand_range_dict["enemies_min"], rand_range_dict["enemies_max"])
+        for x in range(0, enemy_count):
+            self._add_enemy(roll_an_enemy())
+            # Give an enemy id
+            self._enemies[len(self._enemies) - 1].id = x + 100
+
+        # Generate gold
+        self._gold = randint(rand_range_dict["gold_min"], rand_range_dict["gold_max"])

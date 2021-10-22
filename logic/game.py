@@ -11,8 +11,10 @@ from config import config
 from dungeon.map import Map
 from dungeon.map_size_enum import MapSize
 from dungeon.room import Room
+from logic.client_combat import ClientCombat
 from logic.lobby import Lobby
 from logic.participant import Participant
+from logic.server_combat import ServerCombat
 from network import communication
 from network import frame_handler
 from network import utility
@@ -62,7 +64,10 @@ class Game:
         self.current_room: Room = None
 
         # Instance of current combat
-        self.combat = None
+        self.combat: ClientCombat = None
+
+        # Instance of server combat - only for host
+        self.server_combat: ServerCombat = None
 
         # Gold amount
         self.gold = 0
@@ -434,6 +439,8 @@ class Game:
         else:
             action += "DUNGEON_END"
         for client in self.sockets.values():
+            # TODO IMPLEMENT THIS (procedure_gameplay.py)
+            # communication.communicate_and_get_answer(client, "G")
             communication.communicate(client, ["GAMEPLAY", action])
 
     def go_to_the_next_room(self):

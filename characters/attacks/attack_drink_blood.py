@@ -11,10 +11,11 @@ class AttackDrinkBlood(AttackBase):
         self.cost = 10
         self.type = Type.SLASH
 
-    def use_on(self, user: Character, target: Character) -> str:
+    def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = user.strength
-        # TODO: SEND THIS
-        # user.deal_damage(-7)
-        hit = Hit(user.id, target.id, damage_out, self.type, user.name, self.name, 7)
-        self.send_hit(hit)
-        return target.get_hit(damage_out, self.type, user.name, self.name, 7)
+
+        return target.get_hit(damage=damage_out,
+                              user=user,
+                              attack=self,
+                              energy_damage=7,
+                              user_damage=-7)

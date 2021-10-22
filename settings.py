@@ -1,4 +1,5 @@
 # Settings can be edited by the user and are accessible trough the main menu.
+# TODO CHECK IF SELECTED CHARACTER EXISTS
 settings = {
     "MAX_WIDTH": 100,                   # Used for text centering, this is the max width of printing space
     "PLAYER_NAME": "Player",            # Player nickname

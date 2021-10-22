@@ -48,13 +48,6 @@ class Map:
 
         return room
 
-    def _print(self):
-        print("Dungeon contains", self._room_count, "rooms:")
-        room = self._first_room
-        while room is not None:
-            room.to_string()
-            room = room.get_next()
-
     def get_first_room(self) -> Room:
         return self._first_room
 
@@ -69,9 +62,3 @@ class Map:
         # create room instance
         new_room = Room(RoomType(room_type))
         return new_room
-
-
-if __name__ == '__main__':
-    map = Map()
-    map.generate(MapSize.LARGE)
-    map._print()

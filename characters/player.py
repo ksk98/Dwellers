@@ -1,3 +1,7 @@
+from characters.attacks.attack_crush import AttackCrush
+from characters.attacks.attack_fire import AttackFire
+from characters.attacks.attack_heal import AttackHeal
+from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.character_config import config
 from characters.enums.stats_enum import Stat
@@ -7,6 +11,7 @@ from characters.saved_characters import saved_characters
 class Player(Character):
     def __init__(self, name: str):
         super().__init__()
+        self.attacks = [AttackSlash(), AttackCrush(), AttackFire(), AttackHeal()]
         if name in saved_characters:
             self.name = name
             self._load_stats(name)
@@ -14,22 +19,6 @@ class Player(Character):
             self.name = name
             self.base_hp = self.base_energy = self.strength = self.points = 0
             self.reset_stats()
-
-    def reset_stats(self):
-        """
-        Set stats to default.
-        """
-        self.base_hp = config["base"][Stat.HEALTH]
-        self.base_energy = config["base"][Stat.ENERGY]
-        self.strength = config["base"][Stat.STRENGTH]
-        self.points = config["base"]["points"]
-        self.refresh()
-
-    def _load_stats(self, name: str):
-        self.base_hp = saved_characters[name][Stat.HEALTH]
-        self.base_energy = saved_characters[name][Stat.ENERGY]
-        self.strength = saved_characters[name][Stat.STRENGTH]
-        self.points = saved_characters[name]["points"]
 
     def overwrite_stats(self, old_name: str) -> bool:
         if saved_characters.get(old_name):
@@ -41,6 +30,16 @@ class Player(Character):
             "points": self.points,
         }
         return True
+
+    def reset_stats(self):
+        """
+        Set stats to default.
+        """
+        self.base_hp = config["base"][Stat.HEALTH]
+        self.base_energy = config["base"][Stat.ENERGY]
+        self.strength = config["base"][Stat.STRENGTH]
+        self.points = config["base"]["points"]
+        self.restore()
 
     def save_stats(self):
         saved_characters[self.name] = {
@@ -70,3 +69,11 @@ class Player(Character):
             return False
 
         return True
+
+    # private
+
+    def _load_stats(self, name: str):
+        self.base_hp = saved_characters[name][Stat.HEALTH]
+        self.base_energy = saved_characters[name][Stat.ENERGY]
+        self.strength = saved_characters[name][Stat.STRENGTH]
+        self.points = saved_characters[name]["points"]

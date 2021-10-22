@@ -93,7 +93,7 @@ class ViewBase(ABC):
                 to_print = to_print + ": " + str(value)
 
             if self.options.index(option) == self.selected:
-                self.print_text((">" + to_print))
+                self.print_text((">" + to_print + "<"))
             else:
                 self.print_text(to_print)
 

@@ -2,6 +2,7 @@ from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
+from characters.hit import Hit
 
 
 class SkeletonLazy(EnemyBase):
@@ -14,9 +15,9 @@ class SkeletonLazy(EnemyBase):
         self.strength = 2
         self.attacks = [AttackSlash()]
 
-        self.refresh()
+        self.restore()
 
-    def act(self, targets: list[Character]) -> str:
+    def act(self, targets: list[Character]) -> tuple[str, Hit]:
         # Lazy boy likes to rest whenever he can
         if self.energy < self.base_energy:
             return self.rest()
@@ -24,10 +25,9 @@ class SkeletonLazy(EnemyBase):
         # If at full energy, the lazy boy tends to pick a random target to smack
         target_ind = self.get_index_of_random_target(targets)
 
-        outcome = self.use_skill_on(self.attacks[0], targets[target_ind])
+        outcome, hit = self.use_skill_on(self.attacks[0], targets[target_ind])
         if outcome == "":
             line = self.name + " could not do anything!"
-            self.send_miss(line)
-            return line
+            return line, None
         else:
-            return outcome
+            return outcome, hit

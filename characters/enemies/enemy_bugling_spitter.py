@@ -5,6 +5,7 @@ from characters.attacks.attack_spit import AttackSpit
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
+from characters.hit import Hit
 
 
 class BuglingSpitter(EnemyBase):
@@ -17,15 +18,15 @@ class BuglingSpitter(EnemyBase):
         self.strength = 4
         self.attacks = [AttackBite(), AttackSpit()]
 
-        self.refresh()
+        self.restore()
 
-    def act(self, targets: list[Character]) -> str:
+    def act(self, targets: list[Character]) -> tuple[str, Hit]:
         # Bugling spitters spit acid that saps energy
         # Their behavior is pretty random
         target_ind = self.get_index_of_random_target(targets)
         attack = random.randint(0, len(self.attacks) - 1)
-        outcome = self.use_skill_on(self.attacks[attack], targets[target_ind])
+        outcome, hit = self.use_skill_on(self.attacks[attack], targets[target_ind])
         if outcome == "":
             return self.rest()
 
-        return outcome
+        return outcome, hit

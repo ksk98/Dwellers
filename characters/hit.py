@@ -1,19 +1,19 @@
-from characters.enums.attack_type_enum import Type as AttType
 
 class Hit:
+    """
+    Class containing all values that might be modified during attack
+    """
     def __init__(self,
                  user_id: int,
+                 energy_cost: int,
                  target_id: int,
                  damage: int,
-                 damage_type: AttType,
-                 attacker: str,
-                 attack: str,
+                 user_damage: int = 0,
                  energy_damage: int = 0):
 
         self.user_id = user_id
+        self.energy_cost = energy_cost
+        self.user_damage = user_damage
         self.target_id = target_id
         self.damage = damage
-        self.damage_type = damage_type
-        self.attacker = attacker
-        self.attack = attack
         self.energy_damage = energy_damage

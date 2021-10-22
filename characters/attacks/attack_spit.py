@@ -13,9 +13,11 @@ class AttackSpit(AttackBase):
         self.cost = 15
         self.type = Type.FIRE
 
-    def use_on(self, user: Character, target: Character) -> str:
+    def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = random.randint(6, 13)
         energy_damage_out = random.randint(10, 20)
-        hit = Hit(user.id, target.id, damage_out, self.type, user.name, self.name, energy_damage_out)
-        self.send_hit(hit)
-        return target.get_hit(damage_out, self.type, user.name, self.name, energy_damage_out)
+
+        return target.get_hit(damage=damage_out,
+                              user=user,
+                              attack=self,
+                              energy_damage=energy_damage_out)

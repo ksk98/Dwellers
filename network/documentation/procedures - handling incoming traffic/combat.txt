@@ -1,0 +1,74 @@
+PROCEDURE:      COMBAT
+DESCRIPTION:    All procedures that can happen during combat
+
+Combat is starting
+
+HOST:           COMBAT\r\n
+                ACTION:START\r\n
+                TURN:ID\r\n
+                \r\n
+
+CLIENT:         COMBAT\r\n
+                ACTION:START\r\n
+                STATUS:OK\r\n
+                \r\n
+
+                OR
+
+CLIENT:         COMBAT\r\n
+                ACTION:START\r\n
+                STATUS:ERROR_DESC\r\n
+                \r\n
+
+
+F. Send rest action
+
+Client/host:    COMBAT\r\n
+                ACTION:REST\r\n
+                USER:x\r\n
+                \r\n
+
+Player is attacking
+
+Client:         COMBAT\r\n
+                ACTION:ATTACK\r\n
+                USER:x\r\n
+                TARGET:x\r\n
+                TYPE:type\r\n
+                \r\n
+
+...but has not enough energy
+
+HOST:           COMBAT\r\n
+                ACTION:NO_ENERGY\r\n
+
+
+Host responds with attack's outcome - this applies to successful player attack,
+enemy attack, miss or any character resting
+TURN - id of character that will have the next turn
+
+HOST:           COMBAT\r\n
+                ACTION:OUTCOME\r\n
+                TURN:ID\r\n
+                CONTENT-LENGTH:X\r\n
+                \r\n
+                [outcome_string, Hit object]
+
+Host tells clients that combat is won.
+
+HOST:           COMBAT\r\n
+                ACTION:WIN\r\n
+                \r\n
+
+Host tells clients that combat is lost.
+
+HOST:           COMBAT\r\n
+                ACTION:DEFEAT\r\n
+                \r\n
+
+Client responds that combat has been ended
+
+CLIENT:         COMBAT\r\n
+                ACTION:END_RECEIVE\r\n
+                STATUS:OK\r\n
+                \r\n

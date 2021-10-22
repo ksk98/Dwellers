@@ -1,6 +1,16 @@
-from network import utility
 import socket
 
+import context
+from network import utility
+
+
+def communicate_to_all_clients(header_args: list[str], body_content: str = "") -> str:
+    if context.GAME.lobby.local_lobby:
+        for client in context.GAME.sockets.values():
+            communicate(client, header_args, body_content)
+    else:
+        # ONLY HOST CAN USE THIS
+        pass
 
 def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
     """

@@ -4,6 +4,7 @@ from characters.attacks.attack_bite import AttackBite
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
+from characters.hit import Hit
 
 
 class Bugling(EnemyBase):
@@ -16,9 +17,9 @@ class Bugling(EnemyBase):
         self.strength = 3
         self.attacks = [AttackBite()]
 
-        self.refresh()
+        self.restore()
 
-    def act(self, targets: list[Character]) -> str:
+    def act(self, targets: list[Character]) -> tuple[str, Hit]:
         # Buglings are regular workers of the insect hive
         # Their behavior is pretty random
         target_ind = self.get_index_of_random_target(targets)
@@ -29,8 +30,8 @@ class Bugling(EnemyBase):
             else:
                 return self.use_skill_on(self.attacks[0], targets[target_ind])
         else:
-            outcome = self.use_skill_on(self.attacks[0], targets[target_ind])
+            outcome, hit = self.use_skill_on(self.attacks[0], targets[target_ind])
             if outcome == "":
                 return self.rest()
             else:
-                return outcome
+                return outcome, hit

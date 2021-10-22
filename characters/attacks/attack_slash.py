@@ -11,8 +11,9 @@ class AttackSlash(AttackBase):
         self.cost = 5
         self.type = Type.SLASH
 
-    def use_on(self, user: Character, target: Character) -> str:
+    def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = user.strength
-        hit = Hit(user.id, target.id, damage_out, self.type, user.name, self.name)
-        self.send_hit(hit)
-        return target.get_hit(damage_out, self.type, user.name, self.name)
+
+        return target.get_hit(damage=damage_out,
+                              user=user,
+                              attack=self)
