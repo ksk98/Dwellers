@@ -133,15 +133,14 @@ class ViewCombat(ViewBase):
 
         return player_list, enemy_list
 
-    @staticmethod
-    def print_outcomes(outcomes: list[str]):
+    def print_outcomes(self, outcomes: list[str]):
         """
-        Used to print last 4 outcomes
+        Prints outcomes that happened since last turn
         :param outcomes: list of all outcomes
         """
         # TODO print more outcomes
         # queue = []
-        participant_count = len(context.GAME.combat.get_alive_players()) + len(context.GAME.combat.get_alive_enemies())
+        participant_count = len(self._enemies) + len(self._players)
 
         start_indx = 0
         if len(outcomes) > participant_count:
