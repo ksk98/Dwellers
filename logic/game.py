@@ -52,7 +52,7 @@ class Game:
         self.__next_free_id: int = 0
 
         # This thread handles incoming connection attempts for the host
-        self.connecter_thread: threading.Thread = None
+        self.connector_thread: threading.Thread = None
 
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
@@ -141,7 +141,7 @@ class Game:
                 if utility.is_socket_closed(self.sockets[pid]):
                     self.remove_from_lobby(pid)
 
-    def connecter(self):
+    def connector(self):
         """
         Handle connection requests. Used in an external thread.
         :return:
@@ -175,21 +175,21 @@ class Game:
 
             # Start the thread listening for connection requests
             self.view_manager.set_new_view_for_enum(Views.LOBBY, ViewLobby())
-            self.connecter_thread = threading.Thread(target=self.connecter, args=())
-            self.connecter_thread.start()
+            self.connector_thread = threading.Thread(target=self.connector, args=())
+            self.connector_thread.start()
         except socket.error as e:
             self.view_manager.display_error_and_go_to("Error on creating lobby: " + str(e))
             self.abandon_lobby()
 
-    def close_connecter_thread(self):
+    def close_connector_thread(self):
         # To stop the thread that listens for connection attempts we have to connect to it once
-        if self.connecter_thread is not None:
+        if self.connector_thread is not None:
             temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             temp_socket.connect((utility.get_hostname(), settings["HOSTING_PORT"]))
             temp_socket.sendall("IGNORE\r\n\r\n".encode("utf-8"))
             temp_socket.close()
-            self.connecter_thread.join()
-            self.connecter_thread = None
+            self.connector_thread.join()
+            self.connector_thread = None
 
     def join_external_lobby(self, ip: str, port: int, password: str = "") -> str:
         """
@@ -329,7 +329,7 @@ class Game:
                 sckt.close()
             self.sockets.clear()
 
-            self.close_connecter_thread()
+            self.close_connector_thread()
 
         self.host_socket = None
         self.map = None
@@ -411,7 +411,7 @@ class Game:
                                       ["GAME_START", "STATUS:INFO", "CONTENT-LENGTH:" + str(len(map_json))],
                                       map_json)
         # Reset ready status
-        # Ready will now hold information that client received a valid informations about starting game
+        # Ready will now hold information that client received a valid information about starting game
         for participant in self.lobby.participants:
             participant.ready = False
         # Host is ready
@@ -421,7 +421,7 @@ class Game:
             self.start_game()
 
     def start_game(self):
-        self.close_connecter_thread()
+        self.close_connector_thread()
         self.current_room = self.map.get_first_room()
         for participant in self.lobby.participants:
             char = participant.character

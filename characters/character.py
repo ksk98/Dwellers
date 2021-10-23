@@ -8,7 +8,7 @@ from characters.hit import Hit
 
 class Character:
     """
-    Class representing characters of player.
+    Class representing a character - either player or enemy.
     """
 
     def __init__(self):
@@ -22,9 +22,15 @@ class Character:
         self.attacks = []
 
     def act(self, targets: list[Character]) -> str:
+        """
+        Make a character do something. Used when enemy needs to act during its turn.
+        """
         return "Nothing happened..."
 
     def deal_damage(self, value: int):
+        """
+        Deal health damage to character. This only changes the value.
+        """
         self.hp -= value
         if self.hp < 0:
             self.hp = 0
@@ -32,6 +38,9 @@ class Character:
             self.hp = self.base_hp
 
     def deal_energy_damage(self, value: int):
+        """
+        Deal energy damage to character. This only changes the value.
+        """
         self.energy -= value
         if self.energy < 0:
             self.energy = 0
@@ -58,11 +67,13 @@ class Character:
         if damage_type == AttType.SLASH:
             if self.type == CharType.UNDEAD:
                 damage = int(damage / 3)
-            if self.type == CharType.INSECT:
+            elif self.type == CharType.INSECT:
                 damage = 0
+            elif self.type == CharType.HUMAN:
+                damage = int(damage * 1.5)
         elif damage_type == AttType.CRUSH:
             if self.type == CharType.UNDEAD:
-                damage *= 2
+                damage = int(damage * 1.6)
             elif self.type == CharType.ABOMINATION:
                 damage = int(damage / 2)
             elif self.type == CharType.INSECT:
@@ -107,6 +118,10 @@ class Character:
             hit
 
     def rest(self) -> (str, Hit):
+        """
+        Make a character rest for a turn.
+        :return:
+        """
         # Calculate
         rest_efficiency = self.strength * 5
 
@@ -126,6 +141,9 @@ class Character:
         return self.name + " rests", hit
 
     def restore(self):
+        """
+        Restore characters health and energy to base values.
+        """
         self.hp = self.base_hp
         self.energy = self.base_energy
 
