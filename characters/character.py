@@ -91,20 +91,21 @@ class Character:
                   damage=damage,
                   energy_damage=energy_damage)
 
-        # Deal damage
+        # Deal damage to target
         self.deal_damage(damage)
         self.deal_energy_damage(energy_damage)
-        user.take_energy(attack.cost)
+        # and user
         user.deal_damage(user_damage)
+        user.deal_energy_damage(attack.cost)
 
         # Create outcome text
         action = ""
-        multiplier = 1  # TODO decide - is it necessary? DMG: -20 looks weird...
+        multiplier = 1
         if self.hp == 0:
             action = "killed"
         elif damage_type == AttType.HEALING:
             action = "healed"
-            inverse = -1
+            multiplier = -1
         else:
             action = "attacked"
         return \
@@ -146,13 +147,6 @@ class Character:
         """
         self.hp = self.base_hp
         self.energy = self.base_energy
-
-    def take_energy(self, value: int):
-        self.energy -= value
-        if self.energy < 0:
-            self.energy = 0
-        elif self.energy > self.base_hp:
-            self.energy = self.base_hp
 
     def use_skill_on(self, skill: AttackBase, target: Character) -> tuple[str, Hit]:
         """

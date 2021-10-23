@@ -44,7 +44,8 @@ class ViewCombat(ViewBase):
             attacks = context.GAME.lobby.get_local_participant().character.attacks
             attack_names=[]
             for attack in attacks:
-                attack_names.append(attack.name.capitalize())
+                option_name = "{attack_name} [COST: {cost}]".format(attack_name=attack.name, cost=attack.cost)
+                attack_names.append(option_name)
 
             self.inputs = {
                 "ATTACK TYPE": [0, attack_names]
@@ -139,13 +140,12 @@ class ViewCombat(ViewBase):
         :param outcomes: list of all outcomes
         """
         # TODO print more outcomes
-        queue = []
-        size = 0
-        for outcome in outcomes:
-            queue.append(outcome)
-            if size >= 4:
-                queue.pop(0)
-            size += 1
+        # queue = []
+        participant_count = len(context.GAME.combat.get_alive_players()) + len(context.GAME.combat.get_alive_enemies())
 
-        for outcome in queue:
-            print(outcome)
+        start_indx = 0
+        if len(outcomes) > participant_count:
+            start_indx = len(outcomes) - participant_count
+
+        for x in range(start_indx, len(outcomes)):
+            print(outcomes[x])
