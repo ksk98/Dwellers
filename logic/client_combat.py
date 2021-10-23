@@ -42,13 +42,19 @@ class ClientCombat:
         Execute attack action. Takes all necessary values and sends them to host or executes it.
         """
         # Take input
-        target_index = self._combat_view.inputs.get("TARGET")[0]
-        attack: str = self._combat_view.get_input_of_option("ATTACK TYPE")
+
+        # Get attack
+        attack_index = self._combat_view.inputs.get("ATTACK TYPE")[0]
+        attack = self.get_character_with_id(self._my_id).attacks[attack_index].name
+
+        # Choose target list based on selected attack
         if attack == "Heal":
             targets = self.get_alive_players()
         else:
             targets = self.get_alive_enemies()
 
+        # Get target from list
+        target_index = self._combat_view.inputs.get("TARGET")[0]
         target_id = targets[target_index].id
 
         # Send to host
@@ -114,7 +120,7 @@ class ClientCombat:
             return
 
         if attack == "Heal":
-            prepared_targets = self._prepare_strings_for_targets(self.get_alive_players())
+            prepared_targets = self._prepare_strings_for_targets(self._players)
             self._combat_view.set_targets(prepared_targets)
         else:
             prepared_targets = self._prepare_strings_for_targets(self.get_alive_enemies())
