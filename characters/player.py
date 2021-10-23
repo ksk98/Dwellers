@@ -9,6 +9,9 @@ from characters.saved_characters import saved_characters
 
 
 class Player(Character):
+    """
+    Class representing player character.
+    """
     def __init__(self, name: str):
         super().__init__()
         self.attacks = [AttackSlash(), AttackCrush(), AttackFire(), AttackHeal()]

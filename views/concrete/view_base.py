@@ -123,6 +123,9 @@ class ViewBase(ABC):
         return self.options[self.selected][1]
 
     def get_input_of_option(self, input_name: str):
+        """
+        Get value for option. If none present (for buttons) returns None.
+        """
         if input_name not in self.inputs:
             return None
 
@@ -157,6 +160,11 @@ class ViewBase(ABC):
             return None
 
     def get_input_of_option_index(self, option_index: int):
+        """
+        Get value for option index. If none present (for buttons) returns None.
+        :param option_index:
+        :return:
+        """
         return self.get_input_of_option(self.get_option_for_index(option_index))
 
     def delete_letter(self):
