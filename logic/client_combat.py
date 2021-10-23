@@ -94,7 +94,7 @@ class ClientCombat:
 
                 # User
                 user.deal_damage(hit.user_damage)
-                user.take_energy(hit.energy_cost)
+                user.deal_energy_damage(hit.energy_cost)
 
             self._create_new_view(new_turn)
 

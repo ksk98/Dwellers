@@ -84,8 +84,8 @@ class Character:
         self.deal_damage(damage)
         self.deal_energy_damage(energy_damage)
         # and user
-        user.take_energy(attack.cost)
         user.deal_damage(user_damage)
+        user.deal_energy_damage(attack.cost)
 
         # Create outcome text
         action = ""
@@ -129,13 +129,6 @@ class Character:
     def restore(self):
         self.hp = self.base_hp
         self.energy = self.base_energy
-
-    def take_energy(self, value: int):
-        self.energy -= value
-        if self.energy < 0:
-            self.energy = 0
-        elif self.energy > self.base_hp:
-            self.energy = self.base_hp
 
     def use_skill_on(self, skill: AttackBase, target: Character) -> tuple[str, Hit]:
         """
