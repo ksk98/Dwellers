@@ -331,6 +331,8 @@ class Game:
 
             self.close_connecter_thread()
 
+        self.host_socket.close()
+
         self.host_socket = None
         self.map = None
         self.current_room = None

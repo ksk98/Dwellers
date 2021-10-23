@@ -80,20 +80,21 @@ class Character:
                   damage=damage,
                   energy_damage=energy_damage)
 
-        # Deal damage
+        # Deal damage to target
         self.deal_damage(damage)
         self.deal_energy_damage(energy_damage)
+        # and user
         user.take_energy(attack.cost)
         user.deal_damage(user_damage)
 
         # Create outcome text
         action = ""
-        multiplier = 1  # TODO decide - is it necessary? DMG: -20 looks weird...
+        multiplier = 1
         if self.hp == 0:
             action = "killed"
         elif damage_type == AttType.HEALING:
             action = "healed"
-            inverse = -1
+            multiplier = -1
         else:
             action = "attacked"
         return \

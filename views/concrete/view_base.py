@@ -87,7 +87,7 @@ class ViewBase(ABC):
         for option in self.options:
             to_print = option[0]
             value = self.get_input_of_option(option[0])
-            if not value:
+            if value is None:
                 value = self.inputs.get(option[0])
             else:
                 to_print = to_print + ": " + str(value)
