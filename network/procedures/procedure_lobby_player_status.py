@@ -20,7 +20,10 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
     participant = context.GAME.lobby.get_participant_of_id(sckt_id)
     participant.ready = player_status
     for client in context.GAME.sockets.values():
-        communicate(client, ["LOBBY_UPDATE", "ACTION:PLAYER_READY", "STATUS:" + str(player_status), "PLAYER_ID:" + str(sckt_id)])
+        communicate(client, ["LOBBY_UPDATE",
+                             "ACTION:PLAYER_READY",
+                             "STATUS:" + str(player_status),
+                             "PLAYER_ID:" + str(sckt_id)])
 
     context.GAME.view_manager.refresh()
     return utility.get_ip_and_address_of_client_socket(sckt) + " PLAYER STATUS SENT"

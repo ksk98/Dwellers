@@ -18,10 +18,11 @@ class ViewPlay(ViewBase):
             ["BACK TO MENU", Views.MENU, lambda: context.GAME.view_manager.remove_view_for_enum(Views.PLAY), Input.SELECT]
         ]
         if self._check_if_character_exists():
-            self.add_connection_buttons()
+            self._add_connection_buttons()
 
     def print_screen(self):
         self._print_logo()
+        self.print_text("Gold: {0}".format(context.GAME.total_gold))
 
         if not self._check_if_character_exists():
             self.print_text("YOU NEED TO SELECT A CHARACTER BEFORE STARTING A GAME!")
@@ -29,11 +30,18 @@ class ViewPlay(ViewBase):
         self._print_options()
 
     def _check_if_character_exists(self):
+        """
+        Check if selected character is in file saved_characters
+        :return: true if character exists
+        """
         if settings["SELECTED_CHARACTER"] in saved_characters:
             return True
         return False
 
-    def add_connection_buttons(self):
+    def _add_connection_buttons(self):
+        """
+        Adds buttons used to host / join lobby
+        """
         self.options.insert(0, ["JOIN LOBBY", Views.JOIN,
                                 lambda: context.GAME.view_manager.set_new_view_for_enum(Views.JOIN, ViewJoin()),
                                 Input.SELECT])

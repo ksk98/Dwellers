@@ -40,7 +40,7 @@ class ViewCombat(ViewBase):
             ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
         if self._my_turn:
-            # get attack names
+            # Get attack names
             attacks = context.GAME.lobby.get_local_participant().character.attacks
             attack_names=[]
             for attack in attacks:

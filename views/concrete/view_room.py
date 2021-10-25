@@ -20,16 +20,16 @@ class ViewRoom(ViewBase):
 
         if not room.gold_added:
             gold = context.GAME.current_room.get_gold()
-            context.GAME.gold += gold
+            context.GAME.tmp_gold += gold
             room.gold_added = True
 
         self.options = [
-            ["LEAVE GAME", None, lambda: self.leave_game(), Input.SELECT]
+            ["LEAVE GAME", None, lambda: self._leave_game(), Input.SELECT]
         ]
         if len(self._room.get_enemies()) > 0 and context.GAME.lobby.local_lobby:
-            self.options.insert(0, ["START COMBAT", None, lambda: self.start_combat(), Input.SELECT])
+            self.options.insert(0, ["START COMBAT", None, lambda: self._start_combat(), Input.SELECT])
         elif len(self._room.get_enemies()) == 0:
-            self.options.insert(0, ["GO TO THE NEXT ROOM", Views.ROOM, lambda: self.go_to_next_room(), Input.SELECT], )
+            self.options.insert(0, ["GO TO THE NEXT ROOM", None, lambda: self._go_to_next_room(), Input.SELECT], )
         else:
             self.options.insert(0, ["DO NOTHING", None, lambda: None, Input.SELECT])
 
@@ -37,7 +37,7 @@ class ViewRoom(ViewBase):
         print()
         print_whole_line_of_char('=')
 
-        self.print_participants()
+        self._print_participants()
 
         print_whole_line_of_char('=')
         gold = context.GAME.current_room.get_gold()
@@ -46,7 +46,7 @@ class ViewRoom(ViewBase):
         self.print_multiline_text("You are in a {room_type} room.\n"
                                   "There is {amount} gold in this room.\n"
                                   "Total looted gold: {total_gold}\n"
-                                  .format(room_type=context.GAME.current_room.get_type().name, amount=gold_amount, total_gold=context.GAME.gold))
+                                  .format(room_type=context.GAME.current_room.get_type().name, amount=gold_amount, total_gold=context.GAME.tmp_gold))
 
         if len(self._room.get_enemies()) > 0:  # if enemies are present - start combat
             print()
@@ -63,7 +63,10 @@ class ViewRoom(ViewBase):
         if self._confirm_leave:
             self._confirm_leave = False
 
-    def leave_game(self):
+    def _leave_game(self):
+        """
+        Used to display leave confirmation and for leaving.
+        """
         if self._confirm_leave:
             context.GAME.view_manager.set_current(Views.MENU)
             context.GAME.abandon_lobby()
@@ -71,12 +74,18 @@ class ViewRoom(ViewBase):
             self._confirm_leave = True
             self.print_text("Do you really want to abandon your party?")
 
-    def start_combat(self):
+    def _start_combat(self):
+        """
+        Starts combat by creating ServerCombat object.
+        """
         combat = ServerCombat()
         context.GAME.server_combat = combat
         combat.start()
 
-    def print_participants(self):
+    def _print_participants(self):
+        """
+        Prints all players with their stats in a nice column
+        """
         participants = context.GAME.lobby.participants
         player_list = ["PARTY:"]
         for participant in participants:
@@ -88,7 +97,10 @@ class ViewRoom(ViewBase):
             player_list.append(player_string)
         print_in_two_columns([player_list, [""]])
 
-    def go_to_next_room(self):
+    def _go_to_next_room(self):
+        """
+        Decides if party is going to the next room or that game is won.
+        """
         if context.GAME.lobby.local_lobby:
             has_next = context.GAME.current_room.has_next()
             context.GAME.send_next_room_action()

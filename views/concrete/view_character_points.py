@@ -14,7 +14,10 @@ class ViewCharacterPoints(ViewBase):
     """
     def __init__(self):
         super().__init__()
+        # Do you really want to override?
         self.confirm_overwrite = False
+
+        # Determine name for character
         self.saved_character_name = settings["SELECTED_CHARACTER"]
         if self.saved_character_name == "":
             self._name = "Default"
@@ -23,6 +26,7 @@ class ViewCharacterPoints(ViewBase):
 
         self._character = Player(self._name)
 
+        # Create names for options
         hp_button_string = "Health Points (+{0})".format(self.get_upgrade_amount_for(Stat.HEALTH))
         ep_button_string = "Energy Points (+{0})".format(self.get_upgrade_amount_for(Stat.ENERGY))
         sp_button_string = "Strength Points (+{0})".format(self.get_upgrade_amount_for(Stat.STRENGTH))
@@ -33,7 +37,9 @@ class ViewCharacterPoints(ViewBase):
             [ep_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.ENERGY), Input.SELECT],
             [sp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.STRENGTH),
              Input.SELECT],
+            # TODO ["SHOP", None, lambda: None, Input.SELECT],
             ["SAVE", None, lambda: self.save(), Input.SELECT],
+            # TODO ["DELETE", None, lambda: None, Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
         self.inputs = {
@@ -57,7 +63,7 @@ class ViewCharacterPoints(ViewBase):
 
     def save(self):
         self._character.name = self.inputs["NAME"]
-        from characters.saved_characters import saved_characters
+        from characters.saved_characters import saved_characters  # because circular import
         if self._character.name != self.saved_character_name and saved_characters.get(self._character.name):
             if self.confirm_overwrite:
                 self._character.overwrite_stats(self.saved_character_name)

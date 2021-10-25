@@ -8,6 +8,14 @@ from views.view_enum import Views
 class ViewGameSummary(ViewBase):
     def __init__(self):
         super().__init__()
+        # Save looted gold amount
+        # TODO DIVIDE BY PLAYER COUNT
+        self.gold = context.GAME.tmp_gold
+        # Collect it
+        context.GAME.total_gold += self.gold
+        # Reset
+        context.GAME.tmp_gold = 0
+
         self.options = [
             ["OK", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
@@ -18,8 +26,12 @@ class ViewGameSummary(ViewBase):
         print()
         print_whole_line_of_char('=')
         self.print_multiline_text(
-            "\nCONGRATULATIONS!\n \nYOU HAVE REACHED THE END OF A DUNGEON!\nLOOTED GOLD: {0}\n".format(
-                str(context.GAME.gold)))
+            "\nCONGRATULATIONS!\n "
+            "\n"
+            "YOU HAVE REACHED THE END OF A DUNGEON!\n"
+            "LOOTED GOLD: {0}\n"
+            "DEFEATED CREATURES: {1}\n".format(
+                str(self.gold), str(context.GAME.defeated_creatures)))
         print_whole_line_of_char('=')
         print()
         self._print_options()

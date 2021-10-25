@@ -8,6 +8,7 @@ from views.view_enum import Views
 class ViewCombatSummary(ViewBase):
     def __init__(self, outcomes: list[str], enemies_count: int, participant_count: int):
         super().__init__()
+        context.GAME.defeated_creatures += enemies_count
         self._enemies_count = enemies_count
         self._outcomes = outcomes
         self._participant_count = participant_count

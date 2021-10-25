@@ -69,8 +69,14 @@ class Game:
         # Instance of server combat - only for host
         self.server_combat: ServerCombat = None
 
-        # Gold amount
-        self.gold = 0
+        # Collected gold
+        self.total_gold = 0
+
+        # Gold amount for one dungeon run
+        self.tmp_gold = 0
+
+        # Number of defeated creatures in current run
+        self.defeated_creatures = 0
 
     def view(self):
         """
@@ -334,10 +340,11 @@ class Game:
 
         self.host_socket.close()
 
+        self.tmp_gold = 0
+        self.defeated_creatures = 0
         self.host_socket = None
         self.map = None
         self.current_room = None
-        self.gold = 0
         self.combat = None
 
     def get_new_id(self) -> int:

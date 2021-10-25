@@ -24,6 +24,7 @@ class ViewJoin(ViewBase):
         }
 
     def print_screen(self):
+        self._print_logo()
         self._print_options()
 
     def _join_action(self):

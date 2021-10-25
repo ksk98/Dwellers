@@ -11,6 +11,8 @@ class ViewDefeat(ViewBase):
     """
     def __init__(self):
         super().__init__()
+        context.GAME.tmp_gold = 0
+        context.GAME.defeated_creatures = 0
         self.options = [
             ["OK", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
@@ -19,7 +21,9 @@ class ViewDefeat(ViewBase):
         # TODO DELETE CHARACTER...
         print()
         print_whole_line_of_char('=')
-        self.print_multiline_text("\nDEFEAT!\n \nYOU HAVE BEEN WIPED OUT!\n")
+        self.print_multiline_text("\nDEFEAT!\n \n"
+                                  "YOU HAVE BEEN WIPED OUT!\n"
+                                  "ALL LOOT HAS BEEN LOST...")
         print_whole_line_of_char('=')
         print()
         self._print_options()

@@ -45,6 +45,9 @@ class ViewCharacters(ViewBase):
         self._print_options()
 
     def _set_options_text(self):
+        """
+        Sets the text for options
+        """
         indx = 0
         for option in self.options:
             if indx < len(self._option_names):

@@ -99,7 +99,20 @@ class ClientCombat:
 
             self._create_new_view(new_turn)
 
+    def prepare_combat_summary(self):
+        """
+        Creates view of combat summary
+        """
+        participant_count = participant_count = len(self.get_alive_enemies()) + len(self.get_alive_players())
+        context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT_SUMMARY,
+                                                        ViewCombatSummary(self._outcomes,
+                                                                          len(self._enemies),
+                                                                          participant_count))
+
     def restore_energy(self):
+        """
+        Restores energy of all players after the fight
+        """
         for player in self._players:
             player.energy = player.base_energy
 
@@ -137,13 +150,13 @@ class ClientCombat:
             prepared_targets = self._prepare_strings_for_targets(self.get_alive_enemies())
             self._combat_view.set_targets(prepared_targets)
 
+    # Getters
+
     def start(self):
         """
         Starts the combat - sets the view
         """
         self._create_new_view(self._id_with_turn)
-
-    # Getters
 
     def am_i_dead(self):
         """
@@ -193,10 +206,12 @@ class ClientCombat:
                 return char
         return None
 
+    # Private
+
     def get_outcomes(self) -> list[str]:
         return self._outcomes
 
-    # Private
+    # Static
 
     def _create_new_view(self, new_turn):
         """
@@ -217,25 +232,12 @@ class ClientCombat:
         context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT, self._combat_view)
         context.GAME.view_manager.set_current(Views.COMBAT)
 
-    # Static
-
     @staticmethod
     def _prepare_strings_for_targets(targets):
         ready_targets = []
         for target in targets:
             ready_targets.append("{name}[{id}]".format(name=target.name, id=target.id))
         return ready_targets
-
-    def prepare_combat_summary(self):
-        """
-        Creates view of combat summary
-        :return:
-        """
-        participant_count = participant_count = len(self.get_alive_enemies()) + len(self.get_alive_players())
-        context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT_SUMMARY,
-                                                        ViewCombatSummary(self._outcomes,
-                                                                          len(self._enemies),
-                                                                          participant_count))
 
 
 def end_battle(is_won: bool):
