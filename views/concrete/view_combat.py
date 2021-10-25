@@ -55,6 +55,8 @@ class ViewCombat(ViewBase):
             self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self._combat.set_target_list_for_attack(),
                                     Input.MULTI_TOGGLE])
             self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
+        else:
+            self.options.insert(0, ["DO NOTHING", Views.COMBAT, lambda: None, Input.SELECT])
 
     def print_screen(self):
         print()
@@ -71,9 +73,11 @@ class ViewCombat(ViewBase):
         # Print turn
         if not self._my_turn:
             turn = "This is " + self._char_with_turn.name + "'s turn!"
+            if self._combat.am_i_dead():
+                turn += "\nLooks like you're dead! Ask your friends to heal you!"
         else:
             turn = "This is your turn!"
-        self.print_text(turn)
+        self.print_multiline_text(turn)
 
         if not self._enough_energy:
             self.print_text("You don't have enough energy to do that!")

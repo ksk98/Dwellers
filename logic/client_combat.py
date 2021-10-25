@@ -49,7 +49,7 @@ class ClientCombat:
 
         # Choose target list based on selected attack
         if attack == "Heal":
-            targets = self.get_alive_players()
+            targets = self._players
         else:
             targets = self.get_alive_enemies()
 
@@ -115,11 +115,17 @@ class ClientCombat:
         """
         Sets the targets in CombatView based on selected attack type (heal - players and enemies otherwise)
         """
-        attack: str = self._combat_view.get_input_of_next_option("ATTACK TYPE")
-        if attack is None:
-            return
 
-        if attack == "Heal":
+        # Get attack string (with cost)
+        attack_string: str = self._combat_view.get_input_of_next_option("ATTACK TYPE")
+        # Search attacks for this attack
+        for att in self.get_character_with_id(self._my_id).attacks:
+            if att.name in attack_string:
+                # Override it
+                attack_string = att.name
+                break
+
+        if attack_string == "Heal":
             prepared_targets = self._prepare_strings_for_targets(self._players)
             self._combat_view.set_targets(prepared_targets)
         else:
@@ -133,6 +139,16 @@ class ClientCombat:
         self._create_new_view(self._id_with_turn)
 
     # Getters
+
+    def am_i_dead(self):
+        """
+        Returns information if local player is dead
+        :return: true if local player is dead
+        """
+        my_character = self.get_character_with_id(self._my_id)
+        if my_character.hp > 0:
+            return False
+        return True
 
     def get_alive_enemies(self) -> list[Character]:
         """
