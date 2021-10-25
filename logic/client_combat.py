@@ -3,6 +3,7 @@ import views.concrete.view_combat
 from characters.character import Character
 from characters.hit import Hit
 from network import communication
+from views.concrete.view_combat_summary import ViewCombatSummary
 from views.concrete.view_defeat import ViewDefeat
 from views.concrete.view_room import ViewRoom
 from views.view_enum import Views
@@ -192,6 +193,9 @@ class ClientCombat:
                 return char
         return None
 
+    def get_outcomes(self) -> list[str]:
+        return self._outcomes
+
     # Private
 
     def _create_new_view(self, new_turn):
@@ -222,6 +226,17 @@ class ClientCombat:
             ready_targets.append("{name}[{id}]".format(name=target.name, id=target.id))
         return ready_targets
 
+    def prepare_combat_summary(self):
+        """
+        Creates view of combat summary
+        :return:
+        """
+        participant_count = participant_count = len(self.get_alive_enemies()) + len(self.get_alive_players())
+        context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT_SUMMARY,
+                                                        ViewCombatSummary(self._outcomes,
+                                                                          len(self._enemies),
+                                                                          participant_count))
+
 
 def end_battle(is_won: bool):
     """
@@ -230,11 +245,19 @@ def end_battle(is_won: bool):
     :return:
     """
     view_manager = context.GAME.view_manager
-    context.GAME.combat = None
     if is_won:
+        # Create view of game summary
+        context.GAME.combat.prepare_combat_summary()
+
+        # Clean variables
+        context.GAME.combat = None
         context.GAME.current_room.clear_enemies()
+
+        # Prepare view for room (displayed after summary)
         view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(context.GAME.current_room))
-        view_manager.set_current(Views.ROOM)
+        # And change view to summary
+        view_manager.set_current(Views.COMBAT_SUMMARY)
     else:
+        context.GAME.combat = None
         view_manager.set_new_view_for_enum(Views.DEFEAT, ViewDefeat())
         view_manager.set_current(Views.DEFEAT)

@@ -142,8 +142,6 @@ class ViewCombat(ViewBase):
         Prints outcomes that happened since last turn
         :param outcomes: list of all outcomes
         """
-        # TODO print more outcomes
-        # queue = []
         participant_count = len(self._enemies) + len(self._players)
 
         start_indx = 0

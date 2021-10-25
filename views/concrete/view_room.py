@@ -14,6 +14,7 @@ class ViewRoom(ViewBase):
     def __init__(self, room: Room):
         super().__init__()
         self._room = room
+        self._confirm_leave = False
         self._notify_cant_go = False
         self._no_rooms_left = False
 
@@ -23,18 +24,18 @@ class ViewRoom(ViewBase):
             room.gold_added = True
 
         self.options = [
-            ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
+            ["LEAVE GAME", None, lambda: self.leave_game(), Input.SELECT]
         ]
         if len(self._room.get_enemies()) > 0 and context.GAME.lobby.local_lobby:
             self.options.insert(0, ["START COMBAT", None, lambda: self.start_combat(), Input.SELECT])
         elif len(self._room.get_enemies()) == 0:
-            self.options.insert(0, ["GO TO THE NEXT ROOM", None, lambda: self.go_to_next_room(), Input.SELECT], )
+            self.options.insert(0, ["GO TO THE NEXT ROOM", Views.ROOM, lambda: self.go_to_next_room(), Input.SELECT], )
+        else:
+            self.options.insert(0, ["DO NOTHING", None, lambda: None, Input.SELECT])
 
     def print_screen(self):
         print()
         print_whole_line_of_char('=')
-        # TODO Combat summary
-        self.print_text("Total looted gold: {0}".format(context.GAME.gold))
 
         self.print_participants()
 
@@ -44,17 +45,31 @@ class ViewRoom(ViewBase):
 
         self.print_multiline_text("You are in a {room_type} room.\n"
                                   "There is {amount} gold in this room.\n"
-                                  .format(room_type=context.GAME.current_room.get_type().name, amount=gold_amount))
+                                  "Total looted gold: {total_gold}\n"
+                                  .format(room_type=context.GAME.current_room.get_type().name, amount=gold_amount, total_gold=context.GAME.gold))
 
         if len(self._room.get_enemies()) > 0:  # if enemies are present - start combat
             print()
-            self.print_multiline_text("There are enemies in this room!\n"
-                                      "Wait for the host to start the battle...\n\n")
+            self.print_text("There are enemies in this room!")
+            if not context.GAME.lobby.local_lobby:
+                self.print_text("Wait for the host to start the battle...")
 
         if self._notify_cant_go:
-            print("Only host can decide when the party is going to the next room!".center(settings["MAX_WIDTH"]))
+            self.print_text("Only host can decide when the party is going to the next room!")
             self._notify_cant_go = False
+
         self._print_options()
+
+        if self._confirm_leave:
+            self._confirm_leave = False
+
+    def leave_game(self):
+        if self._confirm_leave:
+            context.GAME.view_manager.set_current(Views.MENU)
+            context.GAME.abandon_lobby()
+        else:
+            self._confirm_leave = True
+            self.print_text("Do you really want to abandon your party?")
 
     def start_combat(self):
         combat = ServerCombat()
