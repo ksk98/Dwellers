@@ -66,9 +66,9 @@ class ViewLobby(ViewBase):
             # Generate map
             map_size = MapSize.MEDIUM
             if self.inputs:
-                if self.inputs["MAP SIZE"] == "SMALL":
+                if self.get_input_of_option("MAP SIZE") == "SMALL":
                     map_size = MapSize.SMALL
-                elif self.inputs["MAP SIZE"] == "LARGE":
+                elif self.get_input_of_option("MAP SIZE") == "LARGE":
                     map_size = MapSize.LARGE
             context.GAME.generate_map(map_size)
 

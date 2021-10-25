@@ -82,6 +82,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         context.GAME.server_combat.send_outcome(outcome, hit, next_id, sckt)
 
     elif action == "WIN":
+        context.GAME.combat.restore_energy()
         communicate(context.GAME.host_socket, ["COMBAT", "ACTION:END_RECEIVE", "STATUS:OK"])
         end_battle(True)
 

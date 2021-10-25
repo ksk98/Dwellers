@@ -21,12 +21,12 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
                                                                    "ESTABLISHED "
     if action == "NEXT_ROOM":
         if context.GAME.combat is None:
-            # TODO IMPLEMENT THIS (combat.py)
-            # communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:NEXT_ROOM", "STATUS:OK"])
+            communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:NEXT_ROOM", "STATUS:OK"])
             context.GAME.go_to_the_next_room()
         return utility.get_ip_and_address_of_client_socket(sckt) + " GOING TO NEXT ROOM "
 
-    elif action == "END":
+    elif action == "DUNGEON_END":
+        communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:DUNGEON_END", "STATUS:OK"])
         context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
         context.GAME.view_manager.set_current(Views.SUMMARY)
 

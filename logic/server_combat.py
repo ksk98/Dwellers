@@ -182,6 +182,7 @@ class ServerCombat:
         if context.GAME.lobby.local_lobby:
             if len(self._get_alive_enemies()) == 0:
                 self._communicate_end("WIN")
+                context.GAME.combat.restore_energy()
                 logic.client_combat.end_battle(True)
                 return True
             elif len(self._get_alive_players()) == 0:

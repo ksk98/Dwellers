@@ -98,6 +98,10 @@ class ClientCombat:
 
             self._create_new_view(new_turn)
 
+    def restore_energy(self):
+        for player in self._players:
+            player.energy = player.base_energy
+
     def rest(self):
         """
         Send rest action or executes it

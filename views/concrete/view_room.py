@@ -28,11 +28,9 @@ class ViewRoom(ViewBase):
         if len(self._room.get_enemies()) > 0 and context.GAME.lobby.local_lobby:
             self.options.insert(0, ["START COMBAT", None, lambda: self.start_combat(), Input.SELECT])
         elif len(self._room.get_enemies()) == 0:
-            self.options.insert(0, ["GO TO THE NEXT ROOM", Views.ROOM, lambda: self.go_to_next_room(), Input.SELECT], )
+            self.options.insert(0, ["GO TO THE NEXT ROOM", None, lambda: self.go_to_next_room(), Input.SELECT], )
 
     def print_screen(self):
-        self.check_end()
-
         print()
         print_whole_line_of_char('=')
         # TODO Combat summary
@@ -63,14 +61,6 @@ class ViewRoom(ViewBase):
         context.GAME.server_combat = combat
         combat.start()
 
-    def check_end(self):
-        if self._no_rooms_left:
-            if context.GAME.lobby.local_lobby:
-                for client in context.GAME.sockets.values():
-                    communicate(client, ["GAMEPLAY", "ACTION:END"])
-            context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
-            context.GAME.view_manager.set_current(Views.SUMMARY)
-
     def print_participants(self):
         participants = context.GAME.lobby.participants
         player_list = ["PARTY:"]
@@ -84,10 +74,13 @@ class ViewRoom(ViewBase):
         print_in_two_columns([player_list, [""]])
 
     def go_to_next_room(self):
-        # TODO COMMUNICATE AND GET ANSWER - WAIT FOR CLIENTS
         if context.GAME.lobby.local_lobby:
-            if not context.GAME.current_room.has_next():
-                self._no_rooms_left = True
+            has_next = context.GAME.current_room.has_next()
             context.GAME.send_next_room_action()
+            if has_next:
+                context.GAME.go_to_the_next_room()
+            else:
+                context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary())
+                context.GAME.view_manager.set_current(Views.SUMMARY)
         else:
             self._notify_cant_go = True

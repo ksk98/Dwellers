@@ -310,6 +310,7 @@ class Game:
         return True
 
     def abandon_lobby(self):
+        # TODO Socket error on clients when host leaves game (game summary)
         # TODO Lobby closed when client tries to leave
         """
         Leave/close a current lobby.
@@ -435,16 +436,19 @@ class Game:
         self.view_manager.set_current(Views.ROOM)
 
     def send_next_room_action(self):
-        action = "ACTION:"
+        action = ""
         if self.current_room.has_next():
             action += "NEXT_ROOM"
-            self.go_to_the_next_room()
         else:
             action += "DUNGEON_END"
         for client in self.sockets.values():
-            # TODO IMPLEMENT THIS (procedure_gameplay.py)
-            # communication.communicate_and_get_answer(client, "G")
-            communication.communicate(client, ["GAMEPLAY", action])
+            answer = communication.communicate_and_get_answer(client, ["GAMEPLAY", "ACTION:" + action])
+            received_action = utility.get_value_of_argument(answer, "ACTION")
+            received_status = utility.get_value_of_argument(answer, "STATUS")
+
+            if received_action != action or received_status != "OK":
+                # TODO KICK PLAYER
+                self.abandon_lobby()
 
     def go_to_the_next_room(self):
         self.current_room = self.current_room.get_next()
