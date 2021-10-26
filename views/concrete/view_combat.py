@@ -2,11 +2,10 @@ import context
 from characters.character import Character
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char, print_in_two_columns
+from views.print_utility import print_whole_line_of_char, print_in_two_columns, print_with_dividing
 from views.view_enum import Views
 
 
-# TODO CANNOT HOST ANOTHER GAME AFTER LEAVING DURING COMBAT
 class ViewCombat(ViewBase):
     def __init__(self, char_with_turn: Character, outcomes: list[str]):
         super().__init__()
@@ -149,4 +148,4 @@ class ViewCombat(ViewBase):
             start_indx = len(outcomes) - participant_count
 
         for x in range(start_indx, len(outcomes)):
-            print(outcomes[x])
+            print_with_dividing(outcomes[x])

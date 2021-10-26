@@ -5,6 +5,7 @@ import title_ascii
 from config import config
 from settings import settings
 from views.input_enum import Input
+from views.print_utility import divide_if_too_long
 from views.view_enum import Views
 
 
@@ -233,7 +234,8 @@ class ViewBase(ABC):
         Print a given text as centered. If it's too big, break it into several lines.
         """
         # https://stackoverflow.com/a/18854817
-        chunks = list((text[0+i:(settings["MAX_WIDTH"]-4)+i] for i in range(0, len(text), (settings["MAX_WIDTH"]-4))))
+        # chunks = list((text[0+i:(settings["MAX_WIDTH"]-4)+i] for i in range(0, len(text), (settings["MAX_WIDTH"]-4))))
+        chunks = divide_if_too_long(text)
         for chunk in chunks:
             print(chunk.center(settings["MAX_WIDTH"]))
 
