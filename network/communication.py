@@ -12,6 +12,8 @@ def communicate_to_all_clients(header_args: list[str], body_content: str = "") -
         # ONLY HOST CAN USE THIS
         pass
 
+
+# TODO TIMEOUT
 def communicate_and_get_answer(concrete_socket: socket.socket, header_args: list[str], body_content: str = "") -> str:
     """
     Prepare and send a frame of data trough a given socket and fetch back the answer.

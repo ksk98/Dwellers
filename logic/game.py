@@ -323,8 +323,6 @@ class Game:
         return True
 
     def abandon_lobby(self):
-        # TODO Socket error on clients when host leaves game (game summary)
-        # TODO Lobby closed when client tries to leave
         """
         Leave/close a current lobby.
         :return:

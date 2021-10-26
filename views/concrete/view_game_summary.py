@@ -21,8 +21,6 @@ class ViewGameSummary(ViewBase):
         ]
 
     def print_screen(self):
-        # TODO Looted gold sent by server?
-        # TODO Number of defeated creatures?
         print()
         print_whole_line_of_char('=')
         self.print_multiline_text(

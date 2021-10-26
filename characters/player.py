@@ -68,7 +68,6 @@ class Player(Character):
         elif stat == Stat.STRENGTH:
             self.strength += config["upgrades"][stat]
         else:
-            # TODO Exception?
             return False
 
         return True
