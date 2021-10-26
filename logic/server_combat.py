@@ -50,30 +50,61 @@ class ServerCombat:
         if user is None:
             self._get_next_character()
             return "Attacker's object not found! Skipping turn...", \
-                   None,\
+                   None, \
                    self._character_with_turn.id
 
         if user.id != self._character_with_turn.id:
             self._get_next_character()
             return "Attacker's id mismatch with server! Skipping turn...", \
-                   None,\
+                   None, \
                    self._character_with_turn.id
 
         target = context.GAME.combat.get_character_with_id(target_id)
         if target is None:
             self._get_next_character()
             return "Target's object not found! Skipping turn...", \
-                   None,\
+                   None, \
                    self._character_with_turn.id
 
         attack = user.get_attack(type)
         if attack is not None:
             outcome, hit = user.use_skill_on(attack, target)
-            if outcome == "":   # not enough energy
+            if outcome == "":  # not enough energy
                 return outcome, hit, self._character_with_turn.id
 
             self._get_next_character()
             return outcome, hit, self._character_with_turn.id
+
+    def check_if_player_exists(self):
+        """
+        Checks if character with turn is still in the game
+        """
+        # Combat hasn't started yet so skip
+        if context.GAME.combat is None:
+            return
+
+        # Search for it...
+        exists = False
+        current_id = self._character_with_turn.id
+        # ... among players
+        for char in context.GAME.get_players():
+            if char.id == current_id:
+                exists = True
+                break
+        # ... and enemies
+        for char in self._enemies:
+            if char.id == current_id or exists:  # because if player was found there's no need to search among enemies
+                exists = True
+                break
+
+        if not exists:
+            self._players = context.GAME.get_players()
+            self._get_next_character()
+
+    def remove_player_from_queue(self, player_id: int):
+        for character in self._queue:
+            if character.id == player_id:
+                self._queue.remove(character)
 
     def rest(self, user_id: int):
         """
@@ -94,7 +125,7 @@ class ServerCombat:
         self._get_next_character()
         return outcome, hit, self._character_with_turn.id
 
-    def send_outcome(self, outcome: str, hit: Hit, next_id: int, sckt = None):
+    def send_outcome(self, outcome: str, hit: Hit, next_id: int, sckt=None):
         """
         Sends all that has happened during turn to clients
         :param outcome: string describing what happened
@@ -229,7 +260,8 @@ class ServerCombat:
         """
         if len(self._queue) > 0:
             self._character_with_turn = self._queue.pop(0)
-            self._check_alive()  # character could have been killed
+            self._check_alive()            # character could have been killed
+            self.check_if_player_exists()  # or leave
         else:
             self._new_queue()
 

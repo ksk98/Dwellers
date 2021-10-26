@@ -35,6 +35,9 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         if not context.GAME.lobby.remove_participant(int(pid_text)):
             return utility.get_ip_and_address_of_client_socket(sckt) + " BAD UPDATE (could not remove player)"
 
+        if context.GAME.combat is not None:
+            context.GAME.combat.create_new_view()
+
     elif action == "LOBBY_CLOSE":
         context.GAME.abandon_lobby()
         context.GAME.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)

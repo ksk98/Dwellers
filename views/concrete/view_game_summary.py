@@ -35,4 +35,3 @@ class ViewGameSummary(ViewBase):
         print_whole_line_of_char('=')
         print()
         self._print_options()
-

@@ -10,6 +10,9 @@ from views.view_enum import Views
 
 
 class ClientCombat:
+    """
+    Controls CombatView based on player / enemy characters and received data from host
+    """
     def __init__(self, id_with_turn: int):
         # Id of player currently having turn
         self._id_with_turn = id_with_turn
@@ -97,7 +100,7 @@ class ClientCombat:
                 user.deal_damage(hit.user_damage)
                 user.deal_energy_damage(hit.energy_cost)
 
-            self._create_new_view(new_turn)
+            self.create_new_view(new_turn)
 
     def prepare_combat_summary(self):
         """
@@ -156,7 +159,7 @@ class ClientCombat:
         """
         Starts the combat - sets the view
         """
-        self._create_new_view(self._id_with_turn)
+        self.create_new_view(self._id_with_turn)
 
     def am_i_dead(self):
         """
@@ -213,12 +216,16 @@ class ClientCombat:
 
     # Static
 
-    def _create_new_view(self, new_turn):
+    def create_new_view(self, new_turn: int = -1):
         """
         Creates new view for combat, this can be used in mid-fight
         :param new_turn: id of character with next turn
         :return:
         """
+        # Same as the previous turn (reload whole view)
+        if new_turn == -1:
+            new_turn = self._id_with_turn
+
         next_character = self.get_character_with_id(new_turn)
 
         # Create new view

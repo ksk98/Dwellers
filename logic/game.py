@@ -312,7 +312,14 @@ class Game:
                                        "ACTION:PLAYER_LEFT",
                                        "ID:" + str(player_id)])
 
-        self.view_manager.refresh()
+        if self.combat is None:
+            self.view_manager.refresh()
+        else:
+            self.server_combat.remove_player_from_queue(player_id)
+            self.server_combat.check_if_player_exists()
+            self.combat.create_new_view()
+            self.server_combat.act()
+
         return True
 
     def abandon_lobby(self):
@@ -337,8 +344,9 @@ class Game:
             self.sockets.clear()
 
             self.close_connector_thread()
-
-        self.host_socket.close()
+            self.host_socket.close()
+        else:
+            communication.communicate(self.host_socket, ["GOODBYE"])
 
         self.tmp_gold = 0
         self.defeated_creatures = 0
