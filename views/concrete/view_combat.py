@@ -36,6 +36,7 @@ class ViewCombat(ViewBase):
         # Combat object
         self._combat = context.GAME.combat
         self.options = [
+            # TODO Confirmation
             ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
         if self._my_turn:

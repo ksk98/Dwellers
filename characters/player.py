@@ -45,11 +45,14 @@ class Player(Character):
         self.restore()
 
     def save_stats(self):
+        # TODO Save this JSON file, so it can be loaded after resetting the game
+        # TODO New save file -> characters, gold...
         saved_characters[self.name] = {
             Stat.HEALTH: self.base_hp,
             Stat.ENERGY: self.base_energy,
             Stat.STRENGTH: self.strength,
             "points": self.points,
+            "attacks": self.attacks
         }
 
     def upgrade_stat(self, stat: Stat) -> bool:
