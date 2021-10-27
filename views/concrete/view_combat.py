@@ -28,6 +28,9 @@ class ViewCombat(ViewBase):
         # Id of character currently having turn
         self._char_with_turn = char_with_turn
 
+        # Bool used to display confirmation before leaving the game
+        self._confirm_leave = False
+
         # If it's my turn - display more buttons
         self._my_turn = False
         if self._char_with_turn.id == self._my_character.id:
@@ -36,8 +39,7 @@ class ViewCombat(ViewBase):
         # Combat object
         self._combat = context.GAME.combat
         self.options = [
-            # TODO Confirmation
-            ["LEAVE GAME", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
+            ["LEAVE GAME", None, lambda: self._leave_game(), Input.SELECT]
         ]
         if self._my_turn:
             # Get attack names
@@ -70,6 +72,10 @@ class ViewCombat(ViewBase):
         print_whole_line_of_char('=')
         print()
 
+        # This should be set to True only shortly after pressing the LEAVE GAME button
+        # so it needs to be changed with next refresh
+        self._confirm_leave = False
+
         # Print turn
         if not self._my_turn:
             turn = "This is " + self._char_with_turn.name + "'s turn!"
@@ -79,11 +85,15 @@ class ViewCombat(ViewBase):
             turn = "This is your turn!"
         self.print_multiline_text(turn)
 
+        # Energy info
         if not self._enough_energy:
             self.print_text("You don't have enough energy to do that!")
             self._enough_energy = True
 
+        # Options
         self._print_options()
+
+
 
     def set_targets(self, list_of_targets):
         """
@@ -150,3 +160,11 @@ class ViewCombat(ViewBase):
 
         for x in range(start_indx, len(outcomes)):
             print_with_dividing(outcomes[x])
+
+    def _leave_game(self):
+        if self._confirm_leave:
+            context.GAME.abandon_lobby()
+            context.GAME.view_manager.set_current(Views.MENU)
+        else:
+            self._confirm_leave = True
+            self.print_text("Do you really want to leave your friends?")
