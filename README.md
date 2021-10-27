@@ -29,9 +29,11 @@ any creature that comes your way!
   * Energy increases amount of damage dealt by some attacks
 
 ## Screenshots
-![Main menu](https://i.imgur.com/3QfNitq.png)
+![Main menu](https://i.imgur.com/iaqdMH4.png)
 
-![Character creation](https://i.imgur.com/B6kHpMW.png)
+![Character creation](https://i.imgur.com/GzmHN3n.png)
+
+![Gameplay](https://i.imgur.com/C1gh7Wr.png)
 
 ## How to ...
 
