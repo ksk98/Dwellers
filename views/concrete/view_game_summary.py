@@ -8,11 +8,14 @@ from views.view_enum import Views
 class ViewGameSummary(ViewBase):
     def __init__(self):
         super().__init__()
+
         # Save looted gold amount
         # TODO DIVIDE BY PLAYER COUNT
         self.gold = context.GAME.tmp_gold
+
         # Collect it
         context.GAME.total_gold += self.gold
+
         # Reset
         context.GAME.tmp_gold = 0
 

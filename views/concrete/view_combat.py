@@ -93,8 +93,6 @@ class ViewCombat(ViewBase):
         # Options
         self._print_options()
 
-
-
     def set_targets(self, list_of_targets):
         """
         Sets the list displaying under "TARGET" option

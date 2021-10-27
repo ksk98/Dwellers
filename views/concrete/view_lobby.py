@@ -2,7 +2,6 @@ import context
 from config import config
 from dungeon.map_size_enum import MapSize
 from network import communication
-from settings import settings
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.view_enum import Views
@@ -11,12 +10,17 @@ from views.view_enum import Views
 class ViewLobby(ViewBase):
     def __init__(self):
         super().__init__()
+        # bool used to notify about ready status
         self._notify_all_players_must_be_ready = False
+
+        # is local player the host?
         lobby_is_local = context.GAME.lobby.local_lobby
+
         self.options = [
             ["READY", Views.LOBBY, lambda: self._send_ready(), Input.SELECT],
             ["EXIT", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
+
         # Host has a button to start a game
         if lobby_is_local:
             self.inputs = {

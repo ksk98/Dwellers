@@ -47,9 +47,14 @@ class Character:
         elif self.energy > self.base_energy:
             self.energy = self.base_energy
 
-    def get_attack(self, type: str):
+    def get_attack(self, name: str):
+        """
+        Search for an attack by it's name
+        :param name: name of the attack
+        :return: attack if found or None
+        """
         for attack in self.attacks:
-            if attack.name == type:
+            if attack.name == name:
                 return attack
         return None
 
@@ -58,11 +63,25 @@ class Character:
                 attack: AttackBase,
                 energy_damage: int = 0,
                 user_damage: int = 0) -> tuple[str, Hit]:
+        """
+        Final method while executing attack.
+        Damage is calculated to it's final value.
+        This method dealing damage / energy damage to target and user if necessary,
+        takes energy for using attack. Generates string outcome and creates Hit object containing all values that
+        might have been modified
+        :param damage:          damage that will be dealt to target's hp (can be modified by multipliers)
+        :param user:            Character's object
+        :param attack:          attack that will be used
+        :param energy_damage:   damage that will be dealt to target's energy
+        :param user_damage:     damage that will be dealt to user's hp
+        :return:    tuple - string containing description of what happened and Hit object containing all modified values
+        """
 
-        # Take energy
+        # Check energy
         if attack.cost > user.energy:
             return "", None
 
+        # Damage can have multiplier when used on certain types of enemies
         damage_type = attack.type
         if damage_type == AttType.SLASH:
             if self.type == CharType.UNDEAD:

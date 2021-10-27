@@ -1,8 +1,6 @@
 import context
 from dungeon.room import Room
 from logic.server_combat import ServerCombat
-from network.communication import communicate
-from settings import settings
 from views.concrete.view_base import ViewBase
 from views.concrete.view_game_summary import ViewGameSummary
 from views.input_enum import Input
@@ -18,6 +16,7 @@ class ViewRoom(ViewBase):
         self._notify_cant_go = False
         self._no_rooms_left = False
 
+        # Add gold with the first visit
         if not room.gold_added:
             gold = context.GAME.current_room.get_gold()
             context.GAME.tmp_gold += gold
@@ -26,6 +25,7 @@ class ViewRoom(ViewBase):
         self.options = [
             ["LEAVE GAME", None, lambda: self._leave_game(), Input.SELECT]
         ]
+        # Add buttons to start combat or go to the next room
         if len(self._room.get_enemies()) > 0 and context.GAME.lobby.local_lobby:
             self.options.insert(0, ["START COMBAT", None, lambda: self._start_combat(), Input.SELECT])
         elif len(self._room.get_enemies()) == 0:
@@ -40,13 +40,18 @@ class ViewRoom(ViewBase):
         self._print_participants()
 
         print_whole_line_of_char('=')
+
+        # Get gold
         gold = context.GAME.current_room.get_gold()
         gold_amount = str(gold) if gold > 0 else "no"
 
+        # Print short description
         self.print_multiline_text("You are in a {room_type} room.\n"
                                   "There is {amount} gold in this room.\n"
                                   "Total looted gold: {total_gold}\n"
-                                  .format(room_type=context.GAME.current_room.get_type().name, amount=gold_amount, total_gold=context.GAME.tmp_gold))
+                                  .format(room_type=context.GAME.current_room.get_type().name,
+                                          amount=gold_amount,
+                                          total_gold=context.GAME.tmp_gold))
 
         if len(self._room.get_enemies()) > 0:  # if enemies are present - start combat
             print()
@@ -54,6 +59,7 @@ class ViewRoom(ViewBase):
             if not context.GAME.lobby.local_lobby:
                 self.print_text("Wait for the host to start the battle...")
 
+        # Notify player that only host can move between rooms
         if self._notify_cant_go:
             self.print_text("Only host can decide when the party is going to the next room!")
             self._notify_cant_go = False

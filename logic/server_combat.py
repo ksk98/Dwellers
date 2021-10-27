@@ -8,6 +8,12 @@ from network import communication, utility
 
 
 class ServerCombat:
+    """
+    Controls whole combat - sets the turn order, all outcomes and values, decides if the battle is won or lost.
+    Clients using ClientCombat are sending all info about what they want to do and this class
+    is deciding if they can do this. If they can, the outcome is sent to all players,
+    if not the appropriate message is sent to the client.
+    """
     def __init__(self):
         # Character currently having a turn
         self._character_with_turn: Character = None

@@ -17,11 +17,14 @@ class ViewPlay(ViewBase):
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.CHARACTERS, views.concrete.view_characters.ViewCharacters()), Input.SELECT],
             ["BACK TO MENU", Views.MENU, lambda: context.GAME.view_manager.remove_view_for_enum(Views.PLAY), Input.SELECT]
         ]
+        # Character check
         if self._check_if_character_exists():
             self._add_connection_buttons()
 
     def print_screen(self):
         self._print_logo()
+
+        # TODO Delete this
         self.print_text("Gold: {0}".format(context.GAME.total_gold))
 
         if not self._check_if_character_exists():

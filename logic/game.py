@@ -420,6 +420,9 @@ class Game:
         self.current_room = self.map.get_first_room()
 
     def begin_game_start_procedure(self):
+        """
+        Communicates that the game is starting, sends the game map.
+        """
         # Send map to clients
         map_json = jsonpickle.encode(self.map)
         for client in self.sockets.values():
@@ -437,18 +440,30 @@ class Game:
             self.start_game()
 
     def start_game(self):
+        """
+        Starts the game
+        """
+        # Close listening for connections
         self.close_connector_thread()
-        self.current_room = self.map.get_first_room()
+
+        # Set all values
         for participant in self.lobby.participants:
             char = participant.character
             char.name = participant.name
             char.id = participant.player_id
             char.hp = char.base_hp
             char.energy = char.base_energy
+
+        # Change view
+        self.current_room = self.map.get_first_room()
         self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
         self.view_manager.set_current(Views.ROOM)
 
     def send_next_room_action(self):
+        """
+        Sends info to all clients that the party is going further.
+        :return:
+        """
         action = ""
         if self.current_room.has_next():
             action += "NEXT_ROOM"
@@ -464,11 +479,18 @@ class Game:
                 self.abandon_lobby()
 
     def go_to_the_next_room(self):
+        """
+        Gets the next room and changes the view
+        """
         self.current_room = self.current_room.get_next()
         self.view_manager.set_new_view_for_enum(Views.ROOM, ViewRoom(self.current_room))
         self.view_manager.set_current(Views.ROOM)
 
     def get_players(self) -> list[Player]:
+        """
+        Returns player objects of the participants
+        :return: list[player]
+        """
         players = list[Player]()
         for participant in self.lobby.participants:
             players.append(participant.character)
