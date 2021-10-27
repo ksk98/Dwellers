@@ -4,7 +4,9 @@ from characters.enums.stats_enum import Stat
 from characters.player import Player
 from settings import settings
 from views.concrete.view_base import ViewBase
+from views.concrete.view_shop import ViewShop
 from views.input_enum import Input
+from views.print_utility import print_whole_line_of_char, print_in_two_columns
 from views.view_enum import Views
 
 
@@ -27,9 +29,11 @@ class ViewCharacterPoints(ViewBase):
         self._character = Player(self._name)
 
         # Create names for options
-        hp_button_string = "Health Points (+{0})".format(self.get_upgrade_amount_for(Stat.HEALTH))
-        ep_button_string = "Energy Points (+{0})".format(self.get_upgrade_amount_for(Stat.ENERGY))
-        sp_button_string = "Strength Points (+{0})".format(self.get_upgrade_amount_for(Stat.STRENGTH))
+        hp_button_string = "UPGRADE HEALTH (+{0})".format(self.get_upgrade_amount_for(Stat.HEALTH))
+        ep_button_string = "UPGRADE ENERGY (+{0})".format(self.get_upgrade_amount_for(Stat.ENERGY))
+        sp_button_string = "UPGRADE STRENGTH (+{0})".format(self.get_upgrade_amount_for(Stat.STRENGTH))
+
+        self.options.insert(0, ["MAP SIZE", Views.LOBBY, lambda: None, Input.MULTI_TOGGLE])
 
         self.options = [
             ["NAME", None, lambda: None, Input.TEXT_FIELD],
@@ -37,29 +41,63 @@ class ViewCharacterPoints(ViewBase):
             [ep_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.ENERGY), Input.SELECT],
             [sp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.STRENGTH),
              Input.SELECT],
-            # TODO ["SHOP", None, lambda: None, Input.SELECT],
+            ["SHOP", Views.SHOP,
+             lambda: context.GAME.view_manager.set_new_view_for_enum(Views.SHOP, ViewShop(self._character)),
+             Input.SELECT],
             ["SAVE", None, lambda: self.save(), Input.SELECT],
             # TODO ["DELETE", None, lambda: None, Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
+
         self.inputs = {
-            "NAME": self._name
+            "NAME": self._name,
         }
 
     def print_screen(self):
-        self.print_multiline_text(
-            "Current statistics:\n"
-            "Health Points: {0}\n"
-            "Energy Points: {1}\n"
-            "Strength Points: {2}\n"
-            "You have {3} points to spend!\n \n".format(
-                str(self._character.base_hp), str(self._character.base_energy),
-                str(self._character.strength), str(self._character.points)))
+        # Prepare columns
+        statistics = self._prepare_statistics()
+        attacks = self._prepare_skills()
+
+        print()
+        print_whole_line_of_char('=')
+
+        print_in_two_columns([statistics, attacks])
+
+        print_whole_line_of_char('=')
+        self.print_text("You have {0} points to spend!".format(self._character.points))
+        print()
+
+        self._print_options()
 
         if self.confirm_overwrite:
             self.confirm_overwrite = False
 
-        self._print_options()
+    def _prepare_statistics(self):
+        """
+        Creates string with current statistics and returns list of lines
+        :return: list[str]
+        """
+        stats = "STATS:\n" \
+                "Health Points: {0}\n" \
+                "Energy Points: {1}\n" \
+                "Strength Points: {2}\n".format(
+                    str(self._character.base_hp),
+                    str(self._character.base_energy),
+                    str(self._character.strength))
+
+        return stats.splitlines()
+
+    def _prepare_skills(self):
+        """
+        Prepares list of attacks that selected character have
+        :return: list[str]
+        """
+        list = ["SKILLS:"]
+        for attack in self._character.attacks:
+            attack_str = "{name} [ENERGY COST: {cost}]".format(name=attack.name, cost=attack.cost)
+            list.append(attack_str)
+
+        return list
 
     def save(self):
         self._character.name = self.inputs["NAME"]

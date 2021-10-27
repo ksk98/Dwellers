@@ -13,6 +13,8 @@ class AttackBase(ABC):
         self.name = "???"
         self.cost = 0
         self.type = Type.SLASH
+        self.desc = "The description of the attack... Info about how effective it is or whatever."
+        self.gold_cost = 20
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         """

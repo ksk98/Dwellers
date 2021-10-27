@@ -28,7 +28,7 @@ def print_in_two_columns(column_list: list[list[str]]):
         # Print both lists until one ends
         for left, right in zip(left_column_elements, right_column_elements):
             rest = width - len(left)
-            if rest > len(right): # both values can be printed in the same line
+            if rest > len(right):  # both values can be printed in the same line
                 print(left, end='')
             else:
                 # print(divide_if_too_long(left))

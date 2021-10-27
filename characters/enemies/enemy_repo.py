@@ -34,5 +34,6 @@ def roll_an_enemy() -> EnemyBase:
     return pool[ind]
 
 
+# TODO Delete this...
 if __name__ == '__main__':
     print(roll_an_enemy().name)

@@ -19,4 +19,4 @@ class Views(Enum):
     COMBAT_SUMMARY = 25
     SUMMARY = 26
     DEFEAT = 27
-
+    SHOP = 28

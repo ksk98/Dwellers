@@ -47,7 +47,7 @@ class ViewLobby(ViewBase):
         Prints that everyone needs to be ready in order to start a game
         """
         if self._notify_all_players_must_be_ready:
-            self.print_text("ALL PLAYERS MUST BE READY TO START A GAME!")
+            self.print_text("All players must be ready to start a game!")
             self._notify_all_players_must_be_ready = False
 
     def _print_empty_slots(self):

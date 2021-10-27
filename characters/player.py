@@ -1,6 +1,4 @@
 from characters.attacks.attack_crush import AttackCrush
-from characters.attacks.attack_fire import AttackFire
-from characters.attacks.attack_heal import AttackHeal
 from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.character_config import config
@@ -14,7 +12,7 @@ class Player(Character):
     """
     def __init__(self, name: str):
         super().__init__()
-        self.attacks = [AttackSlash(), AttackCrush(), AttackFire(), AttackHeal()]
+        self.attacks = [AttackSlash(), AttackCrush()]
         if name in saved_characters:
             self.name = name
             self._load_stats(name)
@@ -26,11 +24,13 @@ class Player(Character):
     def overwrite_stats(self, old_name: str) -> bool:
         if saved_characters.get(old_name):
             saved_characters.pop(old_name)
+
         saved_characters[self.name] = {
             Stat.HEALTH: self.base_hp,
             Stat.ENERGY: self.base_energy,
             Stat.STRENGTH: self.strength,
             "points": self.points,
+            "attacks": self.attacks
         }
         return True
 
@@ -82,3 +82,4 @@ class Player(Character):
         self.base_energy = saved_characters[name][Stat.ENERGY]
         self.strength = saved_characters[name][Stat.STRENGTH]
         self.points = saved_characters[name]["points"]
+        self.attacks = saved_characters[name]["attacks"]
