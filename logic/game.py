@@ -138,7 +138,7 @@ class Game:
                 # https://stackoverflow.com/questions/6179537/python-wait-x-secs-for-a-key-and-continue-execution-if-not-pressed
         except socket.error as e:
             # If the player is not a host and we are here, check if the host socket isn't closed
-            if utility.is_socket_closed(self.host_socket):
+            if not self.is_local() and utility.is_socket_closed(self.host_socket):
                 self.abandon_lobby()
                 self.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
             # If socket close induced exception is caught, check who disconnected and remove him/her from the lobby
@@ -200,7 +200,7 @@ class Game:
     def join_external_lobby(self, ip: str, port: int, password: str = "") -> str:
         """
         Create a new lobby by joining an external lobby.
-        :return: error message if unsuccesful (empty string if otherwise)
+        :return: error message if unsuccesful (empty string otherwise)
         """
         # Create a temporary socket and request for address of stable socket connection with host
         temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -273,6 +273,8 @@ class Game:
                 return "CHARACTER UPLOAD FAILED"
 
             return ""
+        except socket.timeout:
+            return "TIMED OUT"
         except socket.error as e:
             return str(e)
 
@@ -369,6 +371,12 @@ class Game:
             ports.append(sckt.getsockname()[1])
 
         return ports
+
+    def is_local(self):
+        if self.lobby is None:
+            return True
+
+        return self.lobby.is_local()
 
     def add_socket(self, sckt: socket.socket, player_id: int) -> bool:
         """
