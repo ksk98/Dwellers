@@ -49,17 +49,13 @@ def get_answer(concrete_socket: socket.socket) -> str:
     """
     Wait for data from a given socket and fetch it back.
     """
-    try:
-        # Get response header
-        in_message = utility.get_data(concrete_socket)
+    # Get response header
+    in_message = utility.get_data(concrete_socket)
 
-        # If response contains content then read it
-        resp_content_length = utility.get_content_length_from_header(in_message)
-        if resp_content_length != 0:
-            in_message = in_message + str(utility.get_specific_amount_of_data(concrete_socket, resp_content_length))
+    # If response contains content then read it
+    resp_content_length = utility.get_content_length_from_header(in_message)
+    if resp_content_length != 0:
+        in_message = in_message + str(utility.get_specific_amount_of_data(concrete_socket, resp_content_length))
 
-        # Give back the answer to the caller
-        return in_message
-    except socket.error as e:
-        print(e)
-        return "error"
+    # Give back the answer to the caller
+    return in_message
