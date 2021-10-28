@@ -84,7 +84,12 @@ class ViewManager:
         """
         Display a new error view and go to a given view after the player presses OK.
         """
-        self.__views[Views.ERROR] = ViewError(error_message, view)
+        if self.current_view == Views.ERROR:
+            prev_error = self.__views[Views.ERROR].text
+            self.__views[Views.ERROR] = ViewError("Multiple errors encountered at once: " +
+                                                  prev_error + " | " + error_message, Views.MENU)
+        else:
+            self.__views[Views.ERROR] = ViewError(error_message, view)
         self.current_view = Views.ERROR
         self.view_overriden_by_error = True
         self.get_current().refresh_view()
