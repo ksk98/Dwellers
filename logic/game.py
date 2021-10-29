@@ -473,18 +473,37 @@ class Game:
         :return:
         """
         action = ""
+        take_arg = ""
+        host_take = ""
         if self.current_room.has_next():
             action += "NEXT_ROOM"
         else:
             action += "DUNGEON_END"
+
+            take, rest = self.calculate_take()
+            # Prepare arguments
+            take_arg = "TAKE:" + str(take)
+            host_take = "HOST_TAKE:" + str(take + rest)
+
         for client in self.sockets.values():
-            answer = communication.communicate_and_get_answer(client, ["GAMEPLAY", "ACTION:" + action])
+            answer = communication.communicate_and_get_answer(client, ["GAMEPLAY", "ACTION:" + action,
+                                                                       take_arg, host_take])
             received_action = utility.get_value_of_argument(answer, "ACTION")
             received_status = utility.get_value_of_argument(answer, "STATUS")
 
             if received_action != action or received_status != "OK":
                 # TODO KICK PLAYER
                 self.abandon_lobby()
+
+    def calculate_take(self):
+        # Calculate take for players
+        player_amount = len(self.get_players())
+        gold = self.tmp_gold
+        # Take for normal player
+        take = int(gold / player_amount)
+        # Host will have take + any rest
+        rest = gold - (take * player_amount)
+        return take, rest
 
     def go_to_the_next_room(self):
         """

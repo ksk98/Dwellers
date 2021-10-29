@@ -8,47 +8,13 @@ HOST:           GAMEPLAY\r\n
                 ACTION:NEXT_ROOM\r\n
                 \r\n
 
-B. Host tells clients that there is no next room, therefore dungeon is over.
+B. Host tells clients that there is no next room, therefore dungeon is over. Sends gold rewards.
 
 HOST:           GAMEPLAY\r\n
                 ACTION:DUNGEON_END\r\n
+                TAKE:X\r\n
+                HOST_TAKE:Y\r\n
                 \r\n
-
-C. Host tells clients that combat is won.
-
-HOST:           GAMEPLAY\r\n
-                ACTION:WIN\r\n
-                \r\n
-
-D. Host tells clients that combat is lost.
-
-HOST:           GAMEPLAY\r\n
-                ACTION:DEFEAT\r\n
-                \r\n
-
-E. Send attack values
-
-Client:         GAMEPLAY\r\n
-                ACTION:ATTACK\r\n
-                CONTENT-LENGTH:x\r\n
-                \r\n
-                object containing all hit data
-
-F. Send rest action
-
-Client/host:    GAMEPLAY\r\n
-                ACTION:REST\r\n
-                ID:x\r\n
-                \r\n
-
-F. Send miss
-
-HOST:           GAMEPLAY\r\n
-                ACTION:MISS\r\n
-                CONTENT-LENGTH:x\r\n
-                ID:x\r\n
-                \r\n
-                object containing string with miss text
 
 
 F. Send that party have reached the end of dungeon

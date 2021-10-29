@@ -8,7 +8,7 @@ class ViewJoining(ViewBase):
         super().__init__()
         self.current_state = current_state
         self.options = [
-            ["CANCEL", Views.JOIN, lambda: None, Input.SELECT]    # TODO
+            ["CANCEL", Views.JOIN, lambda: None, Input.SELECT]
         ]
 
     def print_screen(self):

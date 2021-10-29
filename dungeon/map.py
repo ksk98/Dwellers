@@ -10,7 +10,7 @@ class Map:
     Generates all rooms, holds first
     """
     def __init__(self):
-        self._room_count = 0
+        self.room_count = 0
         self._first_room = None
 
     def generate(self, map_size: MapSize):
@@ -22,11 +22,11 @@ class Map:
         if map_size == MapSize.SMALL:
             self._room_count = randint(3, 5)
         elif map_size == MapSize.MEDIUM:
-            self._room_count = randint(6, 9)
+            self.room_count = randint(6, 9)
         elif map_size == MapSize.LARGE:
-            self._room_count = randint(10, 15)
+            self.room_count = randint(10, 15)
 
-        self._first_room = self._create_rooms(self._room_count)
+        self._first_room = self._create_rooms(self.room_count)
 
     def _create_rooms(self, count: int) -> Room:
         """

@@ -24,9 +24,6 @@ class ViewPlay(ViewBase):
     def print_screen(self):
         self._print_logo()
 
-        # TODO Delete this
-        self.print_text("Gold: {0}".format(context.GAME.total_gold))
-
         if not self._check_if_character_exists():
             self.print_text("YOU NEED TO SELECT A CHARACTER BEFORE STARTING A GAME!")
 
