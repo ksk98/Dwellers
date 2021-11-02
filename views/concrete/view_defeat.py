@@ -24,9 +24,9 @@ class ViewDefeat(ViewBase):
     def print_screen(self):
         print()
         print_whole_line_of_char('=')
-        self.print_multiline_text("\nDEFEAT!\n \n"
+        self.print_multiline_text("DEFEAT!\n \n"
                                   "YOU HAVE BEEN WIPED OUT!\n"
-                                  "ALL LOOT HAS BEEN LOST... SAME AS YOU...")
+                                  "ALL LOOT HAS BEEN LOST...")
         print_whole_line_of_char('=')
         print()
         self._print_options()
