@@ -457,7 +457,9 @@ class Game:
         # Set all values
         for participant in self.lobby.participants:
             char = participant.character
-            char.name = participant.name
+            # TODO Participant name instead of character name
+            char.participant_name = participant.name
+            # char.name = participant.name
             char.id = participant.player_id
             char.hp = char.get_base_hp()
             char.energy = char.get_base_energy()

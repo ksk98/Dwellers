@@ -19,6 +19,9 @@ class ViewCharacterPoints(ViewBase):
         # Do you really want to override?
         self.confirm_overwrite = False
 
+        # Do you really want to delete?
+        self.confirm_delete = False
+
         # Determine name for character
         self.saved_character_name = settings["SELECTED_CHARACTER"]
         if self.saved_character_name == "":
@@ -45,7 +48,7 @@ class ViewCharacterPoints(ViewBase):
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.SHOP, ViewShop(self._character)),
              Input.SELECT],
             ["SAVE", None, lambda: self.save(), Input.SELECT],
-            # TODO ["DELETE", None, lambda: None, Input.SELECT],
+            ["DELETE", None, lambda: self.delete(), Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
 
@@ -68,6 +71,9 @@ class ViewCharacterPoints(ViewBase):
         print()
 
         self._print_options()
+
+        if self.confirm_overwrite:
+            self.confirm_overwrite = False
 
         if self.confirm_overwrite:
             self.confirm_overwrite = False
@@ -98,6 +104,14 @@ class ViewCharacterPoints(ViewBase):
             list.append(attack_str)
 
         return list
+
+    def delete(self):
+        if self.confirm_delete:
+            context.GAME.view_manager.set_current(Views.CHARACTERS)
+            Player.delete(self._name)
+        else:
+            self.print_text("Do you really want to delete your precious character? Press again to confirm.")
+            self.confirm_delete = True
 
     def save(self):
         self._character.name = self.inputs["NAME"]
