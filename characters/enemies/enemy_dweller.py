@@ -6,6 +6,7 @@ from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
+from characters.enums.stat_tags_enum import STag
 from characters.hit import Hit
 
 
@@ -13,16 +14,22 @@ class Dweller(EnemyBase):
     def __init__(self):
         super().__init__()
         self.name = "Crazy Dweller"
+        self.role = "Slightly entertaining meat shield."
         self.type = Type.HUMAN
-        self.base_hp = 20
-        self.base_energy = 15
-        self.strength = 3
+        self.stats = {
+            STag.STR: 3,
+            STag.VIT: 4,
+            STag.INT: 2,
+            STag.SRD: 3,
+            STag.AGL: 2,
+            STag.FTN: 2
+        }
         self.attacks = [AttackSlash(), AttackCrush(), AttackFist()]
 
         self.restore()
 
     def act(self, targets: list[Character]) -> tuple[str, Hit]:
-        # Crazy dwellers are adventurers that are no longer capable of logical thining
+        # Crazy dwellers are adventurers that are no longer capable of logical thinking
         # They tend to act *very* randomly
         target_ind = self.get_index_of_random_target(targets)
         nonsense_roll = random.randint(0, 1)
@@ -39,7 +46,7 @@ class Dweller(EnemyBase):
 
     @staticmethod
     def get_nonsense() -> str:
-        nonsense = ["horses in pajamas", "toddlers eating dynamite", "devilish teddy bears",
-                    "monty python jokes", "the superiority of the number 8", "the latest Tool album"]
+        nonsense = ["a local racoon comedian", "living in a simulation", "animated images of monkeys",
+                    "a fake pandemic", "superiority of the number 8", "cleaning some cutlery"]
         index = random.randint(0, len(nonsense) - 1)
         return nonsense[index]

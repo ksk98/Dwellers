@@ -32,8 +32,3 @@ def roll_an_enemy() -> EnemyBase:
 
     ind = random.randint(0, len(pool) - 1)
     return pool[ind]
-
-
-# TODO Delete this...
-if __name__ == '__main__':
-    print(roll_an_enemy().name)

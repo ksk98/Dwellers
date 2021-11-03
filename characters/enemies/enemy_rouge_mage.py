@@ -3,6 +3,7 @@ from characters.attacks.attack_fist import AttackFist
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
+from characters.enums.stat_tags_enum import STag
 from characters.hit import Hit
 
 
@@ -10,10 +11,16 @@ class RogueMage(EnemyBase):
     def __init__(self):
         super().__init__()
         self.name = "Rogue Mage"
+        self.role = "Hunts players that are hurt."
         self.type = Type.HUMAN
-        self.base_hp = 20
-        self.base_energy = 30
-        self.strength = 3
+        self.stats = {
+            STag.STR: 1,
+            STag.VIT: 5,
+            STag.INT: 12,
+            STag.SRD: 7,
+            STag.AGL: 3,
+            STag.FTN: 2
+        }
         self.attacks = [AttackFire(), AttackFist()]
 
         self.restore()

@@ -1,10 +1,11 @@
 import random
 
-from characters.attacks.attack_bite import AttackBite
+from characters.attacks.attack_nibble import AttackNibble
 from characters.attacks.attack_spit import AttackSpit
 from characters.character import Character
 from characters.enemies.enemy_base import EnemyBase
 from characters.enums.character_type_enum import Type
+from characters.enums.stat_tags_enum import STag
 from characters.hit import Hit
 
 
@@ -12,11 +13,17 @@ class BuglingSpitter(EnemyBase):
     def __init__(self):
         super().__init__()
         self.name = "Bugling Spitter"
+        self.role = "Randomly acting, energy sapping meat shield."
         self.type = Type.INSECT
-        self.base_hp = 25
-        self.base_energy = 25
-        self.strength = 4
-        self.attacks = [AttackBite(), AttackSpit()]
+        self.stats = {
+            STag.STR: 3,
+            STag.VIT: 5,
+            STag.INT: 1,
+            STag.SRD: 1,
+            STag.AGL: 2,
+            STag.FTN: 1
+        }
+        self.attacks = [AttackNibble(), AttackSpit()]
 
         self.restore()
 

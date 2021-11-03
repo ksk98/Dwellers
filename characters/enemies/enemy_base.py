@@ -8,10 +8,8 @@ class EnemyBase(Character):
     def __init__(self):
         super().__init__()
         self.name = "???"
+        self.role = "???"
         self.type = Type.HUMAN
-        self.base_hp = 1
-        self.base_energy = 1
-        self.strength = 1
 
         self.restore()
 
