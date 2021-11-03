@@ -7,9 +7,14 @@ from characters.hit import Hit
 
 
 class AttackSpit(AttackBase):
+    """
+        Made specifically to work with bugling spitters role. Keep that in mind before reusing the attack.
+    """
     def __init__(self):
         super().__init__()
         self.name = "Acid Spit"
+        self.use_name = "spat on with acid"
+        self.desc = "Acid attack dealing fire damage."
         self.cost = 15
         self.type = Type.FIRE
 

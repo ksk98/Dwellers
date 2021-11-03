@@ -10,6 +10,7 @@ class AttackHeal(AttackBase):
     def __init__(self):
         super().__init__()
         self.name = "Heal"
+        self.use_name = "healed"
         self.cost = 20
         self.type = Type.HEALING
 

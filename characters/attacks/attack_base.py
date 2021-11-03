@@ -11,6 +11,7 @@ class Character:
 class AttackBase(ABC):
     def __init__(self):
         self.name = "???"
+        self.use_name = "attacked"
         self.cost = 0
         self.type = Type.SLASH
         self.desc = "The description of the attack... Info about how effective it is or whatever."
