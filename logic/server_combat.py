@@ -280,4 +280,4 @@ class ServerCombat:
         :param c: character
         :return: character's max energy
         """
-        return c.base_energy
+        return c.get_base_energy()

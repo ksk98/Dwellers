@@ -4,6 +4,7 @@ from characters.attacks.attack_base import AttackBase
 from characters.enums.attack_type_enum import Type as AttType
 from characters.enums.character_type_enum import Type as CharType
 from characters.hit import Hit
+from enums.stat_tags_enum import STag
 
 
 class Character:
@@ -15,7 +16,17 @@ class Character:
         # If I don't do this, pycharm yells at me
         # for not setting the variables in the constructor >:C
         self.id = -1
-        self.base_hp = self.base_energy = self.strength = 0
+        # The base values are a reference on how a regular sunday dweller looks like
+        self.stats = {
+            # "base_hp": 24,
+            # "base_energy": 24,
+            STag.STR: 3,
+            STag.VIT: 4,
+            STag.INT: 2,
+            STag.SRD: 1,
+            STag.AGL: 2,
+            STag.FTN: 2
+        }
         self.hp = self.energy = 0
         self.name = "KAROLEK, PRZELADUJ TO NA NICK GRACZA JAK BEDZIESZ WCHODZIC DO GRY"  # XD
         self.type: CharType = CharType.HUMAN
@@ -34,8 +45,8 @@ class Character:
         self.hp -= value
         if self.hp < 0:
             self.hp = 0
-        elif self.hp > self.base_hp:
-            self.hp = self.base_hp
+        elif self.hp > self.get_base_hp():
+            self.hp = self.get_base_hp()
 
     def deal_energy_damage(self, value: int):
         """
@@ -44,8 +55,8 @@ class Character:
         self.energy -= value
         if self.energy < 0:
             self.energy = 0
-        elif self.energy > self.base_energy:
-            self.energy = self.base_energy
+        elif self.energy > self.get_base_energy():
+            self.energy = self.get_base_energy()
 
     def get_attack(self, name: str):
         """
@@ -92,11 +103,11 @@ class Character:
                 damage = int(damage * 1.5)
         elif damage_type == AttType.CRUSH:
             if self.type == CharType.UNDEAD:
-                damage = int(damage * 1.6)
+                damage = int(damage * 1.3)
             elif self.type == CharType.ABOMINATION:
                 damage = int(damage / 2)
             elif self.type == CharType.INSECT:
-                damage = int(damage * 1.5)
+                damage = int(damage * 1.4)
         elif damage_type == AttType.FIRE:
             if self.type == CharType.UNDEAD:
                 damage = 0
@@ -143,10 +154,12 @@ class Character:
         :return:
         """
         # Calculate
-        rest_efficiency = self.strength * 5
+        rest_efficiency = self.stats[STag.STR] * 2 + \
+                          self.stats[STag.VIT] * 2 + \
+                          self.stats[STag.AGL] * 2
 
-        if self.base_energy - self.energy < rest_efficiency:
-            rest_efficiency = self.base_energy - self.energy
+        if self.get_base_energy() - self.energy < rest_efficiency:
+            rest_efficiency = self.get_base_energy() - self.energy
 
         # Restore energy
         self.energy += rest_efficiency
@@ -164,11 +177,19 @@ class Character:
         """
         Restore characters health and energy to base values.
         """
-        self.hp = self.base_hp
-        self.energy = self.base_energy
+        self.hp = self.get_base_hp()
+        self.energy = self.get_base_energy()
 
     def use_skill_on(self, skill: AttackBase, target: Character) -> tuple[str, Hit]:
         """
         Returns empty string if user has not enough energy.
         """
         return skill.use_on(self, target)
+
+    def get_base_hp(self):
+        return self.stats[STag.VIT] * 6
+
+    def get_base_energy(self):
+        return self.stats[STag.STR] * 4 + \
+               self.stats[STag.INT] * 2 + \
+               self.stats[STag.AGL] * 4

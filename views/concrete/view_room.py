@@ -99,7 +99,7 @@ class ViewRoom(ViewBase):
                 .format(
                 nick=participant.character.name,
                 current=participant.character.hp,
-                base=participant.character.base_hp)
+                base=participant.character.get_base_hp())
             player_list.append(player_string)
         print_in_two_columns([player_list, [""]])
 

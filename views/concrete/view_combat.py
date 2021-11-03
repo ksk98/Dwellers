@@ -123,9 +123,9 @@ class ViewCombat(ViewBase):
                     character.name,
                     character.id,
                     str(character.hp),
-                    str(character.base_hp),
+                    str(character.get_base_hp()),
                     str(character.energy),
-                    str(character.base_energy))
+                    str(character.get_base_energy()))
 
             player_list.append(line)
 
@@ -135,9 +135,9 @@ class ViewCombat(ViewBase):
             line = "HP:{0}/{1} ENERGY: {2}/{3} - {4}[{5}]"\
                 .format(
                     str(enemy.hp),
-                    str(enemy.base_hp),
+                    str(enemy.get_base_hp()),
                     str(enemy.energy),
-                    str(enemy.base_energy),
+                    str(enemy.get_base_energy()),
                     enemy.name,
                     enemy.id)
 

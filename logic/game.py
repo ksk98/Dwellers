@@ -459,8 +459,8 @@ class Game:
             char = participant.character
             char.name = participant.name
             char.id = participant.player_id
-            char.hp = char.base_hp
-            char.energy = char.base_energy
+            char.hp = char.get_base_hp()
+            char.energy = char.get_base_energy()
 
         # Change view
         self.current_room = self.map.get_first_room()

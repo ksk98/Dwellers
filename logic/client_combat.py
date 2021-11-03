@@ -117,7 +117,7 @@ class ClientCombat:
         Restores energy of all players after the fight
         """
         for player in self._players:
-            player.energy = player.base_energy
+            player.energy = player.get_base_energy()
 
     def rest(self):
         """
