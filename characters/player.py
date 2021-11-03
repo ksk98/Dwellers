@@ -13,6 +13,7 @@ class Player(Character):
     def __init__(self, name: str):
         super().__init__()
         self.attacks = [AttackSlash(), AttackCrush()]
+        self.participant_name = ""
         if name in saved_characters:
             self.name = name
             self._load_stats(name)
@@ -22,16 +23,8 @@ class Player(Character):
             self.reset_stats()
 
     def overwrite_stats(self, old_name: str) -> bool:
-        if saved_characters.get(old_name):
-            saved_characters.pop(old_name)
-
-        saved_characters[self.name] = {
-            Stat.HEALTH: self.base_hp,
-            Stat.ENERGY: self.base_energy,
-            Stat.STRENGTH: self.strength,
-            "points": self.points,
-            "attacks": self.attacks
-        }
+        Player.delete(old_name)
+        self.save_stats()
         return True
 
     def reset_stats(self):
@@ -74,6 +67,11 @@ class Player(Character):
             return False
 
         return True
+
+    @staticmethod
+    def delete(name):
+        if saved_characters.get(name):
+            saved_characters.pop(name)
 
     # private
 

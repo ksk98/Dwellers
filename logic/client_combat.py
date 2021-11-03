@@ -73,6 +73,7 @@ class ClientCombat:
         else:
             outcome, hit, next_id = context.GAME.server_combat.attack(self._my_id, target_id, attack)
             context.GAME.server_combat.send_outcome(outcome, hit, next_id)
+            context.GAME.server_combat.act()
 
     def handle_outcome(self, new_turn: int = -1, outcome: str = "", hit: Hit = None):
         """
@@ -131,6 +132,7 @@ class ClientCombat:
         else:
             outcome, hit, next_id = context.GAME.server_combat.rest(self._my_id)
             context.GAME.server_combat.send_outcome(outcome, hit, next_id)
+            context.GAME.server_combat.act()
 
     def set_target_list_for_attack(self):
         """
@@ -267,6 +269,11 @@ def end_battle(is_won: bool):
         # And change view to summary
         view_manager.set_current(Views.COMBAT_SUMMARY)
     else:
+        # Get necessary variables
+        character_name = context.GAME.lobby.get_local_participant().character.name
+        outcomes = context.GAME.combat.get_outcomes()
+        # Clear combat
         context.GAME.combat = None
-        view_manager.set_new_view_for_enum(Views.DEFEAT, ViewDefeat())
+        # Change view
+        view_manager.set_new_view_for_enum(Views.DEFEAT, ViewDefeat(character_name, outcomes))
         view_manager.set_current(Views.DEFEAT)

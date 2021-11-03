@@ -27,6 +27,9 @@ class ServerCombat:
         # List of players
         self._players = context.GAME.get_players()
 
+        # Flag that the battle has ended
+        self.end = False
+
     # public methods
 
     def act(self):
@@ -34,13 +37,14 @@ class ServerCombat:
         Acts as enemy character
         """
         while True:
-            if self._character_with_turn in self._enemies:
+            if self._character_with_turn in self._enemies and self._character_with_turn.hp > 0:
                 if self._check_win():
-                    return
+                    break
                 players = self._get_alive_players()
                 outcome, hit = self._character_with_turn.act(players)
                 self._get_next_character()
                 self.send_outcome(outcome, hit, self._character_with_turn.id)
+                self.act()
             else:
                 break
 
@@ -147,8 +151,6 @@ class ServerCombat:
                 communication.communicate(sckt, ["COMBAT", "ACTION:NO_ENERGY"])
             return
 
-        if self._check_win():
-            return
         all_outcomes = [outcome, hit, next_id]
         pickled_outcomes = jsonpickle.encode(all_outcomes)
 
@@ -166,7 +168,9 @@ class ServerCombat:
                 return utility.get_ip_and_address_of_client_socket(sckt) + ": " + status
 
         context.GAME.combat.handle_outcome(next_id, outcome, hit)
-        self.act()
+
+        if self._check_win():
+            return
 
     def start(self):
         """
@@ -217,14 +221,18 @@ class ServerCombat:
         Checks if combat can continue
         """
         if context.GAME.lobby.local_lobby:
+            if self.end:
+                return True
             if len(self._get_alive_enemies()) == 0:
                 self._communicate_end("WIN")
                 context.GAME.combat.restore_energy()
                 logic.client_combat.end_battle(True)
+                self.end = True
                 return True
             elif len(self._get_alive_players()) == 0:
                 self._communicate_end("DEFEAT")
                 logic.client_combat.end_battle(False)
+                self.end = True
                 return True
         return False
 

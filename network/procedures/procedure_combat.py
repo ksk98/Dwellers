@@ -80,6 +80,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
 
         outcome, hit, next_id = context.GAME.server_combat.rest(int(user))
         context.GAME.server_combat.send_outcome(outcome, hit, next_id, sckt)
+        context.GAME.server_combat.act()
 
     elif action == "WIN":
         context.GAME.combat.restore_energy()
