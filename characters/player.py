@@ -3,7 +3,6 @@ from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.character_config import config
 from characters.enums.stats_enum import Stat
-from characters.saved_characters import saved_characters
 
 
 class Player(Character):
@@ -14,18 +13,9 @@ class Player(Character):
         super().__init__()
         self.attacks = [AttackSlash(), AttackCrush()]
         self.participant_name = ""
-        if name in saved_characters:
-            self.name = name
-            self._load_stats(name)
-        else:
-            self.name = name
-            self.base_hp = self.base_energy = self.strength = self.points = 0
-            self.reset_stats()
-
-    def overwrite_stats(self, old_name: str) -> bool:
-        Player.delete(old_name)
-        self.save_stats()
-        return True
+        self.name = name
+        self.base_hp = self.base_energy = self.strength = self.points = 0
+        self.reset_stats()
 
     def reset_stats(self):
         """
@@ -36,17 +26,6 @@ class Player(Character):
         self.strength = config["base"][Stat.STRENGTH]
         self.points = config["base"]["points"]
         self.restore()
-
-    def save_stats(self):
-        # TODO Save this JSON file, so it can be loaded after resetting the game
-        # TODO New save file -> characters, gold...
-        saved_characters[self.name] = {
-            Stat.HEALTH: self.base_hp,
-            Stat.ENERGY: self.base_energy,
-            Stat.STRENGTH: self.strength,
-            "points": self.points,
-            "attacks": self.attacks
-        }
 
     def upgrade_stat(self, stat: Stat) -> bool:
         """
@@ -67,17 +46,3 @@ class Player(Character):
             return False
 
         return True
-
-    @staticmethod
-    def delete(name):
-        if saved_characters.get(name):
-            saved_characters.pop(name)
-
-    # private
-
-    def _load_stats(self, name: str):
-        self.base_hp = saved_characters[name][Stat.HEALTH]
-        self.base_energy = saved_characters[name][Stat.ENERGY]
-        self.strength = saved_characters[name][Stat.STRENGTH]
-        self.points = saved_characters[name]["points"]
-        self.attacks = saved_characters[name]["attacks"]

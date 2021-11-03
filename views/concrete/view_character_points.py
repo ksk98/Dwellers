@@ -1,7 +1,7 @@
 import context
 from characters.character_config import config
 from characters.enums.stats_enum import Stat
-from characters.player import Player
+from characters.player_factory import PlayerFactory
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.concrete.view_shop import ViewShop
@@ -29,7 +29,7 @@ class ViewCharacterPoints(ViewBase):
         else:
             self._name = settings["SELECTED_CHARACTER"]
 
-        self._character = Player(self._name)
+        self._character = PlayerFactory.load_player(self._name)
 
         # Create names for options
         hp_button_string = "UPGRADE HEALTH (+{0})".format(self.get_upgrade_amount_for(Stat.HEALTH))
@@ -107,8 +107,8 @@ class ViewCharacterPoints(ViewBase):
 
     def delete(self):
         if self.confirm_delete:
+            PlayerFactory.delete(self._name)
             context.GAME.view_manager.set_current(Views.CHARACTERS)
-            Player.delete(self._name)
         else:
             self.print_text("Do you really want to delete your precious character? Press again to confirm.")
             self.confirm_delete = True
@@ -118,13 +118,13 @@ class ViewCharacterPoints(ViewBase):
         from characters.saved_characters import saved_characters  # because circular import
         if self._character.name != self.saved_character_name and saved_characters.get(self._character.name):
             if self.confirm_overwrite:
-                self._character.overwrite_stats(self.saved_character_name)
+                PlayerFactory.save_player(self._character)
                 context.GAME.view_manager.set_current(Views.CHARACTERS)
             else:
                 self.confirm_overwrite = True
                 self.print_text("This will overwrite existing character! Press again to confirm.")
         else:
-            self._character.save_stats()
+            PlayerFactory.save_player(self._character)
             context.GAME.view_manager.set_current(Views.CHARACTERS)
 
     @staticmethod
