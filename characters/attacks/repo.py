@@ -1,13 +1,13 @@
 from characters.attacks.attack_arrow import AttackArrow
-from characters.attacks.attack_bite import AttackBite
+from characters.attacks.attack_batter import AttackBatter
+from characters.attacks.attack_impale import AttackImpale
 from characters.attacks.attack_crush import AttackCrush
-from characters.attacks.attack_drink_blood import AttackDrinkBlood
 from characters.attacks.attack_fire import AttackFire
 from characters.attacks.attack_fist import AttackFist
 from characters.attacks.attack_heal import AttackHeal
 from characters.attacks.attack_maul import AttackMaul
 from characters.attacks.attack_slash import AttackSlash
-from characters.attacks.attack_spit import AttackSpit
+from characters.attacks.attack_whomp import AttackWhomp
 
 """
 Attack that should be available for player must be here.
@@ -15,14 +15,15 @@ Attack that should be available for player must be here.
 
 all_atacks = [
     AttackArrow(),
-    AttackBite(),
+    AttackBatter(),
     AttackCrush(),
-    AttackDrinkBlood(),
     AttackFire(),
     AttackFist(),
     AttackHeal(),
+    AttackImpale(),
     AttackMaul(),
     AttackSlash(),
-    AttackSpit()]
+    AttackWhomp()
+]
 
 # TODO short description for all attacks
