@@ -1,5 +1,5 @@
 import context
-from characters.player import Player
+from characters.player_factory import PlayerFactory
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.print_utility import print_whole_line_of_char
@@ -18,7 +18,7 @@ class ViewDefeat(ViewBase):
         context.GAME.tmp_gold = 0
         context.GAME.defeated_creatures = 0
 
-        Player.delete(character_name)
+        PlayerFactory.delete(character_name)
 
         self.options = [
             ["OK", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
