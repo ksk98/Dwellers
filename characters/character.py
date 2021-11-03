@@ -4,7 +4,7 @@ from characters.attacks.attack_base import AttackBase
 from characters.enums.attack_type_enum import Type as AttType
 from characters.enums.character_type_enum import Type as CharType
 from characters.hit import Hit
-from enums.stat_tags_enum import STag
+from characters.enums.stat_tags_enum import STag
 
 
 class Character:
