@@ -15,6 +15,7 @@ class AttackDrinkBlood(AttackBase):
         super().__init__()
         self.name = "Drink Blood"
         self.use_name = "drank from"
+        self.desc = "Bite into your succulent enemy and absorb their life and energy."
         self.cost = 10
         self.type = Type.SLASH
 

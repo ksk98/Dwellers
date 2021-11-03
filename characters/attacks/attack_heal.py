@@ -11,6 +11,7 @@ class AttackHeal(AttackBase):
         super().__init__()
         self.name = "Heal"
         self.use_name = "healed"
+        self.desc = "Regenerate your targets health and energy. Will not energize if used on self!"
         self.cost = 20
         self.type = Type.HEALING
 
