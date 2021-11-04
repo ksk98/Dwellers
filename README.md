@@ -3,11 +3,7 @@
 ## Table of contents
   * [About](#about)
   * [Game mechanics](#game-mechanics)
-  * [How to ...](#how-to-)
-    * [How to launch](#how-to-launch)
-    * [How to create executable](#how-to-create-executable)
-    * [How to compile from console](#how-to-compile-from-console)
-    * [How to play](#how-to-play)
+  * [How to play](#how-to-play)
   * [Network documentation](#network-documentation)
 
 ## About
@@ -35,28 +31,8 @@ any creature that comes your way!
 
 ![Gameplay](https://i.imgur.com/C1gh7Wr.png)
 
-## How to ...
-
-### How to launch
-Just run [main.exe](dist/main.exe).
-It may occur that the executable will be out of date.
-In that case the file can be recreated.
-
-### How to create executable
-```
-venv/Scripts/activate
-python setup.py install
-python setup.py py2exe
-```
-
-### How to compile from console
-May require to install jsonpickle (`pip install jsonpickle`)
-```
-venv/Scripts/activate
-py main.py
-```
-
-### How to play
+## How to play
+NOTE: You don't know how to run the game? See [wiki](https://github.com/ksk98/Dwellers/wiki/How-to) page.
   * Create a character and distribute skillpoints
   * Create or join a lobby
   * Press ready and start the game
