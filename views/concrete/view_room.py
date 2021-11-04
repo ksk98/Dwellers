@@ -97,7 +97,7 @@ class ViewRoom(ViewBase):
         for participant in participants:
             player_string = "{nick} - HP:{current}/{base}" \
                 .format(
-                nick=participant.character.participant_name,
+                nick=participant.character.name,
                 current=participant.character.hp,
                 base=participant.character.base_hp)
             player_list.append(player_string)

@@ -2,11 +2,13 @@ import msvcrt
 import select
 import socket
 import threading
+from json import JSONDecodeError
 from os import name
 
 import jsonpickle
 
 from characters.player import Player
+from characters.player_factory import PlayerFactory
 from config import config
 from dungeon.map import Map
 from dungeon.map_size_enum import MapSize
@@ -53,6 +55,10 @@ class Game:
 
         # This thread handles incoming connection attempts for the host
         self.connector_thread: threading.Thread = None
+
+        # Load save game and settings
+        PlayerFactory.load_from_file()
+        self.load_settings()
 
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
@@ -524,3 +530,32 @@ class Game:
         for participant in self.lobby.participants:
             players.append(participant.character)
         return players
+
+    @staticmethod
+    def save_settings():
+        pickled_characters = jsonpickle.encode(settings)
+        f = open("settings.txt", "w")
+        f.write(pickled_characters)
+        f.close()
+
+    @staticmethod
+    def load_settings():
+        try:
+            # Load from file
+            f = open("settings.txt", "r")
+            unpacked_settings = jsonpickle.decode(f.read())
+            assert isinstance(unpacked_settings, dict)
+            # Add to dict
+            settings.update(unpacked_settings)
+
+        except OSError:
+            print("Warning! Settings file not found!")
+            return
+
+        except AssertionError:
+            print("Warning! Settings file corrupted!")
+            return
+
+        except JSONDecodeError:
+            print("Warning! Settings file corrupted!")
+            return

@@ -1,3 +1,4 @@
+import context
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
@@ -24,11 +25,12 @@ class ViewSettings(ViewBase):
                 self.options.append([setting, None, lambda: None, Input.TEXT_FIELD])
             self.inputs[setting] = settings[setting]
 
-        self.options.append(["EXIT", Views.MENU, lambda: self.update_settings(), Input.SELECT])
+        self.options.append(["BACK TO MENU", Views.MENU, lambda: self.update_settings(), Input.SELECT])
 
     def update_settings(self):
         for setting in self.inputs:
             settings[setting] = self.inputs[setting]
+        context.GAME.save_settings()
 
     def print_screen(self):
         self._print_logo()

@@ -91,6 +91,9 @@ class ViewCharacters(ViewBase):
             context.GAME.view_manager.set_new_view_for_enum(Views.CHARACTER_POINTS, ViewCharacterPoints())
             context.GAME.view_manager.set_current(Views.CHARACTER_POINTS)
 
+        # Update settings - save which character is selected
+        context.GAME.save_settings()
+
     @staticmethod
     def _get_names() -> list[str]:
         """
