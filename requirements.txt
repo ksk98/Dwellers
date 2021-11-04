@@ -1,2 +1,1 @@
 jsonpickle~=2.0.0
-py2exe~=0.10.4.1

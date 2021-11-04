@@ -1,3 +1,4 @@
+import os
 from json import JSONDecodeError
 
 import jsonpickle
@@ -43,6 +44,10 @@ class PlayerFactory:
 
     @staticmethod
     def save_to_file():
+        """
+        Save all characters to file
+        :return:
+        """
         pickled_characters = jsonpickle.encode(saved_characters)
         f = open("save.txt", "w")
         f.write(pickled_characters)
@@ -50,6 +55,10 @@ class PlayerFactory:
 
     @staticmethod
     def load_from_file():
+        """
+        Loads all characters from file
+        :return: True if characters are loaded successfully
+        """
         # Clear saved characters
         saved_characters.clear()
         try:
@@ -61,17 +70,20 @@ class PlayerFactory:
             # Add to dict
             saved_characters.update(unpickled_characters)
             f.close()
+            return True
 
         except OSError:
-            print("Warning! Save file not found!")
+            # no save file
             saved_characters.clear()
-            return
+            return True
 
-        except AssertionError:
-            saved_characters.clear()
-            return
+        except JSONDecodeError or AssertionError:
+            # save file corrupted
 
-        except JSONDecodeError:
-            print("Warning! Save file corrupted!")
+            if f is not None:
+                f.close()
+            if os.path.isfile("save.txt"):
+                os.rename("save.txt", "save.invalid.txt")
+
             saved_characters.clear()
-            return
+            return False
