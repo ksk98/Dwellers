@@ -47,7 +47,7 @@ class ViewGameSummary(ViewBase):
                  str(self.creatures),
                  str(self.gold)]
         for player in context.GAME.get_players():
-            left.append(player.name + "'s take")
+            left.append(context.GAME.get_participant_name(player) + "'s take")
             if player.id == 0:
                 right.append(str(self.host_take))
             else:

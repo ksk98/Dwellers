@@ -8,6 +8,7 @@ from os import name
 import jsonpickle
 
 from characters.player import Player
+from characters.player_factory import PlayerFactory
 from config import config
 from dungeon.map import Map
 from dungeon.map_size_enum import MapSize
@@ -58,8 +59,9 @@ class Game:
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
 
-        # Load settings
+        # Load settings and characters
         self.load_settings()
+        self.is_save_valid = PlayerFactory.load_from_file()
 
         # Instance of map object
         self.map: Map = None
@@ -529,11 +531,18 @@ class Game:
             players.append(participant.character)
         return players
 
+    def get_participant_name(self, player: Player) -> str:
+        for participant in self.lobby.participants:
+            if participant.character.id == player.id:
+                return participant.name
+        return player.name
+
     @staticmethod
     def save_settings():
         """
         Save settings to file
         """
+        # TODO Save gold amount...
         pickled_characters = jsonpickle.encode(settings)
         f = open("settings.txt", "w")
         f.write(pickled_characters)

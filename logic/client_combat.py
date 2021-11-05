@@ -245,7 +245,9 @@ class ClientCombat:
     def _prepare_strings_for_targets(targets):
         ready_targets = []
         for target in targets:
-            ready_targets.append("{name}[{id}]".format(name=target.name, id=target.id))
+            ready_targets.append("{name}[{id}]".format(
+                name=context.GAME.get_participant_name(target),
+                id=target.id))
         return ready_targets
 
 
@@ -270,7 +272,7 @@ def end_battle(is_won: bool):
         view_manager.set_current(Views.COMBAT_SUMMARY)
     else:
         # Get necessary variables
-        character_name = context.GAME.lobby.get_local_participant().character.name
+        character_name = context.GAME.lobby.get_local_participant().name
         outcomes = context.GAME.combat.get_outcomes()
         # Clear combat
         context.GAME.combat = None

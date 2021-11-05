@@ -12,7 +12,6 @@ class Player(Character):
     def __init__(self, name: str):
         super().__init__()
         self.attacks = [AttackSlash(), AttackCrush()]
-        self.participant_name = ""
         self.name = name
         self.base_hp = self.base_energy = self.strength = self.points = 0
         self.reset_stats()
