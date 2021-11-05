@@ -17,7 +17,7 @@ class BuglingSpitter(EnemyBase):
         self.type = Type.INSECT
         self.stats = {
             STag.STR: 3,
-            STag.VIT: 5,
+            STag.VIT: 2,
             STag.INT: 1,
             STag.SRD: 1,
             STag.AGL: 2,

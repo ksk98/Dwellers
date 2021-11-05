@@ -17,7 +17,7 @@ class Ghoul(EnemyBase):
         self.type = Type.ABOMINATION
         self.stats = {
             STag.STR: 8,
-            STag.VIT: 7,
+            STag.VIT: 6,
             STag.INT: 2,
             STag.SRD: 1,
             STag.AGL: 2,

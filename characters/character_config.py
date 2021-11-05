@@ -2,16 +2,10 @@
 from characters.enums.stats_enum import Stat
 
 config = {
-    # PLAYER
     "base": {
-        Stat.HEALTH: 50,
-        Stat.ENERGY: 20,
-        Stat.STRENGTH: 5,
-        "points": 5,
+        "starting_hp": 16,
+        "starting_en": 10,
+        "starting_stress_cap": 30,
+        "points": 8,
     },
-    "upgrades": {
-        Stat.HEALTH: 8,
-        Stat.STRENGTH: 1,
-        Stat.ENERGY: 5
-    }
 }

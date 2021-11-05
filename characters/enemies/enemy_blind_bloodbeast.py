@@ -16,7 +16,7 @@ class BlindBloodbeast(EnemyBase):
         self.type = Type.ABOMINATION
         self.stats = {
             STag.STR: 15,
-            STag.VIT: 10,
+            STag.VIT: 8,
             STag.INT: 3,
             STag.SRD: 3,
             STag.AGL: 1,

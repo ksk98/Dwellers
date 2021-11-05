@@ -16,7 +16,7 @@ class Worshipper(EnemyBase):
         self.type = Type.HUMAN
         self.stats = {
             STag.STR: 7,
-            STag.VIT: 3,
+            STag.VIT: 2,
             STag.INT: 2,
             STag.SRD: 10,
             STag.AGL: 5,

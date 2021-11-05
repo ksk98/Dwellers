@@ -15,7 +15,7 @@ class RogueMage(EnemyBase):
         self.type = Type.HUMAN
         self.stats = {
             STag.STR: 1,
-            STag.VIT: 5,
+            STag.VIT: 3,
             STag.INT: 12,
             STag.SRD: 7,
             STag.AGL: 3,

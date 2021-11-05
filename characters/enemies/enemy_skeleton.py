@@ -16,7 +16,7 @@ class Skeleton(EnemyBase):
         self.type = Type.UNDEAD
         self.stats = {
             STag.STR: 4,
-            STag.VIT: 4,
+            STag.VIT: 2,
             STag.INT: 1,
             STag.SRD: 1,
             STag.AGL: 1,

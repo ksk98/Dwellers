@@ -18,7 +18,7 @@ class Dweller(EnemyBase):
         self.type = Type.HUMAN
         self.stats = {
             STag.STR: 3,
-            STag.VIT: 4,
+            STag.VIT: 2,
             STag.INT: 2,
             STag.SRD: 3,
             STag.AGL: 2,

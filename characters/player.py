@@ -2,7 +2,7 @@ from characters.attacks.attack_crush import AttackCrush
 from characters.attacks.attack_slash import AttackSlash
 from characters.character import Character
 from characters.character_config import config
-from characters.enums.stats_enum import Stat
+from characters.enums.stat_tags_enum import STag
 
 
 class Player(Character):
@@ -14,20 +14,18 @@ class Player(Character):
         self.attacks = [AttackSlash(), AttackCrush()]
         self.participant_name = ""
         self.name = name
-        self.base_hp = self.base_energy = self.strength = self.points = 0
+        self.points = 0
         self.reset_stats()
 
     def reset_stats(self):
         """
         Set stats to default.
         """
-        self.base_hp = config["base"][Stat.HEALTH]
-        self.base_energy = config["base"][Stat.ENERGY]
-        self.strength = config["base"][Stat.STRENGTH]
+        self.set_stats_to_default()
         self.points = config["base"]["points"]
         self.restore()
 
-    def upgrade_stat(self, stat: Stat) -> bool:
+    def upgrade_stat(self, stat: STag) -> bool:
         """
         Upgrade a stat if skill points are available.
         """
@@ -36,13 +34,9 @@ class Player(Character):
 
         self.points -= 1
 
-        if stat == Stat.HEALTH:
-            self.base_hp += config["upgrades"][stat]
-        elif stat == Stat.ENERGY:
-            self.base_energy += config["upgrades"][stat]
-        elif stat == Stat.STRENGTH:
-            self.strength += config["upgrades"][stat]
-        else:
+        if stat not in self.stats:
             return False
+
+        self.stats[stat] += 1
 
         return True

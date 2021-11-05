@@ -15,7 +15,7 @@ class SkeletonHunter(EnemyBase):
         self.type = Type.UNDEAD
         self.stats = {
             STag.STR: 3,
-            STag.VIT: 5,
+            STag.VIT: 4,
             STag.INT: 2,
             STag.SRD: 1,
             STag.AGL: 8,

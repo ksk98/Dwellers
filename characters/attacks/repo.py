@@ -13,7 +13,7 @@ from characters.attacks.attack_whomp import AttackWhomp
 Attack that should be available for player must be here.
 """
 
-all_atacks = [
+all_attacks = [
     AttackArrow(),
     AttackBatter(),
     AttackCrush(),
@@ -25,5 +25,3 @@ all_atacks = [
     AttackSlash(),
     AttackWhomp()
 ]
-
-# TODO short description for all attacks

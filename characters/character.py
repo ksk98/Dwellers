@@ -5,6 +5,7 @@ from characters.enums.attack_type_enum import Type as AttType
 from characters.enums.character_type_enum import Type as CharType
 from characters.hit import Hit
 from characters.enums.stat_tags_enum import STag
+from characters.character_config import config
 
 
 class Character:
@@ -18,8 +19,8 @@ class Character:
         self.id = -1
         # The base values are a reference on how a regular sunday dweller looks like
         self.stats = {
-            # "base_hp": 24,
-            # "base_energy": 24,
+            # "base_hp": 24 + base,
+            # "base_energy": 24 + base,
             STag.STR: 3,
             STag.VIT: 4,
             STag.INT: 2,
@@ -37,6 +38,16 @@ class Character:
         Make a character do something. Used when enemy needs to act during its turn.
         """
         return "Nothing happened..."
+
+    def set_stats_to_default(self):
+        self.stats = {
+            STag.STR: 1,
+            STag.VIT: 1,
+            STag.INT: 1,
+            STag.SRD: 1,
+            STag.AGL: 1,
+            STag.FTN: 1
+        }
 
     def deal_damage(self, value: int):
         """
@@ -187,9 +198,10 @@ class Character:
         return skill.use_on(self, target)
 
     def get_base_hp(self):
-        return self.stats[STag.VIT] * 6
+        return self.stats[STag.VIT] * 6 + config["base"]["starting_hp"]
 
     def get_base_energy(self):
         return self.stats[STag.STR] * 4 + \
                self.stats[STag.INT] * 2 + \
-               self.stats[STag.AGL] * 4
+               self.stats[STag.AGL] * 4 + \
+               config["base"]["starting_en"]
