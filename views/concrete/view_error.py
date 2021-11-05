@@ -20,4 +20,4 @@ class ViewError(ViewBase):
 
     @staticmethod
     def _action(return_to):
-        context.GAME.view_manager.view_overriden_by_error = True
+        context.GAME.view_manager.view_overridden_by_error = True

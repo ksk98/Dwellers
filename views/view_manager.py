@@ -18,7 +18,7 @@ class ViewManager:
         self.current_view: Views = Views.MENU
 
         # In case an error is displayed, the view to be displayed next may change on the go.
-        self.view_overriden_by_error = False
+        self.view_overridden_by_error = False
 
         self.get_current().clear()
         self.get_current().print_screen()
@@ -69,8 +69,8 @@ class ViewManager:
             return
 
         # Skip the view change if an error was raised. The error may want to overload which view is displayed next.
-        if self.view_overriden_by_error:
-            self.view_overriden_by_error = False
+        if self.view_overridden_by_error:
+            self.view_overridden_by_error = False
             return
 
         # A band-aid fix for always having the first option selected when we enter certain views.
@@ -91,7 +91,7 @@ class ViewManager:
         else:
             self.__views[Views.ERROR] = ViewError(error_message, view)
         self.current_view = Views.ERROR
-        self.view_overriden_by_error = True
+        self.view_overridden_by_error = True
         self.get_current().refresh_view()
 
     def display_error_and_return(self, error_message: str):

@@ -105,12 +105,19 @@ class Game:
                             self.view().refresh_view()
                     elif inp == 224:            # Special keys that require using getch() a second time
                         inp = ord(msvcrt.getch())
-                        if inp == 80:           # Arrowkey Down
+                        if inp == 80:           # Arrow key down
                             self.view().scroll_down()
                             self.view().refresh_view()
-                        elif inp == 72:         # Arrowkey Up
+                        elif inp == 72:         # Arrow key up
                             self.view().scroll_up()
                             self.view().refresh_view()
+                        elif inp == 77:         # Arrow key right
+                            self.view().handle_arrow_right()
+                            self.view().refresh_view()
+                        elif inp == 75:         # Arrow key left
+                            self.view().handle_arrow_left()
+                            self.view().refresh_view()
+
                     else:                       # Anything the user types in. Currently no support for utf-8 characters.
                         if self.view_manager.get_current().typing_mode and chr(inp).isprintable():
                             self.view().write_letter(chr(inp))

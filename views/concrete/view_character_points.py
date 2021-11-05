@@ -31,29 +31,21 @@ class ViewCharacterPoints(ViewBase):
 
         self._character = PlayerFactory.load_player(self._name)
 
-        # Create names for options
-        hp_button_string = "UPGRADE HEALTH (+{0})".format(self.get_upgrade_amount_for(Stat.HEALTH))
-        ep_button_string = "UPGRADE ENERGY (+{0})".format(self.get_upgrade_amount_for(Stat.ENERGY))
-        sp_button_string = "UPGRADE STRENGTH (+{0})".format(self.get_upgrade_amount_for(Stat.STRENGTH))
-
-        self.options.insert(0, ["MAP SIZE", Views.LOBBY, lambda: None, Input.MULTI_TOGGLE])
-
         self.options = [
-            ["NAME", None, lambda: None, Input.TEXT_FIELD],
-            [hp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.HEALTH), Input.SELECT],
-            [ep_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.ENERGY), Input.SELECT],
-            [sp_button_string, Views.CHARACTER_POINTS, lambda: self._character.upgrade_stat(Stat.STRENGTH),
-             Input.SELECT],
+            ["NAME", Views.CHARACTER_POINTS, lambda: None, Input.TEXT_FIELD],
+            ["UPGRADE: ", Views.CHARACTER_POINTS,
+             lambda: self._character.upgrade_stat(self.get_input_of_option("UPGRADE: ")), Input.LEFT_RIGHT_ENTER],
             ["SHOP", Views.SHOP,
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.SHOP, ViewShop(self._character)),
              Input.SELECT],
             ["SAVE", None, lambda: self.save(), Input.SELECT],
-            ["DELETE", None, lambda: self.delete(), Input.SELECT],
+            ["DELETE", Views.CHARACTER_POINTS, lambda: self.delete(), Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
 
         self.inputs = {
             "NAME": self._name,
+            "UPGRADE: ": [0, list(self._character.stats.keys())]
         }
 
     def print_screen(self):
@@ -83,19 +75,17 @@ class ViewCharacterPoints(ViewBase):
         Creates string with current statistics and returns list of lines
         :return: list[str]
         """
-        stats = "STATS:\n" \
-                "Health Points: {0}\n" \
-                "Energy Points: {1}\n" \
-                "Strength Points: {2}\n".format(
-                    str(self._character.base_hp),
-                    str(self._character.base_energy),
-                    str(self._character.strength))
 
-        return stats.splitlines()
+        stats_out = ["STATS\n"]
+
+        for stat in self._character.stats:
+            stats_out.append(stat + ": " + str(self._character.stats[stat]))
+
+        return stats_out
 
     def _prepare_skills(self):
         """
-        Prepares list of attacks that selected character have
+        Prepares list of attacks that selected character has
         :return: list[str]
         """
         list = ["SKILLS:"]
@@ -126,7 +116,3 @@ class ViewCharacterPoints(ViewBase):
         else:
             PlayerFactory.save_player(self._character)
             context.GAME.view_manager.set_current(Views.CHARACTERS)
-
-    @staticmethod
-    def get_upgrade_amount_for(stat: Stat) -> str:
-        return str(config["upgrades"][stat])

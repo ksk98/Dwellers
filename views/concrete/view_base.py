@@ -13,6 +13,7 @@ class ViewBase(ABC):
     """
     Base class for all of the views implemented in the game.
     """
+
     def __init__(self):
         self.typing_mode = False
         self.selected = 0
@@ -24,7 +25,8 @@ class ViewBase(ABC):
             "SAMPLE TEXT OPTION": "SAMPLE TEXT",
             "SAMPLE INT OPTION": 100,
             "SAMPLE BOOLEAN OPTION": True,
-            "SAMPLE MULTITOGGLE OPTION": [0, ["OPTION FIRST", "OPTION SECOND", "OPTION THIRD"]]
+            "SAMPLE MULTITOGGLE OPTION": [0, ["OPTION FIRST", "OPTION SECOND", "OPTION THIRD"]],
+            "SAMPLE LEFT_RIGHT_ENTER": [0, ["OPTION FIRST", "OPTION SECOND", "OPTION THIRD"]]
         }
 
     @staticmethod
@@ -46,7 +48,7 @@ class ViewBase(ABC):
             return
 
         if self.selected == 0:
-            self.selected = len(self.options)-1
+            self.selected = len(self.options) - 1
         else:
             self.selected -= 1
 
@@ -74,11 +76,11 @@ class ViewBase(ABC):
         Prints the Dwellers logo with the version number
         """
         for line in title_ascii.title:
-            if title_ascii.title.index(line) != len(title_ascii.title)-1:
+            if title_ascii.title.index(line) != len(title_ascii.title) - 1:
                 self.print_text(line)
             else:
                 ver = config["VERSION"]
-                print((line + ver).center(settings["MAX_WIDTH"] + len(ver)-1))
+                print((line + ver).center(settings["MAX_WIDTH"] + len(ver) - 1))
         print("")
 
     def _print_options(self):
@@ -104,7 +106,7 @@ class ViewBase(ABC):
         and returns a view to be printed next.
         """
         # In case an out-of-bounds options is selected just ignore the call
-        if self.selected < 0 or self.selected > len(self.options)-1:
+        if self.selected < 0 or self.selected > len(self.options) - 1:
             return None
 
         self.options[self.selected][2].__call__()
@@ -115,12 +117,7 @@ class ViewBase(ABC):
                 not self.inputs[self.get_option_for_index(self.selected)]
             self.refresh_view()
         elif self.options[self.selected][3] == Input.MULTI_TOGGLE:
-            cur_ind = self.inputs[self.get_option_for_index(self.selected)][0]
-            options = self.inputs[self.get_option_for_index(self.selected)][1]
-            next_ind = cur_ind + 1
-            if next_ind >= len(options):
-                next_ind = 0
-            self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
+            self.handle_arrow_right()
         return self.options[self.selected][1]
 
     def get_input_of_option(self, input_name: str):
@@ -133,7 +130,8 @@ class ViewBase(ABC):
         try:
             inp = self.inputs[input_name]
             option_index = self.get_index_of_option(input_name)
-            if self.options[option_index][3] == Input.MULTI_TOGGLE:
+            if self.options[option_index][3] == Input.MULTI_TOGGLE or \
+                    self.options[option_index][3] == Input.LEFT_RIGHT_ENTER:
                 return inp[1][inp[0]]
 
             return inp
@@ -224,9 +222,34 @@ class ViewBase(ABC):
     def get_view_for_selected(self):
         """
         Get the Views enum assigned to the current option.
-        :return:
         """
         return self.options[self.selected][1]
+
+    def handle_arrow_right(self):
+        """
+        React to arrow right keystroke for selected option.
+        """
+        if self.options[self.selected][3] == Input.LEFT_RIGHT_ENTER \
+                or self.options[self.selected][3] == Input.MULTI_TOGGLE:
+            cur_ind = self.inputs[self.get_option_for_index(self.selected)][0]
+            options = self.inputs[self.get_option_for_index(self.selected)][1]
+            next_ind = cur_ind + 1
+            if next_ind >= len(options):
+                next_ind = 0
+            self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
+
+    def handle_arrow_left(self):
+        """
+        React to arrow right keystroke for selected option.
+        """
+        if self.options[self.selected][3] == Input.LEFT_RIGHT_ENTER \
+                or self.options[self.selected][3] == Input.MULTI_TOGGLE:
+            cur_ind = self.inputs[self.get_option_for_index(self.selected)][0]
+            options = self.inputs[self.get_option_for_index(self.selected)][1]
+            next_ind = cur_ind - 1
+            if next_ind < 0:
+                next_ind = len(options)-1
+            self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
 
     @staticmethod
     def print_text(text: str):

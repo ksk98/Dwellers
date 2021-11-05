@@ -1,5 +1,5 @@
 import context
-from characters.attacks.repo import all_atacks
+from characters.attacks.repo import all_attacks
 from characters.character import Character
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
@@ -80,7 +80,7 @@ class ViewShop(ViewBase):
             return
 
         # Search for attack
-        for attack in all_atacks:
+        for attack in all_attacks:
             # Found it
             if attack.name in skill_name:
                 # Try to buy it
@@ -105,7 +105,7 @@ class ViewShop(ViewBase):
         :return: list[str] with names
         """
         skills_to_buy = []
-        for attack in all_atacks:
+        for attack in all_attacks:
             if attack.name not in self._get_characters_skills():
                 option_str = "{name} [{amount} GOLD]".format(name=attack.name, amount=attack.gold_cost)
                 skills_to_buy.append(option_str)
@@ -120,7 +120,7 @@ class ViewShop(ViewBase):
         """
         attack_names = ["ATTACK:"]
         attack_descriptions = ["DESCRIPTION:"]
-        for attack in all_atacks:
+        for attack in all_attacks:
 
             # Take only attacks that character doesn't already have
             if attack.name not in self._get_characters_skills():
