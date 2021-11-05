@@ -130,7 +130,8 @@ class Character:
                   energy_cost=attack.cost,
                   target_id=self.id,
                   damage=damage,
-                  energy_damage=energy_damage)
+                  energy_damage=energy_damage,
+                  user_damage=user_damage)
 
         # Deal damage to target
         self.deal_damage(damage)

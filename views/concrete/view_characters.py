@@ -1,9 +1,11 @@
 import context
 import views.concrete.view_play
+from characters.player_factory import PlayerFactory
 from characters.saved_characters import saved_characters
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.concrete.view_character_points import ViewCharacterPoints
+from views.concrete.view_error import ViewError
 from views.input_enum import Input
 from views.view_enum import Views
 
@@ -14,6 +16,11 @@ class ViewCharacters(ViewBase):
     """
     def __init__(self):
         super().__init__()
+
+        self._corrupted_file = False
+        if not PlayerFactory.load_from_file():
+            self._corrupted_file = True
+
         self._character_names = self._get_names()
         self._option_names = self._get_option_names(self._character_names)
 
@@ -33,16 +40,27 @@ class ViewCharacters(ViewBase):
         ]
 
     def print_screen(self):
-        self._character_names = self._get_names()
-        self._option_names = self._get_option_names(self._character_names)
+        if self._corrupted_file:
+            self._show_error()
+        else:
+            self._character_names = self._get_names()
+            self._option_names = self._get_option_names(self._character_names)
 
-        self._print_logo()
-        self.print_multiline_text("NOTE: to create a character, select an empty slot\n" +
-                                  "Available characters:\n")
+            self._print_logo()
+            self.print_multiline_text("NOTE: to create a character, select an empty slot\n" +
+                                      "Available characters:\n")
 
-        self._set_options_text()
+            self._set_options_text()
 
-        self._print_options()
+            self._print_options()
+
+    def _show_error(self):
+        """
+        Show error that save file is corrupted.
+        :return:
+        """
+        context.GAME.view_manager.set_new_view_for_enum(Views.ERROR, ViewError("Error! Save file corrupted!"))
+        context.GAME.view_manager.set_current(Views.ERROR)
 
     def _set_options_text(self):
         """
@@ -90,6 +108,9 @@ class ViewCharacters(ViewBase):
             context.GAME.view_manager.remove_view_for_enum(Views.CHARACTER_POINTS)
             context.GAME.view_manager.set_new_view_for_enum(Views.CHARACTER_POINTS, ViewCharacterPoints())
             context.GAME.view_manager.set_current(Views.CHARACTER_POINTS)
+
+        # Update settings - save which character is selected
+        context.GAME.save_settings()
 
     @staticmethod
     def _get_names() -> list[str]:

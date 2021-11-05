@@ -53,10 +53,15 @@ class ViewCombat(ViewBase):
                 "ATTACK TYPE": [0, attack_names]
             }
             self.options.insert(0, ["REST", None, lambda: self._combat.rest(), Input.SELECT])
-            self.options.insert(0, ["ATTACK", None, lambda: self._combat.attack(), Input.SELECT])
-            self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self._combat.set_target_list_for_attack(),
-                                    Input.MULTI_TOGGLE])
-            self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
+
+            # This shouldn't happen
+            # But I will add just in case
+            # So client will not crush
+            if len(self._enemies) > 0:
+                self.options.insert(0, ["ATTACK", None, lambda: self._combat.attack(), Input.SELECT])
+                self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self._combat.set_target_list_for_attack(),
+                                        Input.MULTI_TOGGLE])
+                self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
         else:
             self.options.insert(0, ["DO NOTHING", Views.COMBAT, lambda: None, Input.SELECT])
 

@@ -20,7 +20,7 @@ class Map:
         :return:
         """
         if map_size == MapSize.SMALL:
-            self._room_count = randint(3, 5)
+            self.room_count = randint(3, 5)
         elif map_size == MapSize.MEDIUM:
             self.room_count = randint(6, 9)
         elif map_size == MapSize.LARGE:

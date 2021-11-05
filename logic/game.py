@@ -2,6 +2,7 @@ import msvcrt
 import select
 import socket
 import threading
+from json import JSONDecodeError
 from os import name
 
 import jsonpickle
@@ -56,6 +57,9 @@ class Game:
 
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
+
+        # Load settings
+        self.load_settings()
 
         # Instance of map object
         self.map: Map = None
@@ -531,3 +535,29 @@ class Game:
         for participant in self.lobby.participants:
             players.append(participant.character)
         return players
+
+    @staticmethod
+    def save_settings():
+        """
+        Save settings to file
+        """
+        pickled_characters = jsonpickle.encode(settings)
+        f = open("settings.txt", "w")
+        f.write(pickled_characters)
+        f.close()
+
+    def load_settings(self):
+        """
+        Load settings from file
+        """
+        try:
+            # Load from file
+            f = open("settings.txt", "r")
+            unpacked_settings = jsonpickle.decode(f.read())
+            assert isinstance(unpacked_settings, dict)
+            # Add to dict
+            settings.update(unpacked_settings)
+            self.view_manager.refresh()
+
+        except OSError or JSONDecodeError or AssertionError:
+            return
