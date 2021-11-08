@@ -1,6 +1,7 @@
 import context
 from characters.attacks.repo import all_attacks
-from characters.character import Character
+from characters.character_config import config
+from characters.player import Player
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.print_utility import print_whole_line_of_char, print_in_two_columns
@@ -12,7 +13,7 @@ class ViewShop(ViewBase):
     View used to buy new things
     """
 
-    def __init__(self, character: Character):
+    def __init__(self, character: Player):
         super().__init__()
 
         # Character that is shopping
@@ -65,7 +66,7 @@ class ViewShop(ViewBase):
         Try to buy 1 stat point
         :return:
         """
-        if self._take_gold(20):
+        if self._take_gold(config['base']['skill_point_cost']):
             self._character.points += 1
 
     def _buy_skill(self):

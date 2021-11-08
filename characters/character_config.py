@@ -7,5 +7,6 @@ config = {
         "starting_en": 10,
         "starting_stress_cap": 30,
         "points": 8,
-    },
+        "skill_point_cost": 80
+    }
 }
