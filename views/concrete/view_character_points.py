@@ -33,19 +33,19 @@ class ViewCharacterPoints(ViewBase):
 
         self.options = [
             ["NAME", Views.CHARACTER_POINTS, lambda: None, Input.TEXT_FIELD],
-            ["UPGRADE: ", Views.CHARACTER_POINTS,
-             lambda: self._character.upgrade_stat(self.get_input_of_option("UPGRADE: ")), Input.LEFT_RIGHT_ENTER],
+            ["UPGRADE", Views.CHARACTER_POINTS,
+             lambda: self._character.upgrade_stat(self.get_input_of_option("UPGRADE")), Input.LEFT_RIGHT_ENTER],
             ["SHOP", Views.SHOP,
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.SHOP, ViewShop(self._character)),
              Input.SELECT],
             ["SAVE", None, lambda: self.save(), Input.SELECT],
-            ["DELETE", Views.CHARACTER_POINTS, lambda: self.delete(), Input.SELECT],
+            ["DELETE", None, lambda: self.delete(), Input.SELECT],
             ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
         ]
 
         self.inputs = {
             "NAME": self._name,
-            "UPGRADE: ": [0, list(self._character.stats.keys())]
+            "UPGRADE": [0, list(self._character.stats.keys())]
         }
 
     def print_screen(self):
