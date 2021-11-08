@@ -12,9 +12,52 @@ from characters.enemies.enemy_skeleton import Skeleton
 from characters.enemies.enemy_skeleton_hunter import SkeletonHunter
 from characters.enemies.enemy_skeleton_lazy import SkeletonLazy
 from characters.enemies.enemy_worshipper import Worshipper
+from characters.enums.difficulty_enum import Difficulty, EnemyTier
 
 
-def roll_an_enemy() -> EnemyBase:
+def roll_an_enemy_party(difficulty: Difficulty, players: int) -> list[EnemyBase]:
+    enemies = []
+
+    chance_roll = random.randint(0, 99)
+    for i in range(players):
+        if difficulty == Difficulty.EASY:
+            if chance_roll < 60:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.WEAK))
+            elif chance_roll < 85:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.REGULAR))
+            else:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.WEAK))
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.WEAK))
+
+        elif difficulty == Difficulty.MEDIUM:
+            if chance_roll < 50:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.REGULAR))
+            elif chance_roll < 80:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.WEAK))
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.REGULAR))
+            elif chance_roll < 95:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.REGULAR))
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.REGULAR))
+            else:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.STRONG))
+
+        else:
+            if chance_roll < 45:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.STRONG))
+            elif chance_roll < 75:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.REGULAR))
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.STRONG))
+            elif chance_roll < 92:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.STRONG))
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.STRONG))
+            else:
+                enemies.append(roll_an_enemy_of_tier(EnemyTier.VERY_STRONG))
+
+    return enemies
+
+
+# Deprecated
+def roll_an_enemy(difficulty: Difficulty) -> EnemyBase:
     # Chances to roll enemy of a certain difficulty:
     # Easy      20%
     # Medium    45%
@@ -22,13 +65,24 @@ def roll_an_enemy() -> EnemyBase:
     # Very Hard 5%
     chance_roll = random.randint(0, 99)
     if chance_roll in range(0, 20):
-        pool = [SkeletonLazy(), Dweller()]
+        return roll_an_enemy_of_tier(EnemyTier.WEAK)
     elif chance_roll in range(20, 65):
-        pool = [Skeleton(), RogueMage(), Bugling(), Bloodsucker()]
+        return roll_an_enemy_of_tier(EnemyTier.REGULAR)
     elif chance_roll in range(65, 95):
+        return roll_an_enemy_of_tier(EnemyTier.STRONG)
+    else:
+        return roll_an_enemy_of_tier(EnemyTier.VERY_STRONG)
+
+
+def roll_an_enemy_of_tier(tier: EnemyTier) -> EnemyBase:
+    if tier == EnemyTier.WEAK:
+        pool = [SkeletonLazy(), Dweller()]
+    elif tier == EnemyTier.REGULAR:
+        pool = [Skeleton(), RogueMage(), Bugling(), Bloodsucker()]
+    elif tier == EnemyTier.STRONG:
         pool = [SkeletonHunter(), Worshipper(), BuglingSpitter()]
     else:
         pool = [BlindBloodbeast(), Ghoul()]
 
-    ind = random.randint(0, len(pool) - 1)
+    ind = random.randint(0, len(pool))
     return pool[ind]

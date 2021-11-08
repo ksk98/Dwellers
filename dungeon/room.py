@@ -1,7 +1,7 @@
 from random import randint
 
-from characters.enemies.enemy_base import EnemyBase
-from characters.enemies.enemy_repo import roll_an_enemy
+import context
+from characters.enemies.enemy_repo import *
 from dungeon.room_config import config
 from dungeon.room_type_enum import RoomType
 
@@ -12,7 +12,7 @@ class Room:
         self._gold = 0
         self._enemies: list[EnemyBase] = []
         self._next = None
-        self._room_type = room_type
+        self._room_type: RoomType = room_type
         self._generate_content()
 
     # public
@@ -77,18 +77,22 @@ class Room:
         """
         self._enemies.append(enemy)
 
-    def _generate_content(self):
+    # TODO: connect difficulty from somewhere, defaulting to an easy difficulty for now
+    def _generate_content(self, difficulty: Difficulty = Difficulty.EASY):
         """
         Adds random amount of enemies and gold to the room
         """
         rand_range_dict = self.get_from_config()    # get a dictionary containing all min / max values
 
-        # Generate enemies
-        enemy_count = randint(rand_range_dict["enemies_min"], rand_range_dict["enemies_max"])
-        for x in range(0, enemy_count):
-            self._add_enemy(roll_an_enemy())
-            # Give an enemy id
-            self._enemies[len(self._enemies) - 1].id = x + 100
+        gold_base = randint(rand_range_dict["gold_min"], rand_range_dict["gold_max"])
+        if difficulty == Difficulty.EASY:
+            self._gold = gold_base * 0.5
+        elif difficulty == Difficulty.MEDIUM:
+            self._gold = gold_base
+        else:
+            self._gold = gold_base * 1.25
 
-        # Generate gold
-        self._gold = randint(rand_range_dict["gold_min"], rand_range_dict["gold_max"])
+        if self._room_type == RoomType.ENEMY:
+            self._enemies = roll_an_enemy_party(difficulty, len(context.GAME.get_players()))
+            for x in range(0, len(self._enemies)):
+                self._enemies[x].id = x + 100
