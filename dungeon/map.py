@@ -11,6 +11,7 @@ class Map:
     """
     def __init__(self):
         self.room_count = 0
+        self.non_hostile_room_streak = 0
         self._first_room = None
 
     def generate(self, map_size: MapSize):
@@ -20,7 +21,7 @@ class Map:
         :return:
         """
         if map_size == MapSize.SMALL:
-            self.room_count = randint(3, 5)
+            self.room_count = randint(4, 6)
         elif map_size == MapSize.MEDIUM:
             self.room_count = randint(6, 9)
         elif map_size == MapSize.LARGE:
@@ -37,7 +38,12 @@ class Map:
 
         room = None
         for x in range(0, count):
-            new_room = self._create_single_room()
+            chance_roll = randint(1 + (self.non_hostile_room_streak * 33), 100)
+
+            # First room has 1% chance to force a fight
+            # The fourth room in a row without a prior fight has a 100 percent chance to be a fight
+            force_room_with_enemy = True if chance_roll == 100 else False
+            new_room = self._create_single_room(force_room_with_enemy)
 
             # creating graph
             if room is not None:
@@ -51,13 +57,20 @@ class Map:
     def get_first_room(self) -> Room:
         return self._first_room
 
-    @staticmethod
-    def _create_single_room() -> Room:
+    def _create_single_room(self, force_enemy=False) -> Room:
         """
         Creates single room of random type
         :return Created room
         """
-        room_type = randint(1, 3)   # randomize room type
+        if not force_enemy:
+            room_type = randint(1, 3)   # randomize room type
+        else:
+            room_type = RoomType.ENEMY
+
+        if room_type != RoomType.ENEMY:
+            self.non_hostile_room_streak += 1
+        else:
+            self.non_hostile_room_streak = 0
 
         # create room instance
         new_room = Room(RoomType(room_type))
