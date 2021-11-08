@@ -13,6 +13,7 @@ class AttackBatter(AttackBase):
         self.desc = "Powerful crush attack based on strength."
         self.cost = 28
         self.type = Type.CRUSH
+        self.cost = 170
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = int(user.stats[STag.STR] * 2.4)

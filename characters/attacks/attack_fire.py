@@ -13,6 +13,7 @@ class AttackFire(AttackBase):
         self.desc = "Fire attack that scales with intelligence. Less effective if you're tired."
         self.cost = 24
         self.type = Type.FIRE
+        self.gold_cost = 110
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = int(user.stats[STag.INT] * 1.8 * (user.energy/user.get_base_energy()))

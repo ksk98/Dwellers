@@ -15,6 +15,7 @@ class AttackWhomp(AttackBase):
         self.desc = "Utility move that deals energy damage based on agility and strength."
         self.cost = 16
         self.type = Type.CRUSH
+        self.gold_cost = 70
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = random.randint(0, user.stats[STag.STR])

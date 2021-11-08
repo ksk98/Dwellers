@@ -13,6 +13,7 @@ class AttackImpale(AttackBase):
         self.desc = "Powerful slash/stamina attack based on strength and agility."
         self.cost = 20
         self.type = Type.SLASH
+        self.gold_cost = 145
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = int(user.stats[STag.STR] * 1.6 + user.stats[STag.AGL] * 1.6)

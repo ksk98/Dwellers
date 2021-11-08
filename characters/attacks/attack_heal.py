@@ -14,6 +14,7 @@ class AttackHeal(AttackBase):
         self.desc = "Regenerate your targets health and energy. Will not energize if used on self!"
         self.cost = 20
         self.type = Type.HEALING
+        self.gold_cost = 130
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = random.randint(-27, -14)

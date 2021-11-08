@@ -15,6 +15,7 @@ class AttackFist(AttackBase):
         self.desc = "A solid punch to the guts. Deals crush and energy damage."
         self.cost = 8
         self.type = Type.CRUSH
+        self.gold_cost = 35
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = int(user.stats[STag.STR])

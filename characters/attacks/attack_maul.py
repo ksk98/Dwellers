@@ -13,6 +13,7 @@ class AttackMaul(AttackBase):
         self.desc = "Costly crush attack, scales greatly with strength."
         self.cost = 40
         self.type = Type.CRUSH
+        self.gold_cost = 340
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = int(user.stats[STag.STR] * 3)

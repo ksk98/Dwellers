@@ -13,6 +13,7 @@ class AttackArrow(AttackBase):
         self.cost = 18
         self.type = Type.SLASH
         self.desc = "A powerful slash attack based on strength and agility. Requires some agility to work."
+        self.gold_cost = 100
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = int(user.stats[STag.STR] * 1.6) - (5 - user.stats[STag.AGL])
