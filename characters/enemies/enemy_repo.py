@@ -84,5 +84,5 @@ def roll_an_enemy_of_tier(tier: EnemyTier) -> EnemyBase:
     else:
         pool = [BlindBloodbeast(), Ghoul()]
 
-    ind = random.randint(0, len(pool))
+    ind = random.randint(0, len(pool)-1)
     return pool[ind]
