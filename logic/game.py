@@ -460,7 +460,6 @@ class Game:
         # Set all values
         for participant in self.lobby.participants:
             char = participant.character
-            # TODO Participant name instead of character name
             char.participant_name = participant.name
             # char.name = participant.name
             char.id = participant.player_id
@@ -539,7 +538,6 @@ class Game:
         """
         Save settings to file
         """
-        # TODO Save gold amount...
         pickled_characters = jsonpickle.encode(settings)
         f = open("settings.txt", "w")
         f.write(pickled_characters)
