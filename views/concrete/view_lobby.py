@@ -5,6 +5,7 @@ from network import communication
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.view_enum import Views
+from characters.enums.difficulty_enum import Difficulty
 
 
 class ViewLobby(ViewBase):
@@ -23,10 +24,20 @@ class ViewLobby(ViewBase):
 
         # Host has a button to start a game
         if lobby_is_local:
+            map_sizes = []
+            for size in MapSize:
+                map_sizes.append(size.value)
+
+            difficulties = []
+            for difficulty in Difficulty:
+                difficulties.append(difficulty.value)
+
             self.inputs = {
-                "MAP SIZE": [1, ["SMALL", "MEDIUM", "LARGE"]]
+                "MAP SIZE": [1, map_sizes],
+                "DIFFICULTY": [1, difficulties]
             }
             self.options.insert(0, ["MAP SIZE", Views.LOBBY, lambda: None, Input.MULTI_TOGGLE])
+            self.options.insert(0, ["DIFFICULTY", Views.LOBBY, lambda: None, Input.LEFT_RIGHT_ENTER])
             self.options.insert(0, ["START GAME", None, lambda: self._start_a_game(), Input.SELECT])
 
     def print_screen(self):
@@ -100,11 +111,11 @@ class ViewLobby(ViewBase):
             # Generate map
             map_size = MapSize.MEDIUM
             if self.inputs:
-                if self.get_input_of_option("MAP SIZE") == "SMALL":
+                if self.get_input_of_option("MAP SIZE") == MapSize.SMALL.value:
                     map_size = MapSize.SMALL
-                elif self.get_input_of_option("MAP SIZE") == "LARGE":
+                elif self.get_input_of_option("MAP SIZE") == MapSize.LARGE.value:
                     map_size = MapSize.LARGE
-            context.GAME.generate_map(map_size)
+            context.GAME.generate_map(map_size, Difficulty(self.get_input_of_option("DIFFICULTY")))
 
             context.GAME.begin_game_start_procedure()
 

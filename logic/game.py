@@ -7,6 +7,7 @@ from os import name
 
 import jsonpickle
 
+from characters.enums.difficulty_enum import Difficulty
 from characters.player import Player
 from config import config
 from dungeon.map import Map
@@ -428,13 +429,14 @@ class Game:
         self.abandon_lobby()
         self.running = False
 
-    def generate_map(self, size: MapSize):
+    def generate_map(self, size: MapSize, difficulty: Difficulty):
         """
         Create a new map object
         :param size: enum for size of generated map
+        :param difficulty: difficulty that the generated rooms will default to
         :return:
         """
-        self.map = Map()
+        self.map = Map(difficulty)
         self.map.generate(size)
         self.current_room = self.map.get_first_room()
 

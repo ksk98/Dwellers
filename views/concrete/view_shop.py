@@ -32,7 +32,7 @@ class ViewShop(ViewBase):
         }
 
         self.options = [
-            ["BUY 1 STAT POINT [20 GOLD]", Views.SHOP, lambda: self._buy_point(), Input.SELECT],
+            ["BUY 1 STAT POINT [{0} GOLD]".format(config["base"]["skill_point_cost"]), Views.SHOP, lambda: self._buy_point(), Input.SELECT],
             ["SELECT ATTACK", Views.SHOP, lambda: None, Input.MULTI_TOGGLE],
             ["BUY SELECTED ATTACK", Views.SHOP, lambda: self._buy_skill(), Input.SELECT],
             ["BACK", Views.CHARACTER_POINTS, lambda: None, Input.SELECT]

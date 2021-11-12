@@ -1,5 +1,6 @@
 from random import randint
 
+from characters.enums.difficulty_enum import Difficulty
 from dungeon.map_size_enum import MapSize
 from dungeon.room import Room
 from dungeon.room_type_enum import RoomType
@@ -9,9 +10,10 @@ class Map:
     """
     Generates all rooms, holds first
     """
-    def __init__(self):
+    def __init__(self, difficulty: Difficulty):
         self.room_count = 0
         self.non_hostile_room_streak = 0
+        self.difficulty = difficulty
         self._first_room = None
 
     def generate(self, map_size: MapSize):
@@ -73,5 +75,5 @@ class Map:
             self.non_hostile_room_streak = 0
 
         # create room instance
-        new_room = Room(RoomType(room_type))
+        new_room = Room(RoomType(room_type), self.difficulty)
         return new_room

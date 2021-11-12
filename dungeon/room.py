@@ -7,13 +7,13 @@ from dungeon.room_type_enum import RoomType
 
 
 class Room:
-    def __init__(self, room_type: RoomType):
+    def __init__(self, room_type: RoomType, difficulty: Difficulty):
         self.gold_added = False
         self._gold = 0
         self._enemies: list[EnemyBase] = []
         self._next = None
         self._room_type: RoomType = room_type
-        self._generate_content()
+        self._generate_content(difficulty)
 
     # public
 
@@ -78,7 +78,7 @@ class Room:
         self._enemies.append(enemy)
 
     # TODO: connect difficulty from somewhere, defaulting to an easy difficulty for now
-    def _generate_content(self, difficulty: Difficulty = Difficulty.EASY):
+    def _generate_content(self, difficulty=Difficulty.EASY):
         """
         Adds random amount of enemies and gold to the room
         """

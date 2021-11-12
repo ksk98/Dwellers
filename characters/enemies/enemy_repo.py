@@ -15,7 +15,7 @@ from characters.enemies.enemy_worshipper import Worshipper
 from characters.enums.difficulty_enum import Difficulty, EnemyTier
 
 
-def roll_an_enemy_party(difficulty: Difficulty, players: int) -> list[EnemyBase]:
+def roll_an_enemy_party(difficulty, players: int) -> list[EnemyBase]:
     enemies = []
 
     chance_roll = random.randint(0, 99)
@@ -57,7 +57,7 @@ def roll_an_enemy_party(difficulty: Difficulty, players: int) -> list[EnemyBase]
 
 
 # Deprecated
-def roll_an_enemy(difficulty: Difficulty) -> EnemyBase:
+def roll_an_enemy(difficulty) -> EnemyBase:
     # Chances to roll enemy of a certain difficulty:
     # Easy      20%
     # Medium    45%
