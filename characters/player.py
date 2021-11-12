@@ -13,6 +13,7 @@ class Player(Character):
         super().__init__()
         self.attacks = [AttackSlash(), AttackCrush()]
         self.name = name
+        self.gold = 0
         self.base_hp = self.base_energy = self.strength = self.points = 0
         self.reset_stats()
 

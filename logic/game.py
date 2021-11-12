@@ -75,9 +75,6 @@ class Game:
         # Instance of server combat - only for host
         self.server_combat: ServerCombat = None
 
-        # Collected gold
-        self.total_gold = 0
-
         # Gold amount for one dungeon run
         self.tmp_gold = 0
 
