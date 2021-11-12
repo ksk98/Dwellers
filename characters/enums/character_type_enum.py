@@ -12,5 +12,5 @@ class Type(Enum):
     # Resist crush attacks pretty good
     ABOMINATION = 2
     # Giant insects that developed strong chitin armor, resistant to slash damage
-    # Suspectible to crush attacks and fire
+    # Susceptible to crush attacks and fire
     INSECT = 3
