@@ -29,6 +29,8 @@ class ViewGameSummary(ViewBase):
         context.GAME.defeated_creatures = 0
 
         self.options = [
+            # TODO abandon lobby before this screen
+            # TODO Don't send host take
             ["OK", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
 

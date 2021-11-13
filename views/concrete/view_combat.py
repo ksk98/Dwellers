@@ -83,7 +83,7 @@ class ViewCombat(ViewBase):
 
         # Print turn
         if not self._my_turn:
-            turn = "This is " + self._char_with_turn.name + "'s turn!"
+            turn = "This is " + context.GAME.get_participant_name(self._char_with_turn) + "'s turn!"
             if self._combat.am_i_dead():
                 turn += "\nLooks like you're dead! Ask your friends to heal you!"
         else:
