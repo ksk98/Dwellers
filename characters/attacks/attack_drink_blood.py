@@ -22,7 +22,7 @@ class AttackDrinkBlood(AttackBase):
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
         damage_out = user.stats[STag.STR]
         user_hp = user.get_base_hp()
-        hp_in = random.randint(int(user_hp/2), user_hp)
+        hp_in = random.randint(int(user_hp/3), int(3*user_hp/4))
         energy_damage_out = random.randint(0, 8)
 
         return target.get_hit(damage=damage_out,

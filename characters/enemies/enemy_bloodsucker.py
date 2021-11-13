@@ -15,7 +15,7 @@ class Bloodsucker(EnemyBase):
         self.type = Type.INSECT
         self.stats = {
             STag.STR: 3,
-            STag.VIT: 2,
+            STag.VIT: 1,
             STag.INT: 2,
             STag.SRD: 1,
             STag.AGL: 2,

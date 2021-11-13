@@ -32,7 +32,7 @@ class Bugling(EnemyBase):
         target_ind = self.get_index_of_random_target(targets)
         roll = random.randint(0, 1)
         if roll == 0:
-            if self.energy < self.base_energy:
+            if self.energy < self.get_base_energy():
                 return self.rest()
             else:
                 return self.use_skill_on(self.attacks[0], targets[target_ind])

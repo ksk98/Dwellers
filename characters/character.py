@@ -109,10 +109,8 @@ class Character:
         if damage_type == AttType.SLASH:
             if self.type == CharType.UNDEAD:
                 damage = int(damage / 3)
-            elif self.type == CharType.INSECT:
-                damage = 0
             elif self.type == CharType.HUMAN:
-                damage = int(damage * 1.5)
+                damage = int(damage * 1.4)
         elif damage_type == AttType.CRUSH:
             if self.type == CharType.UNDEAD:
                 damage = int(damage * 1.3)
