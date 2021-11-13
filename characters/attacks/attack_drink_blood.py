@@ -23,7 +23,7 @@ class AttackDrinkBlood(AttackBase):
         damage_out = user.stats[STag.STR]
         user_hp = user.get_base_hp()
         hp_in = random.randint(int(user_hp/3), int(3*user_hp/4))
-        energy_damage_out = random.randint(0, 8)
+        energy_damage_out = random.randint(0, int(target.energy/3))
 
         return target.get_hit(damage=damage_out,
                               user=user,

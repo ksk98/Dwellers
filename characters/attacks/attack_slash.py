@@ -11,12 +11,12 @@ class AttackSlash(AttackBase):
         self.name = "Slash"
         self.use_name = "slashed"
         self.desc = "Cheap slash attack based on strength."
-        self.cost = 5
+        self.cost = 6
         self.type = Type.SLASH
         self.gold_cost = 30
 
     def use_on(self, user: Character, target: Character) -> tuple[str, Hit]:
-        damage_out = user.stats[STag.STR] * 1.15
+        damage_out = int(user.stats[STag.STR] * 1.15)
 
         return target.get_hit(damage=damage_out,
                               user=user,
