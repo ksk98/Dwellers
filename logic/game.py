@@ -9,6 +9,7 @@ import jsonpickle
 
 from characters.enums.difficulty_enum import Difficulty
 from characters.player import Player
+from characters.player_factory import PlayerFactory
 from config import config
 from dungeon.map import Map
 from dungeon.map_size_enum import MapSize
@@ -59,8 +60,9 @@ class Game:
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
 
-        # Load settings
+        # Load settings and characters
         self.load_settings()
+        self.is_save_valid = PlayerFactory.load_from_file()
 
         # Instance of map object
         self.map: Map = None
@@ -73,9 +75,6 @@ class Game:
 
         # Instance of server combat - only for host
         self.server_combat: ServerCombat = None
-
-        # Collected gold
-        self.total_gold = 0
 
         # Gold amount for one dungeon run
         self.tmp_gold = 0
@@ -470,7 +469,6 @@ class Game:
         # Set all values
         for participant in self.lobby.participants:
             char = participant.character
-            # TODO Participant name instead of character name
             char.participant_name = participant.name
             # char.name = participant.name
             char.id = participant.player_id
@@ -537,6 +535,12 @@ class Game:
         for participant in self.lobby.participants:
             players.append(participant.character)
         return players
+
+    def get_participant_name(self, player: Player) -> str:
+        for participant in self.lobby.participants:
+            if participant.character.id == player.id:
+                return participant.name
+        return player.name
 
     @staticmethod
     def save_settings():

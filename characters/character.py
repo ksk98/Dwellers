@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import context
 from characters.attacks.attack_base import AttackBase
 from characters.enums.attack_type_enum import Type as AttType
 from characters.enums.character_type_enum import Type as CharType
@@ -152,9 +153,9 @@ class Character:
             action = "attacked"
         return \
             "{target} was {action} by {attacker} with {attack} [DMG: {damage}, Energy DMG: {energy}]".format(
-                target=self.name,
+                target=context.GAME.get_participant_name(self),
                 action=action,
-                attacker=user.name,
+                attacker=context.GAME.get_participant_name(user),
                 attack=attack.name,
                 damage=str(damage * multiplier),
                 energy=str(energy_damage * multiplier)), \
@@ -183,7 +184,7 @@ class Character:
                   user_damage=0,
                   energy_damage=rest_efficiency * -1)
 
-        return self.name + " rests", hit
+        return context.GAME.get_participant_name(self) + " rests", hit
 
     def restore(self):
         """

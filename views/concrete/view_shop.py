@@ -46,7 +46,7 @@ class ViewShop(ViewBase):
 
         print_whole_line_of_char('=')
         # Gold amount
-        self.print_text("You have {0} gold to spend!".format(context.GAME.total_gold))
+        self.print_text("You have {0} gold to spend!".format(self._character.gold))
 
         # Not enough gold
         if self._not_enough_gold:
@@ -139,9 +139,9 @@ class ViewShop(ViewBase):
         :param amount: to be taken
         :return: False when player has not enough gold, True when succeed
         """
-        if amount > context.GAME.total_gold:
+        if amount > self._character.gold:
             self._not_enough_gold = True
             return False
         else:
-            context.GAME.total_gold -= amount
+            self._character.gold -= amount
             return True

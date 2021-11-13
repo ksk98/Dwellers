@@ -125,7 +125,7 @@ class ViewCombat(ViewBase):
             # character = participant.character
             line = "{0}[{1}] - HP:{2}/{3} ENERGY: {4}/{5}" \
                 .format(
-                    character.name,
+                    context.GAME.get_participant_name(character),
                     character.id,
                     str(character.hp),
                     str(character.get_base_hp()),

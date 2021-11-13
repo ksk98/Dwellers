@@ -1,4 +1,5 @@
 import context
+from characters.player_factory import PlayerFactory
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.print_utility import print_whole_line_of_char, print_in_two_columns
@@ -13,12 +14,15 @@ class ViewGameSummary(ViewBase):
         self.host_take = host_take
         self.gold = context.GAME.tmp_gold
         self.creatures = context.GAME.defeated_creatures
+        self.character = context.GAME.lobby.get_local_participant().character
 
         # Collect it
         if context.GAME.is_local():
-            context.GAME.total_gold += self.host_take
+            self.character.gold += self.host_take
         else:
-            context.GAME.total_gold += self.take
+            self.character.gold += self.take
+
+        PlayerFactory.save_player(self.character)
 
         # Reset
         context.GAME.tmp_gold = 0
@@ -47,7 +51,7 @@ class ViewGameSummary(ViewBase):
                  str(self.creatures),
                  str(self.gold)]
         for player in context.GAME.get_players():
-            left.append(player.name + "'s take")
+            left.append(context.GAME.get_participant_name(player) + "'s take")
             if player.id == 0:
                 right.append(str(self.host_take))
             else:

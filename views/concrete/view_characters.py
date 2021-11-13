@@ -1,6 +1,5 @@
 import context
 import views.concrete.view_play
-from characters.player_factory import PlayerFactory
 from characters.saved_characters import saved_characters
 from settings import settings
 from views.concrete.view_base import ViewBase
@@ -18,7 +17,7 @@ class ViewCharacters(ViewBase):
         super().__init__()
 
         self._corrupted_file = False
-        if not PlayerFactory.load_from_file():
+        if not context.GAME.is_save_valid:
             self._corrupted_file = True
 
         self._character_names = self._get_names()
