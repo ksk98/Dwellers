@@ -1,7 +1,6 @@
 from views.concrete.view_base import ViewBase
 from views.concrete.view_error import ViewError
 from views.concrete.view_menu import ViewMenu
-from views.concrete.view_settings import ViewSettings
 from views.view_enum import Views
 
 
@@ -29,7 +28,6 @@ class ViewManager:
         """
         self.__views.clear()
         self.__views[Views.MENU] = ViewMenu()
-        self.__views[Views.SETTINGS] = ViewSettings()
 
     def get_current(self) -> ViewBase:
         """

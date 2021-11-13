@@ -513,7 +513,7 @@ class Game:
         player_amount = len(self.get_players())
         gold = self.tmp_gold
         # Take for normal player
-        take = int(gold / player_amount)
+        take = gold / player_amount
         # Host will have take + any rest
         rest = gold - (take * player_amount)
         return take, rest
@@ -562,6 +562,7 @@ class Game:
             unpacked_settings = jsonpickle.decode(f.read())
             assert isinstance(unpacked_settings, dict)
             # Add to dict
+            settings.clear()
             settings.update(unpacked_settings)
             self.view_manager.refresh()
 

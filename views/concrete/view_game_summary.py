@@ -7,7 +7,7 @@ from views.view_enum import Views
 
 
 class ViewGameSummary(ViewBase):
-    def __init__(self, take: int, host_take: int):
+    def __init__(self, take: float, host_take: float):
         super().__init__()
 
         self.take = take

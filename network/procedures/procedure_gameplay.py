@@ -32,8 +32,8 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
         if take == "" and host_take == "":
             communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:DUNGEON_END", "STATUS:ERR"])
 
-        take = int(take)
-        host_take = int(host_take)
+        take = float(take)
+        host_take = float(host_take)
         communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:DUNGEON_END", "STATUS:OK"])
         context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary(take, host_take))
         context.GAME.view_manager.set_current(Views.SUMMARY)

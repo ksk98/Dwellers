@@ -2,6 +2,7 @@ import context
 from views.concrete.view_base import ViewBase
 from views.concrete.view_characters import ViewCharacters
 from views.concrete.view_play import ViewPlay
+from views.concrete.view_settings import ViewSettings
 from views.input_enum import Input
 from views.view_enum import Views
 
@@ -17,7 +18,10 @@ class ViewMenu(ViewBase):
              Input.SELECT],
             ["CHARACTERS", Views.CHARACTERS,
              lambda: context.GAME.view_manager.set_new_view_for_enum(Views.CHARACTERS, ViewCharacters()), Input.SELECT],
-            ["SETTINGS", Views.SETTINGS, lambda: None, Input.SELECT],
+            ["SETTINGS",
+             Views.SETTINGS,
+             lambda: context.GAME.view_manager.set_new_view_for_enum(Views.SETTINGS, ViewSettings()),
+             Input.SELECT],
             ["EXIT", None, lambda: context.GAME.close(), Input.SELECT]
         ]
 
