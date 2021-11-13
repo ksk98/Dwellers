@@ -37,7 +37,7 @@ class ViewLobby(ViewBase):
                 "DIFFICULTY": [1, difficulties]
             }
             self.options.insert(0, ["MAP SIZE", Views.LOBBY, lambda: None, Input.MULTI_TOGGLE])
-            self.options.insert(0, ["DIFFICULTY", Views.LOBBY, lambda: None, Input.LEFT_RIGHT_ENTER])
+            self.options.insert(0, ["DIFFICULTY", Views.LOBBY, lambda: None, Input.MULTI_TOGGLE])
             self.options.insert(0, ["START GAME", None, lambda: self._start_a_game(), Input.SELECT])
 
     def print_screen(self):
