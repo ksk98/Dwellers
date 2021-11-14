@@ -44,7 +44,7 @@ class ViewCombat(ViewBase):
         if self._my_turn:
             # Get attack names
             attacks = context.GAME.lobby.get_local_participant().character.attacks
-            attack_names=[]
+            attack_names = []
             for attack in attacks:
                 option_name = "{attack_name} [COST: {cost}]".format(attack_name=attack.name, cost=attack.cost)
                 attack_names.append(option_name)
