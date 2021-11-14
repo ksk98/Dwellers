@@ -1,4 +1,5 @@
 import msvcrt
+import pyperclip
 import select
 import socket
 import threading
@@ -121,6 +122,8 @@ class Game:
                         elif inp == 75:         # Arrow key left
                             self.view().handle_arrow_left()
                             self.view().refresh_view()
+                        elif inp == 118:         # v for ctrl + v
+                            self.view().paste_into_current_field(pyperclip.paste())
 
                     else:                       # Anything the user types in. Currently no support for utf-8 characters.
                         if self.view_manager.get_current().typing_mode and chr(inp).isprintable():

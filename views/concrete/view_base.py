@@ -196,6 +196,11 @@ class ViewBase(ABC):
             else:
                 self.inputs[input_name] = str(input_val) + str(text)
 
+    def paste_into_current_field(self, data: str):
+        if self.options[self.selected][3] == Input.TEXT_FIELD:
+            self.inputs[self.get_option_for_index(self.selected)] += data
+            self.refresh_view()
+
     def refresh_view(self):
         """
         Reprint the view.
