@@ -98,6 +98,14 @@ class ViewCombat(ViewBase):
         # Options
         self._print_options()
 
+    def handle_arrow_left(self):
+        self._combat.set_target_list_for_attack()
+        super().handle_arrow_left()
+
+    def handle_arrow_right(self):
+        self._combat.set_target_list_for_attack()
+        super().handle_arrow_right()
+
     def set_targets(self, list_of_targets):
         """
         Sets the list displaying under "TARGET" option
