@@ -138,9 +138,30 @@ class ViewBase(ABC):
         except IndexError:
             return None
 
+    def get_current_option_type(self):
+        return self.get_option_type_for_ind(self.selected)
+
+    def get_option_type(self, option: str):
+        ind = self.get_index_of_option(option)
+
+        if ind is None:
+            return None
+
+        return self.get_option_type_for_ind(ind)
+
+    def get_option_type_for_ind(self, ind: int):
+        try:
+            return self.options[ind][3]
+        except IndexError:
+            return None
+
+    def get_input_of_current_option(self):
+        option = self.get_option_for_index(self.selected)
+        return self.get_input_of_option(option)
+
     def get_input_of_next_option(self, input_name: str):
         """
-        Used only for Input.MULTI_TOGGLE. Returns None for others!
+        Returns None for option types that have only one input
         """
         if input_name not in self.inputs:
             return None
@@ -148,11 +169,33 @@ class ViewBase(ABC):
         try:
             inp = self.inputs[input_name]
             option_index = self.get_index_of_option(input_name)
-            if self.options[option_index][3] == Input.MULTI_TOGGLE:
+            if self.options[option_index][3] == Input.MULTI_TOGGLE or \
+                    self.options[option_index][3] == Input.LEFT_RIGHT_ENTER:
                 index_of_next = inp[0] + 1
                 if index_of_next >= len(inp[1]):
                     index_of_next = 0
                 return inp[1][index_of_next]
+            else:
+                return None
+        except IndexError:
+            return None
+
+    def get_input_of_previous_option(self, input_name: str):
+        """
+        Returns None for option types that have only one input
+        """
+        if input_name not in self.inputs:
+            return None
+
+        try:
+            inp = self.inputs[input_name]
+            option_index = self.get_index_of_option(input_name)
+            if self.options[option_index][3] == Input.MULTI_TOGGLE or \
+                    self.options[option_index][3] == Input.LEFT_RIGHT_ENTER:
+                index_of_prev = inp[0] - 1
+                if index_of_prev < 0:
+                    index_of_prev = len(inp[1]) - 1
+                return inp[1][index_of_prev]
             else:
                 return None
         except IndexError:
@@ -253,7 +296,7 @@ class ViewBase(ABC):
             options = self.inputs[self.get_option_for_index(self.selected)][1]
             next_ind = cur_ind - 1
             if next_ind < 0:
-                next_ind = len(options)-1
+                next_ind = len(options) - 1
             self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
 
     @staticmethod
