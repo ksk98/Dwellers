@@ -113,8 +113,8 @@ class ViewRoom(ViewBase):
             if has_next:
                 context.GAME.go_to_the_next_room()
             else:
-                take, rest = context.GAME.calculate_take()
-                context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary(take, take+rest))
+                take = context.GAME.calculate_take()
+                context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary(take))
                 context.GAME.view_manager.set_current(Views.SUMMARY)
         else:
             self._notify_cant_go = True

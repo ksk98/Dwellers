@@ -7,20 +7,16 @@ from views.view_enum import Views
 
 
 class ViewGameSummary(ViewBase):
-    def __init__(self, take: float, host_take: float):
+    def __init__(self, take: float):
         super().__init__()
 
         self.take = take
-        self.host_take = host_take
         self.gold = context.GAME.tmp_gold
         self.creatures = context.GAME.defeated_creatures
         self.character = context.GAME.lobby.get_local_participant().character
 
         # Collect it
-        if context.GAME.is_local():
-            self.character.gold += self.host_take
-        else:
-            self.character.gold += self.take
+        self.character.gold += self.take
 
         PlayerFactory.save_player(self.character)
 
@@ -54,8 +50,5 @@ class ViewGameSummary(ViewBase):
                  str(self.gold)]
         for player in context.GAME.get_players():
             left.append(context.GAME.get_participant_name(player) + "'s take")
-            if player.id == 0:
-                right.append(str(self.host_take))
-            else:
-                right.append(str(self.take))
+            right.append(str(self.take))
         return left, right
