@@ -153,8 +153,10 @@ class Game:
         except socket.error as e:
             # If the player is not a host and we are here, check if the host socket isn't closed
             if not self.is_local() and utility.is_socket_closed(self.host_socket):
-                self.abandon_lobby()
-                self.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
+                # TODO: Temporary fix
+                if self.view_manager.get_current_enum() != Views.SUMMARY:
+                    self.abandon_lobby()
+                    self.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
             # If socket close induced exception is caught, check who disconnected and remove him/her from the lobby
             dict_copy = self.sockets.copy()
             for pid in dict_copy.keys():
@@ -496,11 +498,13 @@ class Game:
             action += "DUNGEON_END"
 
             take = self.calculate_take()
-            # Prepare arguments
             take_arg = "TAKE:" + str(take)
 
         for client in self.sockets.values():
-            answer = communication.communicate_and_get_answer(client, ["GAMEPLAY", "ACTION:" + action, take_arg])
+            frame = ["GAMEPLAY", "ACTION:" + action]
+            if take_arg != "":
+                frame.append(take_arg)
+            answer = communication.communicate_and_get_answer(client, frame)
             received_action = utility.get_value_of_argument(answer, "ACTION")
             received_status = utility.get_value_of_argument(answer, "STATUS")
 

@@ -39,8 +39,7 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
             context.GAME.combat.create_new_view()
 
     elif action == "LOBBY_CLOSE":
-        context.GAME.abandon_lobby()
-        if context.GAME.view_manager.get_current() != Views.SUMMARY:
+        if context.GAME.view_manager.get_current_enum() != Views.SUMMARY:
             context.GAME.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
 
     elif action == "PLAYER_READY":

@@ -29,6 +29,12 @@ class ViewManager:
         self.__views.clear()
         self.__views[Views.MENU] = ViewMenu()
 
+    def get_current_enum(self) -> Views:
+        """
+        Get the enum of current view.
+        """
+        return self.current_view
+
     def get_current(self) -> ViewBase:
         """
         Get the object of current view.

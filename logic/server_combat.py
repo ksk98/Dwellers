@@ -188,8 +188,8 @@ class ServerCombat:
                                                                    "TURN:" + str(id)])
                 action = utility.get_value_of_argument(answer, "ACTION")
                 status = utility.get_value_of_argument(answer, "STATUS")
-                if action != "START" or status != "OK":
-                    context.GAME.abandon_lobby()
+                # if action != "START" or status != "OK":
+                #     context.GAME.abandon_lobby()
         else:
             # ONLY HOST CAN USE THIS
             return

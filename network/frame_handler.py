@@ -18,7 +18,10 @@ def handle(sckt: socket.socket, frame: str) -> bool:
     Handle a given frame of data.
     """
     try:
-        frame_action = frame.split("\r\n")[0]
+        splitted_frame = frame.split("\r\n")
+        frame_action = splitted_frame[0]
+        if frame_action == "" and len(splitted_frame) > 1:
+            frame_action = frame.split("\r\n")[1]
 
         if frame_action == "REQUEST_CONNECTION":
             connection_procedure.carry_out(sckt)
