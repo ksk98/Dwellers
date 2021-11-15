@@ -1,5 +1,6 @@
 import random
 
+import context
 from characters.attacks.attack_crush import AttackCrush
 from characters.attacks.attack_fist import AttackFist
 from characters.attacks.attack_slash import AttackSlash
@@ -22,12 +23,16 @@ class Dweller(EnemyBase):
         self.restore()
 
     def act(self, targets: list[Character]) -> tuple[str, Hit]:
-        # Crazy dwellers are adventurers that are no longer capable of logical thining
+        # Crazy dwellers are adventurers that are no longer capable of logical thinking
         # They tend to act *very* randomly
         target_ind = self.get_index_of_random_target(targets)
         nonsense_roll = random.randint(0, 1)
         if nonsense_roll == 0:
-            line = self.name + " yells angrily at " + targets[target_ind].name + " about " + self.get_nonsense()
+            line = "{name} yells angrily at {target_name} about {nonsense}".format(
+                name=self.name,
+                target_name=context.GAME.get_participant_name(targets[target_ind]),
+                nonsense=self.get_nonsense()
+            )
             return line, None
         else:
             attack = random.randint(0, len(self.attacks) - 1)
