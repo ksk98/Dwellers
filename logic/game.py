@@ -490,20 +490,17 @@ class Game:
         """
         action = ""
         take_arg = ""
-        host_take = ""
         if self.current_room.has_next():
             action += "NEXT_ROOM"
         else:
             action += "DUNGEON_END"
 
-            take, rest = self.calculate_take()
+            take = self.calculate_take()
             # Prepare arguments
             take_arg = "TAKE:" + str(take)
-            host_take = "HOST_TAKE:" + str(take + rest)
 
         for client in self.sockets.values():
-            answer = communication.communicate_and_get_answer(client, ["GAMEPLAY", "ACTION:" + action,
-                                                                       take_arg, host_take])
+            answer = communication.communicate_and_get_answer(client, ["GAMEPLAY", "ACTION:" + action, take_arg])
             received_action = utility.get_value_of_argument(answer, "ACTION")
             received_status = utility.get_value_of_argument(answer, "STATUS")
 
@@ -518,8 +515,8 @@ class Game:
         # Take for normal player
         take = gold / player_amount
         # Host will have take + any rest
-        rest = gold - (take * player_amount)
-        return take, rest
+        # rest = gold - (take * player_amount)
+        return take
 
     def go_to_the_next_room(self):
         """
