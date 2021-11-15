@@ -77,7 +77,6 @@ class Room:
         """
         self._enemies.append(enemy)
 
-    # TODO: connect difficulty from somewhere, defaulting to an easy difficulty for now
     def _generate_content(self, difficulty=Difficulty.EASY):
         """
         Adds random amount of enemies and gold to the room

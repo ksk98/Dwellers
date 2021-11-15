@@ -1,11 +1,11 @@
 import context
+from characters.enums.difficulty_enum import Difficulty
 from config import config
 from dungeon.map_size_enum import MapSize
 from network import communication
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
 from views.view_enum import Views
-from characters.enums.difficulty_enum import Difficulty
 
 
 class ViewLobby(ViewBase):
@@ -110,12 +110,13 @@ class ViewLobby(ViewBase):
         if not self._notify_all_players_must_be_ready:
             # Generate map
             map_size = MapSize.MEDIUM
+            difficulty = Difficulty(self.get_input_of_option("DIFFICULTY"))
             if self.inputs:
                 if self.get_input_of_option("MAP SIZE") == MapSize.SMALL.value:
                     map_size = MapSize.SMALL
                 elif self.get_input_of_option("MAP SIZE") == MapSize.LARGE.value:
                     map_size = MapSize.LARGE
-            context.GAME.generate_map(map_size, Difficulty(self.get_input_of_option("DIFFICULTY")))
+            context.GAME.generate_map(map_size, difficulty)
 
             context.GAME.begin_game_start_procedure()
 

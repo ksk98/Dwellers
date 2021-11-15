@@ -28,11 +28,12 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
     elif action == "DUNGEON_END":
         take = utility.get_value_of_argument(frame, "TAKE")
 
-        if take == "" and host_take == "":
+        if take == "":
             communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:DUNGEON_END", "STATUS:ERR"])
 
         take = float(take)
         communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:DUNGEON_END", "STATUS:OK"])
+        context.GAME.abandon_lobby()
         context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary(take))
         context.GAME.view_manager.set_current(Views.SUMMARY)
 
