@@ -25,7 +25,7 @@ class ViewGameSummary(ViewBase):
         context.GAME.defeated_creatures = 0
 
         self.options = [
-            ["OK", Views.MENU, lambda: None, Input.SELECT]
+            ["OK", Views.MENU, lambda: context.GAME.abandon_lobby(), Input.SELECT]
         ]
 
     def print_screen(self):
