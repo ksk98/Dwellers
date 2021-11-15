@@ -40,7 +40,8 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
 
     elif action == "LOBBY_CLOSE":
         context.GAME.abandon_lobby()
-        context.GAME.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
+        if context.GAME.view_manager.get_current() != Views.SUMMARY:
+            context.GAME.view_manager.display_error_and_go_to("Lobby was closed.", Views.MENU)
 
     elif action == "PLAYER_READY":
         player_status = strtobool(utility.get_value_of_argument(frame, "STATUS"))

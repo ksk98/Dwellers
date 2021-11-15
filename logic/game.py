@@ -1,5 +1,4 @@
 import msvcrt
-import pyperclip
 import select
 import socket
 import threading
@@ -7,6 +6,7 @@ from json import JSONDecodeError
 from os import name
 
 import jsonpickle
+import pyperclip
 
 from characters.enums.difficulty_enum import Difficulty
 from characters.player import Player
@@ -506,7 +506,7 @@ class Game:
 
             if received_action != action or received_status != "OK":
                 # TODO KICK PLAYER
-                self.abandon_lobby()
+                print()
 
     def calculate_take(self):
         # Calculate take for players

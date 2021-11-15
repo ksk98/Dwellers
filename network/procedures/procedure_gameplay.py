@@ -33,7 +33,6 @@ def carry_out(sckt: socket.socket, frame: str) -> str:
 
         take = float(take)
         communicate(context.GAME.host_socket, ["GAMEPLAY", "ACTION:DUNGEON_END", "STATUS:OK"])
-        context.GAME.abandon_lobby()
         context.GAME.view_manager.set_new_view_for_enum(Views.SUMMARY, ViewGameSummary(take))
         context.GAME.view_manager.set_current(Views.SUMMARY)
 
