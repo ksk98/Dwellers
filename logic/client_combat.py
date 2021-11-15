@@ -107,7 +107,7 @@ class ClientCombat:
         """
         Creates view of combat summary
         """
-        participant_count = participant_count = len(self.get_alive_enemies()) + len(self.get_alive_players())
+        participant_count = len(self.get_alive_enemies()) + len(self.get_alive_players())
         context.GAME.view_manager.set_new_view_for_enum(Views.COMBAT_SUMMARY,
                                                         ViewCombatSummary(self._outcomes,
                                                                           len(self._enemies),
@@ -134,13 +134,17 @@ class ClientCombat:
             context.GAME.server_combat.send_outcome(outcome, hit, next_id)
             context.GAME.server_combat.act()
 
-    def set_target_list_for_attack(self):
+    def set_target_list_for_attack(self, previous_attack_not_next=False):
         """
         Sets the targets in CombatView based on selected attack type (heal - players and enemies otherwise)
         """
 
         # Get attack string (with cost)
-        attack_string: str = self._combat_view.get_input_of_next_option("ATTACK TYPE")
+        attack_string: str
+        if not previous_attack_not_next:
+            attack_string = self._combat_view.get_input_of_next_option("ATTACK TYPE")
+        else:
+            attack_string = self._combat_view.get_input_of_previous_option("ATTACK TYPE")
         # Search attacks for this attack
         for att in self.get_character_with_id(self._my_id).attacks:
             if att.name in attack_string:

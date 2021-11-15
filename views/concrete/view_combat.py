@@ -99,7 +99,7 @@ class ViewCombat(ViewBase):
         self._print_options()
 
     def handle_arrow_left(self):
-        self._combat.set_target_list_for_attack()
+        self._combat.set_target_list_for_attack(previous_attack_not_next=True)
         super().handle_arrow_left()
 
     def handle_arrow_right(self):
