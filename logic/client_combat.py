@@ -276,7 +276,7 @@ def end_battle(is_won: bool):
         view_manager.set_current(Views.COMBAT_SUMMARY)
     else:
         # Get necessary variables
-        character_name = context.GAME.lobby.get_local_participant().name
+        character_name = context.GAME.lobby.get_local_participant().character.name
         outcomes = context.GAME.combat.get_outcomes()
         # Clear combat
         context.GAME.combat = None

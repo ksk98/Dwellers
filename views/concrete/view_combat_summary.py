@@ -1,7 +1,7 @@
 import context
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -28,20 +28,20 @@ class ViewCombatSummary(ViewBase):
     def print_screen(self):
         print()
         self.print_outcomes()
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
 
-        self.print_multiline_text(
-            "BATTLE WON!\n \nYOU SUCCESSFULLY DEFEATED {0} ENEMIES AND CAN CONTINUE YOUR JOURNEY.\n \n".format(
-                str(self._enemies_count)))
+        self.print_multiline_text("§yBATTLE WON!§0\n "
+                                  "\n"
+                                  "YOU SUCCESSFULLY DEFEATED §r{0} ENEMIES§0 AND CAN CONTINUE YOUR JOURNEY.\n "
+                                  .format(str(self._enemies_count)))
 
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
         print()
         self._print_options()
 
     def print_outcomes(self):
         """
         Prints outcomes that happened since last turn
-        :param outcomes: list of all outcomes
         """
         outcomes = self._outcomes
         participant_count = self._participant_count
@@ -51,6 +51,6 @@ class ViewCombatSummary(ViewBase):
             start_indx = len(outcomes) - participant_count
 
         for x in range(start_indx, len(outcomes)):
-            print(outcomes[x])
+            PrintUtility.print_with_dividing(outcomes[x])
 
 

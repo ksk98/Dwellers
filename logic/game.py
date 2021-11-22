@@ -1,4 +1,5 @@
 import msvcrt
+import os
 import select
 import socket
 import threading
@@ -565,9 +566,12 @@ class Game:
             f = open("settings.txt", "r")
             unpacked_settings = jsonpickle.decode(f.read())
             assert isinstance(unpacked_settings, dict)
-            # Add to dict
+            # Modify settings
             settings.clear()
             settings.update(unpacked_settings)
+            # Change window size
+            os.system('mode con: cols=' + str(settings["MAX_WIDTH"]) + ' lines=25')
+
             self.view_manager.refresh()
 
         except OSError or JSONDecodeError or AssertionError:

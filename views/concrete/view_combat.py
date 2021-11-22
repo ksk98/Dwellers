@@ -2,7 +2,7 @@ import context
 from characters.character import Character
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char, print_in_two_columns, print_with_dividing
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -61,6 +61,8 @@ class ViewCombat(ViewBase):
                 self.options.insert(0, ["ATTACK", None, lambda: self._combat.attack(), Input.SELECT])
                 self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self._combat.set_target_list_for_attack(),
                                         Input.MULTI_TOGGLE])
+                # TODO BUG: can't choose target properly -
+                #  right arrow selects last enemy, left arrow selects last friendly
                 self.options.insert(0, ["TARGET", Views.COMBAT, lambda: None, Input.MULTI_TOGGLE])
         else:
             self.options.insert(0, ["DO NOTHING", Views.COMBAT, lambda: None, Input.SELECT])
@@ -68,13 +70,13 @@ class ViewCombat(ViewBase):
     def print_screen(self):
         print()
         self.print_outcomes(self._outcomes)
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
 
         # Print party
         player_list, enemy_list = self.prepare_participants()
-        print_in_two_columns([player_list, enemy_list])
+        PrintUtility.print_in_columns([player_list, enemy_list], equal_size=True)
 
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
         print()
 
         # This should be set to True only shortly after pressing the LEAVE GAME button
@@ -83,16 +85,16 @@ class ViewCombat(ViewBase):
 
         # Print turn
         if not self._my_turn:
-            turn = "This is " + context.GAME.get_participant_name(self._char_with_turn) + "'s turn!"
+            turn = "This is §y" + context.GAME.get_participant_name(self._char_with_turn) + "§0's turn!"
             if self._combat.am_i_dead():
-                turn += "\nLooks like you're dead! Ask your friends to heal you!"
+                turn += "\n§rLooks like you're dead! Ask your friends to heal you!§0"
         else:
-            turn = "This is your turn!"
+            turn = "This is §gyour§0 turn!"
         self.print_multiline_text(turn)
 
         # Energy info
         if not self._enough_energy:
-            self.print_text("You don't have enough energy to do that!")
+            self.print_text("§yYou don't have enough energy to do that!§0")
             self._enough_energy = True
 
         # Options
@@ -130,31 +132,24 @@ class ViewCombat(ViewBase):
         participants = self._players
         player_list = ["PARTY:"]
         for character in participants:
-            # character = participant.character
-            line = "{0}[{1}] - HP:{2}/{3} ENERGY: {4}/{5}" \
-                .format(
-                    context.GAME.get_participant_name(character),
-                    character.id,
-                    str(character.hp),
-                    str(character.get_base_hp()),
-                    str(character.energy),
-                    str(character.get_base_energy()))
+            name = f"§g{context.GAME.get_participant_name(character)}§0[{character.id}]"
+            stats = f"§rHP:§R {str(character.hp)}§r/{str(character.get_base_hp())}§0 " \
+                    f"§bEP:§B {str(character.energy)}§b/{str(character.get_base_energy())}§0"
 
-            player_list.append(line)
+            player_list.append(name)
+            player_list.append(stats)
+            player_list.append("")
 
         enemies = self._enemies
         enemy_list = ["HOSTILES:"]
         for enemy in enemies:
-            line = "HP:{0}/{1} ENERGY: {2}/{3} - {4}[{5}]"\
-                .format(
-                    str(enemy.hp),
-                    str(enemy.get_base_hp()),
-                    str(enemy.energy),
-                    str(enemy.get_base_energy()),
-                    enemy.name,
-                    enemy.id)
+            character = f"§y{enemy.name}§0[{enemy.id}]"
+            stats = f"§rHP: §R{str(enemy.hp)}§r/{str(enemy.get_base_hp())}§0 " \
+                    f"§bEP: §B{str(enemy.energy)}§b/{str(enemy.get_base_energy())}§0"
 
-            enemy_list.append(line)
+            enemy_list.append(character)
+            enemy_list.append(stats)
+            enemy_list.append("")
 
         return player_list, enemy_list
 
@@ -170,7 +165,7 @@ class ViewCombat(ViewBase):
             start_indx = len(outcomes) - participant_count
 
         for x in range(start_indx, len(outcomes)):
-            print_with_dividing(outcomes[x])
+            PrintUtility.print_with_dividing(outcomes[x])
 
     def _leave_game(self):
         if self._confirm_leave:
@@ -178,4 +173,4 @@ class ViewCombat(ViewBase):
             context.GAME.view_manager.set_current(Views.MENU)
         else:
             self._confirm_leave = True
-            self.print_text("Do you really want to leave your friends?")
+            self.print_text("§rDo you really want to leave your friends?§0")

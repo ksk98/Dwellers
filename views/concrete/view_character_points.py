@@ -1,12 +1,10 @@
 import context
-from characters.character_config import config
-from characters.enums.stats_enum import Stat
 from characters.player_factory import PlayerFactory
 from settings import settings
 from views.concrete.view_base import ViewBase
 from views.concrete.view_shop import ViewShop
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char, print_in_two_columns
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -54,18 +52,16 @@ class ViewCharacterPoints(ViewBase):
         attacks = self._prepare_skills()
 
         print()
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
 
-        print_in_two_columns([statistics, attacks])
+        PrintUtility.print_in_columns([statistics, attacks], equal_size=True)
 
-        print_whole_line_of_char('=')
-        self.print_text("You have {0} points to spend!".format(self._character.points))
+        PrintUtility.print_dividing_line()
+
+        self.print_text("You have §g{0} points§0 to spend!".format(self._character.points))
         print()
 
         self._print_options()
-
-        if self.confirm_overwrite:
-            self.confirm_overwrite = False
 
         if self.confirm_overwrite:
             self.confirm_overwrite = False
@@ -76,7 +72,7 @@ class ViewCharacterPoints(ViewBase):
         :return: list[str]
         """
 
-        stats_out = ["STATS\n"]
+        stats_out = ["STATS:"]
 
         for stat in self._character.stats:
             stats_out.append(stat + ": " + str(self._character.stats[stat]))

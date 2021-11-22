@@ -1,3 +1,5 @@
+import os
+
 import context
 from settings import settings
 from views.concrete.view_base import ViewBase
@@ -19,6 +21,7 @@ class ViewSettings(ViewBase):
         for setting in settings:
             if setting == "SELECTED_CHARACTER":
                 continue
+
             if isinstance(settings[setting], bool):
                 self.options.append([setting, None, lambda: None, Input.TOGGLE])
             else:
@@ -31,6 +34,7 @@ class ViewSettings(ViewBase):
         for setting in self.inputs:
             settings[setting] = self.inputs[setting]
         context.GAME.save_settings()
+        os.system('mode con: cols=' + str(settings["MAX_WIDTH"]) + ' lines=25')
 
     def print_screen(self):
         self._print_logo()

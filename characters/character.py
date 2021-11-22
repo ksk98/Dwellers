@@ -2,11 +2,11 @@ from __future__ import annotations
 
 import context
 from characters.attacks.attack_base import AttackBase
+from characters.character_config import config
 from characters.enums.attack_type_enum import Type as AttType
 from characters.enums.character_type_enum import Type as CharType
-from characters.hit import Hit
 from characters.enums.stat_tags_enum import STag
-from characters.character_config import config
+from characters.hit import Hit
 
 
 class Character:
@@ -140,17 +140,26 @@ class Character:
         user.deal_energy_damage(attack.cost)
 
         # Create outcome text
-        action = ""
+
         multiplier = 1
+        # Determine if characters are friendly or not and set colors accordingly
+        attacker_color, target_color = self.get_character_colors(user)
+
+        # Determine action
+        action = ""
         if self.hp == 0:
-            action = "killed"
+            action = "§rkilled"
         elif damage_type == AttType.HEALING:
-            action = "healed"
+            action = "§ghealed"
             multiplier = -1
         else:
-            action = "attacked"
+            action = "§yattacked"
+
         return \
-            "{target} was {action} by {attacker} with {attack} [DMG: {damage}, Energy DMG: {energy}]".format(
+            "{target_color}{target}§0 was {action}§0 by {attacker_color}{attacker}§0 with §M{attack}§0 " \
+            "[§RDMG: {damage}§0, §cEnergy DMG: {energy}§0]".format(
+                target_color=target_color,
+                attacker_color=attacker_color,
                 target=context.GAME.get_participant_name(self),
                 action=action,
                 attacker=context.GAME.get_participant_name(user),
@@ -158,6 +167,12 @@ class Character:
                 damage=str(damage * multiplier),
                 energy=str(energy_damage * multiplier)), \
             hit
+
+    def get_character_colors(self, user):
+        from characters.enemies.enemy_base import EnemyBase
+        attacker_color = "§y" if isinstance(user, EnemyBase) else "§g"
+        target_color = "§y" if isinstance(self, EnemyBase) else "§g"
+        return attacker_color, target_color
 
     def rest(self) -> (str, Hit):
         """
@@ -182,7 +197,10 @@ class Character:
                   user_damage=0,
                   energy_damage=rest_efficiency * -1)
 
-        return context.GAME.get_participant_name(self) + " rests", hit
+        from characters.enemies.enemy_base import EnemyBase
+        user_color = "§y" if isinstance(self, EnemyBase) else "§g"
+
+        return user_color + context.GAME.get_participant_name(self) + "§0 rests", hit
 
     def restore(self):
         """

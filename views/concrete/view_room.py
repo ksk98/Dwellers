@@ -4,7 +4,7 @@ from logic.server_combat import ServerCombat
 from views.concrete.view_base import ViewBase
 from views.concrete.view_game_summary import ViewGameSummary
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char, print_in_two_columns
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -35,33 +35,32 @@ class ViewRoom(ViewBase):
 
     def print_screen(self):
         print()
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
 
         self._print_participants()
 
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
 
         # Get gold
         gold = context.GAME.current_room.get_gold()
         gold_amount = str(gold) if gold > 0 else "no"
 
         # Print short description
-        self.print_multiline_text("You are in a {room_type} room.\n"
-                                  "There is {amount} gold in this room.\n"
-                                  "Total looted gold: {total_gold}\n"
+        self.print_multiline_text("You are in a §c{room_type}§0 room.\n"
+                                  "There is §y{amount} gold§0 in this room.\n"
+                                  "Total looted gold: §y{total_gold}§0\n \n"
                                   .format(room_type=context.GAME.current_room.get_type().name,
                                           amount=gold_amount,
                                           total_gold=context.GAME.tmp_gold))
 
         if len(self._room.get_enemies()) > 0:  # if enemies are present - start combat
-            print()
-            self.print_text("There are enemies in this room!")
+            self.print_text("§rThere are enemies in this room!§0")
             if not context.GAME.lobby.local_lobby:
-                self.print_text("Wait for the host to start the battle...")
+                self.print_text("§yWait for the host to start the battle...§0")
 
         # Notify player that only host can move between rooms
         if self._notify_cant_go:
-            self.print_text("Only host can decide when the party is going to the next room!")
+            self.print_text("§yOnly host can decide when the party is going to the next room!§0")
             self._notify_cant_go = False
 
         self._print_options()
@@ -78,7 +77,7 @@ class ViewRoom(ViewBase):
             context.GAME.abandon_lobby()
         else:
             self._confirm_leave = True
-            self.print_text("Do you really want to abandon your party?")
+            self.print_text("§rDo you really want to abandon your party?§0")
 
     def _start_combat(self):
         """
@@ -95,13 +94,13 @@ class ViewRoom(ViewBase):
         participants = context.GAME.lobby.participants
         player_list = ["PARTY:"]
         for participant in participants:
-            player_string = "{nick} - HP:{current}/{base}" \
-                .format(
-                nick=participant.name,
-                current=participant.character.hp,
-                base=participant.character.get_base_hp())
-            player_list.append(player_string)
-        print_in_two_columns([player_list, [""]])
+            name = f"§g{context.GAME.get_participant_name(participant.character)}§0[{participant.player_id}]"
+            stats = f"§rHP:§R {str(participant.character.hp)}§r/{str(participant.character.get_base_hp())}§0 "
+
+            player_list.append(name)
+            player_list.append(stats)
+            player_list.append("")
+        PrintUtility.print_in_columns([player_list])
 
     def _go_to_next_room(self):
         """

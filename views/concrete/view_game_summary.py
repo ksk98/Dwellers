@@ -2,7 +2,7 @@ import context
 from characters.player_factory import PlayerFactory
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char, print_in_two_columns
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -32,21 +32,21 @@ class ViewGameSummary(ViewBase):
         left, right = self._prepare_summary_table()
 
         self.print_multiline_text(
-            "\nCONGRATULATIONS!\n "
+            "\n§yCONGRATULATIONS!§0\n "
             "\n"
             "YOU HAVE REACHED THE END OF A DUNGEON!\n")
-        print_whole_line_of_char('=')
-        print_in_two_columns([left, right])
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
+        PrintUtility.print_in_columns([[], left, right], equal_size=True)
+        PrintUtility.print_dividing_line()
         print()
         self._print_options()
 
     def _prepare_summary_table(self):
-        left = ["Rooms visited", "Defeated creatures", "Total gold looted"]
+        left = ["§BRooms§0 visited", "Defeated §rcreatures§0", "Total §ygold§0 looted"]
         right = [str(context.GAME.map.room_count),
-                 str(self.creatures),
-                 str(self.gold)]
+                 f"{str(self.creatures)}",
+                 f"{str(self.gold)}"]
         for player in context.GAME.get_players():
-            left.append(context.GAME.get_participant_name(player) + "'s take")
-            right.append(str(self.take))
+            left.append(f"§g{context.GAME.get_participant_name(player)}§0's take")
+            right.append(f"{str(self.take)}")
         return left, right

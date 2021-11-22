@@ -2,7 +2,7 @@ import context
 from characters.player_factory import PlayerFactory
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -25,16 +25,19 @@ class ViewDefeat(ViewBase):
         ]
 
     def print_screen(self):
+        print()
         self.print_outcomes()
-        print_whole_line_of_char('=')
-        self.print_multiline_text("DEFEAT!\n \n"
+        PrintUtility.print_dividing_line()
+
+        self.print_multiline_text("§rDEFEAT!§0\n \n"
                                   "YOU HAVE BEEN WIPED OUT!\n"
-                                  "ALL LOOT HAS BEEN LOST...")
-        print_whole_line_of_char('=')
+                                  "ALL LOOT HAS BEEN LOST...\n ")
+
+        PrintUtility.print_dividing_line()
         print()
         self._print_options()
 
     def print_outcomes(self):
         # Print last 4 outcomes
         for outcome in self.outcomes[-4:]:
-            print(outcome)
+            PrintUtility.print_with_dividing(outcome)

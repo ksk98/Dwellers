@@ -3,9 +3,9 @@ from os import system, name
 
 import title_ascii
 from config import config
-from settings import settings
+from views.colors_enum import Color
 from views.input_enum import Input
-from views.print_utility import divide_if_too_long
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -96,7 +96,9 @@ class ViewBase(ABC):
                 to_print = to_print + ": " + str(value)
 
             if self.options.index(option) == self.selected:
-                self.print_text((">" + to_print + "<"))
+                print(Color[config["INTERFACE_COLOR"]].value, end='')
+                self.print_text(to_print)
+                print(Color.RESET.value, end='')
             else:
                 self.print_text(to_print)
 
@@ -299,6 +301,32 @@ class ViewBase(ABC):
                 next_ind = len(options) - 1
             self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
 
+    def handle_arrow_right(self):
+        """
+        React to arrow right keystroke for selected option.
+        """
+        if self.options[self.selected][3] == Input.LEFT_RIGHT_ENTER \
+                or self.options[self.selected][3] == Input.MULTI_TOGGLE:
+            cur_ind = self.inputs[self.get_option_for_index(self.selected)][0]
+            options = self.inputs[self.get_option_for_index(self.selected)][1]
+            next_ind = cur_ind + 1
+            if next_ind >= len(options):
+                next_ind = 0
+            self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
+
+    def handle_arrow_left(self):
+        """
+        React to arrow right keystroke for selected option.
+        """
+        if self.options[self.selected][3] == Input.LEFT_RIGHT_ENTER \
+                or self.options[self.selected][3] == Input.MULTI_TOGGLE:
+            cur_ind = self.inputs[self.get_option_for_index(self.selected)][0]
+            options = self.inputs[self.get_option_for_index(self.selected)][1]
+            next_ind = cur_ind - 1
+            if next_ind < 0:
+                next_ind = len(options) - 1
+            self.inputs[self.get_option_for_index(self.selected)][0] = next_ind
+
     @staticmethod
     def print_text(text: str):
         """
@@ -306,9 +334,9 @@ class ViewBase(ABC):
         """
         # https://stackoverflow.com/a/18854817
         # chunks = list((text[0+i:(settings["MAX_WIDTH"]-4)+i] for i in range(0, len(text), (settings["MAX_WIDTH"]-4))))
-        chunks = divide_if_too_long(text)
+        chunks = PrintUtility.divide_if_too_long(text)
         for chunk in chunks:
-            print(chunk.center(settings["MAX_WIDTH"]))
+            print(PrintUtility.center(chunk))
 
     @staticmethod
     def print_multiline_text(text: str):

@@ -5,6 +5,7 @@ from dungeon.map_size_enum import MapSize
 from network import communication
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -41,12 +42,14 @@ class ViewLobby(ViewBase):
             self.options.insert(0, ["START GAME", None, lambda: self._start_a_game(), Input.SELECT])
 
     def print_screen(self):
-        self.print_multiline_text("\nListening on {address}:{port}\n"
-                                  .format(address=context.GAME.lobby.address, port=str(context.GAME.lobby.port)))
+        self.print_multiline_text(
+            f"\nHosting new game.\nListening on §1{context.GAME.lobby.address}:{str(context.GAME.lobby.port)}§0\n")
 
         # Print slots
+        PrintUtility.print_dividing_line()
         self._print_participants()
         self._print_empty_slots()
+        PrintUtility.print_dividing_line()
 
         # All players must be ready...
         self._notify_ready()
@@ -58,7 +61,7 @@ class ViewLobby(ViewBase):
         Prints that everyone needs to be ready in order to start a game
         """
         if self._notify_all_players_must_be_ready:
-            self.print_text("All players must be ready to start a game!")
+            self.print_text("§rAll players must be ready to start a game!§0")
             self._notify_all_players_must_be_ready = False
 
     def _print_empty_slots(self):
@@ -67,8 +70,7 @@ class ViewLobby(ViewBase):
         """
         empty_slots = config["MAX_PLAYERS"] - len(context.GAME.lobby.participants)
         for i in range(empty_slots):
-            self.print_text("- EMPTY -")
-        self.print_text("\n")
+            self.print_text("§5- EMPTY -§0")
 
     def _print_participants(self):
         """
@@ -77,7 +79,7 @@ class ViewLobby(ViewBase):
         """
         participants = context.GAME.lobby.participants
         for player in participants:
-            status = "READY" if player.ready else "NOT READY"
+            status = "§GREADY§0" if player.ready else "§yNOT READY§0"
             player_string = "{name}[{id}][{status}]".format(name=player.name, id=str(player.player_id), status=status)
 
             self.print_text(player_string)

@@ -4,7 +4,7 @@ from characters.character_config import config
 from characters.player import Player
 from views.concrete.view_base import ViewBase
 from views.input_enum import Input
-from views.print_utility import print_whole_line_of_char, print_in_two_columns
+from views.print_utility import PrintUtility
 from views.view_enum import Views
 
 
@@ -37,13 +37,13 @@ class ViewShop(ViewBase):
 
     def print_screen(self):
         print()
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
         # Print table of contents
-        print_in_two_columns(self._prepare_table())
+        PrintUtility.print_in_columns(self._prepare_table())
 
-        print_whole_line_of_char('=')
+        PrintUtility.print_dividing_line()
         # Gold amount
-        self.print_text("You have {0} gold to spend!".format(self._character.gold))
+        self.print_text("You have §y{0} gold§0 to spend!".format(self._character.gold))
 
         # Not enough gold
         if self._not_enough_gold:

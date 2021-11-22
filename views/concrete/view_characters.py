@@ -47,7 +47,7 @@ class ViewCharacters(ViewBase):
 
             self._print_logo()
             self.print_multiline_text("NOTE: to create a character, select an empty slot\n" +
-                                      "Available characters:\n")
+                                      "§1Available characters:§0\n")
 
             self._set_options_text()
 

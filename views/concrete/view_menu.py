@@ -7,7 +7,7 @@ from views.input_enum import Input
 from views.view_enum import Views
 
 
-# TODO Update screenshots, wiki, description
+# TODO Update screenshots, wiki
 class ViewMenu(ViewBase):
     def __init__(self):
         super().__init__()
