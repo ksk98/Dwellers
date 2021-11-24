@@ -168,12 +168,6 @@ class Character:
                 energy=str(energy_damage * multiplier)), \
             hit
 
-    def get_character_colors(self, user):
-        from characters.enemies.enemy_base import EnemyBase
-        attacker_color = "§y" if isinstance(user, EnemyBase) else "§g"
-        target_color = "§y" if isinstance(self, EnemyBase) else "§g"
-        return attacker_color, target_color
-
     def rest(self) -> (str, Hit):
         """
         Make a character rest for a turn.
@@ -223,3 +217,9 @@ class Character:
                self.stats[STag.INT] * 2 + \
                self.stats[STag.AGL] * 4 + \
                config["base"]["starting_en"]
+
+    def _get_character_colors(self, user):
+        from characters.enemies.enemy_base import EnemyBase
+        attacker_color = "§y" if isinstance(user, EnemyBase) else "§g"
+        target_color = "§y" if isinstance(self, EnemyBase) else "§g"
+        return attacker_color, target_color
