@@ -143,7 +143,7 @@ class Character:
 
         multiplier = 1
         # Determine if characters are friendly or not and set colors accordingly
-        attacker_color, target_color = self.get_character_colors(user)
+        attacker_color, target_color = self._get_character_colors(user)
 
         # Determine action
         action = ""

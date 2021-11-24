@@ -47,12 +47,12 @@ class ViewShop(ViewBase):
 
         # Not enough gold
         if self._not_enough_gold:
-            self.print_text("You don't have enough gold to do that!")
+            self.print_text("§rYou don't have enough gold to do that!§0")
             self._not_enough_gold = False
 
         # All skills purchased
         if self._no_more_skills_to_buy:
-            self.print_text("All attacks have been purchased!")
+            self.print_text("§gAll attacks have been purchased!§0")
 
         print()
 

@@ -15,10 +15,13 @@ class ViewCharacterPoints(ViewBase):
     def __init__(self):
         super().__init__()
         # Do you really want to override?
-        self.confirm_overwrite = False
+        self._confirm_overwrite = False
 
         # Do you really want to delete?
-        self.confirm_delete = False
+        self._confirm_delete = False
+
+        # Do you really want to reset?
+        self._confirm_reset = False
 
         # Determine name for character
         self.saved_character_name = settings["SELECTED_CHARACTER"]
@@ -38,7 +41,7 @@ class ViewCharacterPoints(ViewBase):
              Input.SELECT],
             ["SAVE", None, lambda: self.save(), Input.SELECT],
             ["DELETE", None, lambda: self.delete(), Input.SELECT],
-            ["RESET CHARACTER", Views.CHARACTER_POINTS, lambda: self._character.reset_stats(), Input.SELECT]
+            ["RESET CHARACTER", None, lambda: self.reset(), Input.SELECT]
         ]
 
         self.inputs = {
@@ -63,8 +66,11 @@ class ViewCharacterPoints(ViewBase):
 
         self._print_options()
 
-        if self.confirm_overwrite:
-            self.confirm_overwrite = False
+        if self._confirm_overwrite:
+            self._confirm_overwrite = False
+
+        if self._confirm_reset:
+            self._confirm_reset = False
 
     def _prepare_statistics(self):
         """
@@ -86,28 +92,36 @@ class ViewCharacterPoints(ViewBase):
         """
         list = ["SKILLS:"]
         for attack in self._character.attacks:
-            attack_str = "{name} [ENERGY COST: {cost}]".format(name=attack.name, cost=attack.cost)
+            attack_str = "{name} [§bENERGY COST: {cost}§0]".format(name=attack.name, cost=attack.cost)
             list.append(attack_str)
 
         return list
 
     def delete(self):
-        if self.confirm_delete:
+        if self._confirm_delete:
             PlayerFactory.delete(self._name)
             context.GAME.view_manager.set_current(Views.CHARACTERS)
         else:
-            self.print_text("Do you really want to delete your precious character? Press again to confirm.")
-            self.confirm_delete = True
+            self.print_text("§rDo you really want to delete your precious character? Press again to confirm.§0")
+            self._confirm_delete = True
+
+    def reset(self):
+        if self._confirm_reset:
+            self._character.reset_stats()
+            context.GAME.view_manager.set_current(Views.CHARACTERS)
+        else:
+            self.print_text("§rDo you really want to reset your precious character? Press again to confirm.§0")
+            self._confirm_reset = True
 
     def save(self):
         self._character.name = self.inputs["NAME"]
         from characters.saved_characters import saved_characters  # because circular import
         if self._character.name != self.saved_character_name and saved_characters.get(self._character.name):
-            if self.confirm_overwrite:
+            if self._confirm_overwrite:
                 PlayerFactory.save_player(self._character)
                 context.GAME.view_manager.set_current(Views.CHARACTERS)
             else:
-                self.confirm_overwrite = True
+                self._confirm_overwrite = True
                 self.print_text("This will overwrite existing character! Press again to confirm.")
         else:
             PlayerFactory.save_player(self._character)
