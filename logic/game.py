@@ -59,11 +59,13 @@ class Game:
         # This thread handles incoming connection attempts for the host
         self.connector_thread: threading.Thread = None
 
+        # Load settings
+        self.load_settings()
+
         # Instance of the view manager
         self.view_manager: ViewManager = ViewManager()
 
-        # Load settings and characters
-        self.load_settings()
+        # Load characters
         self.is_save_valid = PlayerFactory.load_from_file()
 
         # Instance of map object
@@ -571,8 +573,6 @@ class Game:
             settings.update(unpacked_settings)
             # Change window size
             os.system('mode con: cols=' + str(settings["MAX_WIDTH"]) + ' lines=25')
-
-            self.view_manager.refresh()
 
         except OSError or JSONDecodeError or AssertionError:
             return

@@ -22,10 +22,24 @@ class ViewSettings(ViewBase):
             if setting == "SELECTED_CHARACTER":
                 continue
 
+            if setting == "INTERFACE_COLOR":
+                # All this is necessary, because all other views work different than settings view
+                # List of available colors
+                colors = ["BLUE", "CYAN", "GREEN", "YELLOW"]
+                # Add button
+                self.options.append([setting, None, lambda: None, Input.MULTI_TOGGLE])
+                # Get saved color
+                color_indx = indx = settings[setting][0]
+                bc = settings[setting][1][indx]
+                # Set button to selected color
+                self.inputs[setting] = [color_indx, colors]
+                continue
+
             if isinstance(settings[setting], bool):
                 self.options.append([setting, None, lambda: None, Input.TOGGLE])
             else:
                 self.options.append([setting, None, lambda: None, Input.TEXT_FIELD])
+
             self.inputs[setting] = settings[setting]
 
         self.options.append(["BACK TO MENU", Views.MENU, lambda: self.update_settings(), Input.SELECT])

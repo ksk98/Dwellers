@@ -3,6 +3,7 @@ from os import system, name
 
 import title_ascii
 from config import config
+from settings import settings
 from views.colors_enum import Color
 from views.input_enum import Input
 from views.print_utility import PrintUtility
@@ -96,7 +97,10 @@ class ViewBase(ABC):
                 to_print = to_print + ": " + str(value)
 
             if self.options.index(option) == self.selected:
-                print(Color[config["INTERFACE_COLOR"]].value, end='')
+                # get color
+                color_indx = settings["INTERFACE_COLOR"][0]
+                color_name = settings["INTERFACE_COLOR"][1][color_indx]
+                print(Color[color_name].value, end='')
                 self.print_text(to_print)
                 print(Color.RESET.value, end='')
             else:
