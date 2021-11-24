@@ -25,7 +25,7 @@ class ViewPlay(ViewBase):
         self._print_logo()
 
         if not self._check_if_character_exists():
-            self.print_text("YOU NEED TO SELECT A CHARACTER BEFORE STARTING A GAME!")
+            self.print_text("§yYou need to select a character before starting a game!§0")
 
         self._print_options()
 
