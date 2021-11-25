@@ -26,7 +26,7 @@ class ViewCharacterPoints(ViewBase):
         # Determine name for character
         self.saved_character_name = settings["SELECTED_CHARACTER"]
         if self.saved_character_name == "":
-            self._name = "Default"
+            self._name = ""
         else:
             self._name = settings["SELECTED_CHARACTER"]
 
@@ -114,7 +114,13 @@ class ViewCharacterPoints(ViewBase):
             self._confirm_reset = True
 
     def save(self):
-        self._character.name = self.inputs["NAME"]
+        name = self.inputs["NAME"]
+        if name == "":
+            context.GAME.view_manager.refresh()
+            PrintUtility.print_with_dividing(PrintUtility.center("§rName of the character can't be empty!§0"))
+            return
+
+        self._character.name = name
         from characters.saved_characters import saved_characters  # because circular import
         if self._character.name != self.saved_character_name and saved_characters.get(self._character.name):
             if self._confirm_overwrite:
@@ -122,7 +128,7 @@ class ViewCharacterPoints(ViewBase):
                 context.GAME.view_manager.set_current(Views.CHARACTERS)
             else:
                 self._confirm_overwrite = True
-                self.print_text("This will overwrite existing character! Press again to confirm.")
+                self.print_text("§rThis will overwrite existing character! Press again to confirm.§0")
         else:
             PlayerFactory.save_player(self._character)
             context.GAME.view_manager.set_current(Views.CHARACTERS)
