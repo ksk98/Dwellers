@@ -36,17 +36,13 @@ class ServerCombat:
         """
         Acts as enemy character
         """
-        while True:
-            if self._character_with_turn in self._enemies and self._character_with_turn.hp > 0:
-                if self._check_win():
-                    break
-                players = self._get_alive_players()
-                outcome, hit = self._character_with_turn.act(players)
-                self._get_next_character()
-                self.send_outcome(outcome, hit, self._character_with_turn.id)
-                self.act()
-            else:
-                break
+        if self._character_with_turn in self._enemies and self._character_with_turn.hp > 0:
+            if self._check_win():
+                return
+            players = self._get_alive_players()
+            outcome, hit = self._character_with_turn.act(players)
+            self._get_next_character()
+            self.send_outcome(outcome, hit, self._character_with_turn.id)
 
     def attack(self, user_id: int, target_id: int, type: str) -> tuple[str, Hit, int]:
         """
@@ -196,7 +192,6 @@ class ServerCombat:
 
         context.GAME.combat = logic.client_combat.ClientCombat(id)
         context.GAME.combat.start()
-        self.act()
 
     # private
 

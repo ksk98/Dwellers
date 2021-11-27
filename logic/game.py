@@ -147,6 +147,10 @@ class Game:
                         if ready[0]:
                             frame_handler.handle(sckt, utility.get_data(sckt))
 
+                    # Execute one turn if combat is active
+                    if self.server_combat is not None:
+                        self.server_combat.act()
+
             # Linux/Mac
             else:
                 print("Only windows is supported. :c")
@@ -339,7 +343,6 @@ class Game:
             self.server_combat.remove_player_from_queue(player_id)
             self.server_combat.check_if_player_exists()
             self.combat.create_new_view()
-            self.server_combat.act()
 
         return True
 
@@ -559,7 +562,8 @@ class Game:
         f.write(pickled_characters)
         f.close()
 
-    def load_settings(self):
+    @staticmethod
+    def load_settings():
         """
         Load settings from file
         """

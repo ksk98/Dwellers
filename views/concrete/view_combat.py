@@ -36,8 +36,10 @@ class ViewCombat(ViewBase):
         if self._char_with_turn.id == self._my_character.id:
             self._my_turn = True
 
-        # Combat object
+        # Combat objects
         self._combat = context.GAME.combat
+        self._server_combat = context.GAME.server_combat
+
         self.options = [
             ["LEAVE GAME", None, lambda: self._leave_game(), Input.SELECT]
         ]
@@ -69,11 +71,11 @@ class ViewCombat(ViewBase):
 
     def print_screen(self):
         print()
-        self.print_outcomes(self._outcomes)
+        self._print_outcomes(self._outcomes)
         PrintUtility.print_dividing_line()
 
         # Print party
-        player_list, enemy_list = self.prepare_participants()
+        player_list, enemy_list = self._prepare_participants()
         PrintUtility.print_in_columns([player_list, enemy_list], equal_size=True)
 
         PrintUtility.print_dividing_line()
@@ -85,11 +87,11 @@ class ViewCombat(ViewBase):
 
         # Print turn
         if not self._my_turn:
-            turn = "This is §y" + context.GAME.get_participant_name(self._char_with_turn) + "§0's turn!"
+            turn = "This is §g" + context.GAME.get_participant_name(self._char_with_turn) + "§0's turn!"
             if self._combat.am_i_dead():
                 turn += "\n§rLooks like you're dead! Ask your friends to heal you!§0"
         else:
-            turn = "This is §gyour§0 turn!"
+            turn = "This is §Gyour§0 turn!"
         self.print_multiline_text(turn)
 
         # Energy info
@@ -123,7 +125,7 @@ class ViewCombat(ViewBase):
         self._enough_energy = False
         self.refresh_view()
 
-    def prepare_participants(self):
+    def _prepare_participants(self):
         """
         Makes two lists of participants - player characters and enemies.
         Lists contain strings telling character's name and it's stats.
@@ -153,7 +155,7 @@ class ViewCombat(ViewBase):
 
         return player_list, enemy_list
 
-    def print_outcomes(self, outcomes: list[str]):
+    def _print_outcomes(self, outcomes: list[str]):
         """
         Prints outcomes that happened since last turn
         :param outcomes: list of all outcomes
@@ -168,6 +170,9 @@ class ViewCombat(ViewBase):
             PrintUtility.print_with_dividing(outcomes[x])
 
     def _leave_game(self):
+        """
+        Displays confirmation and leaves game
+        """
         if self._confirm_leave:
             context.GAME.abandon_lobby()
             context.GAME.view_manager.set_current(Views.MENU)

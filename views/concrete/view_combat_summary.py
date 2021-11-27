@@ -32,7 +32,7 @@ class ViewCombatSummary(ViewBase):
 
         self.print_multiline_text("§yBATTLE WON!§0\n "
                                   "\n"
-                                  "YOU SUCCESSFULLY DEFEATED §r{0} ENEMIES§0 AND CAN CONTINUE YOUR JOURNEY.\n "
+                                  "YOU §gSUCCESSFULLY§0 DEFEATED §r{0} ENEMIES§0 AND CAN CONTINUE YOUR JOURNEY.\n "
                                   .format(str(self._enemies_count)))
 
         PrintUtility.print_dividing_line()

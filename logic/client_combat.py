@@ -73,7 +73,6 @@ class ClientCombat:
         else:
             outcome, hit, next_id = context.GAME.server_combat.attack(self._my_id, target_id, attack)
             context.GAME.server_combat.send_outcome(outcome, hit, next_id)
-            context.GAME.server_combat.act()
 
     def handle_outcome(self, new_turn: int = -1, outcome: str = "", hit: Hit = None):
         """
@@ -132,7 +131,6 @@ class ClientCombat:
         else:
             outcome, hit, next_id = context.GAME.server_combat.rest(self._my_id)
             context.GAME.server_combat.send_outcome(outcome, hit, next_id)
-            context.GAME.server_combat.act()
 
     def set_target_list_for_attack(self, previous_attack_not_next=False):
         """
