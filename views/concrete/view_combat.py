@@ -48,7 +48,7 @@ class ViewCombat(ViewBase):
             attacks = context.GAME.lobby.get_local_participant().character.attacks
             attack_names = []
             for attack in attacks:
-                option_name = "{attack_name} [COST: {cost}]".format(attack_name=attack.name, cost=attack.cost)
+                option_name = f"{attack.name} [COST: {attack.cost}]"
                 attack_names.append(option_name)
 
             self.inputs = {
@@ -58,7 +58,8 @@ class ViewCombat(ViewBase):
 
             # This shouldn't happen
             # But I will add just in case
-            # So client will not crush
+            # So client will not crash
+            # With this, if there are no enemies the only thing that player can do is rest
             if len(self._enemies) > 0:
                 self.options.insert(0, ["ATTACK", None, lambda: self._combat.attack(), Input.SELECT])
                 self.options.insert(0, ["ATTACK TYPE", Views.COMBAT, lambda: self._combat.set_target_list_for_attack(),
@@ -85,6 +86,20 @@ class ViewCombat(ViewBase):
         # so it needs to be changed with next refresh
         self._confirm_leave = False
 
+        self._print_turn_text()
+
+        self._print_energy_alert()
+
+        # Options
+        self._print_options()
+
+    def _print_energy_alert(self):
+        # Energy info
+        if not self._enough_energy:
+            self.print_text("§yYou don't have enough energy to do that!§0")
+            self._enough_energy = True
+
+    def _print_turn_text(self):
         # Print turn
         if not self._my_turn:
             turn = "This is §g" + context.GAME.get_participant_name(self._char_with_turn) + "§0's turn!"
@@ -94,14 +109,6 @@ class ViewCombat(ViewBase):
             turn = "This is §Gyour§0 turn!"
         self.print_multiline_text(turn)
 
-        # Energy info
-        if not self._enough_energy:
-            self.print_text("§yYou don't have enough energy to do that!§0")
-            self._enough_energy = True
-
-        # Options
-        self._print_options()
-
     def handle_arrow_left(self):
         self._combat.set_target_list_for_attack(previous_attack_not_next=True)
         super().handle_arrow_left()
@@ -109,13 +116,6 @@ class ViewCombat(ViewBase):
     def handle_arrow_right(self):
         self._combat.set_target_list_for_attack()
         super().handle_arrow_right()
-
-    def set_targets(self, list_of_targets):
-        """
-        Sets the list displaying under "TARGET" option
-        :param list_of_targets: list to display
-        """
-        self.inputs["TARGET"] = [0, list_of_targets]
 
     def not_enough_energy(self):
         """
@@ -125,33 +125,22 @@ class ViewCombat(ViewBase):
         self._enough_energy = False
         self.refresh_view()
 
+    def set_targets(self, list_of_targets):
+        """
+        Sets the list displaying under "TARGET" option
+        :param list_of_targets: list to display
+        """
+        self.inputs["TARGET"] = [0, list_of_targets]
+
     def _prepare_participants(self):
         """
         Makes two lists of participants - player characters and enemies.
         Lists contain strings telling character's name and it's stats.
         :return: those lists
         """
-        participants = self._players
-        player_list = ["PARTY:"]
-        for character in participants:
-            name = f"§g{context.GAME.get_participant_name(character)}§0[{character.id}]"
-            stats = f"§rHP:§R {str(character.hp)}§r/{str(character.get_base_hp())}§0 " \
-                    f"§bEP:§B {str(character.energy)}§b/{str(character.get_base_energy())}§0"
+        player_list = self._create_character_list(self._players, ["PARTY:"], "§g")
 
-            player_list.append(name)
-            player_list.append(stats)
-            player_list.append("")
-
-        enemies = self._enemies
-        enemy_list = ["HOSTILES:"]
-        for enemy in enemies:
-            character = f"§y{enemy.name}§0[{enemy.id}]"
-            stats = f"§rHP: §R{str(enemy.hp)}§r/{str(enemy.get_base_hp())}§0 " \
-                    f"§bEP: §B{str(enemy.energy)}§b/{str(enemy.get_base_energy())}§0"
-
-            enemy_list.append(character)
-            enemy_list.append(stats)
-            enemy_list.append("")
+        enemy_list = self._create_character_list(self._enemies, ["HOSTILES:"], "§y")
 
         return player_list, enemy_list
 
@@ -179,3 +168,15 @@ class ViewCombat(ViewBase):
         else:
             self._confirm_leave = True
             self.print_text("§rDo you really want to leave your friends?§0")
+
+    @staticmethod
+    def _create_character_list(characters, character_list, color):
+        for character in characters:
+            name = f"{color}{context.GAME.get_participant_name(character)}§0[{character.id}]"
+            stats = f"§rHP:§R {str(character.hp)}§r/{str(character.get_base_hp())}§0 " \
+                    f"§bEP:§B {str(character.energy)}§b/{str(character.get_base_energy())}§0"
+
+            character_list.append(name)
+            character_list.append(stats)
+            character_list.append("")
+        return character_list
