@@ -25,11 +25,11 @@ any creature that comes your way!
   * Energy increases amount of damage dealt by some attacks
 
 ## Screenshots
-![Main menu](https://i.imgur.com/2sFBrR9.png)
+![Main menu](https://i.imgur.com/7dzTln5.png)
 
-![Character creation](https://i.imgur.com/bsBvwCr.png)
+![Character creation](https://i.imgur.com/OQ1wmkK.png)
 
-![Gameplay](https://i.imgur.com/C1gh7Wr.png)
+![Gameplay](https://i.imgur.com/9jywooO.png)
 
 ## How to play
 NOTE: You don't know how to run the game? See [wiki](https://github.com/ksk98/Dwellers/wiki/How-to) page.
